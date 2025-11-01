@@ -3661,7 +3661,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-/* Your Firebase config */
+/* Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
   authDomain: "testpayroll-60439.firebaseapp.com",
@@ -3676,180 +3676,253 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* Persist auth - wrapped in async IIFE */
-(async () => {
-  try {
-    await setPersistence(auth, browserLocalPersistence);
-  } catch(e) {
-    console.warn('setPersistence error:', e);
-  }
-})();
+/* Set persistence */
+setPersistence(auth, browserLocalPersistence).catch(e => console.warn('Persistence:', e));
 
 /* Toast notifications */
 function _toast(msg, type='info') {
   try {
     const id = 'ww_toast_container';
     let c = document.getElementById(id);
-    if (!c) { c = document.createElement('div'); c.id = id; c.style.position='fixed'; c.style.right='18px'; c.style.top='18px'; c.style.zIndex=9999; document.body.appendChild(c); }
+    if (!c) {
+      c = document.createElement('div');
+      c.id = id;
+      c.style.position = 'fixed';
+      c.style.right = '18px';
+      c.style.top = '18px';
+      c.style.zIndex = 9999;
+      document.body.appendChild(c);
+    }
     const el = document.createElement('div');
     el.textContent = msg;
-    el.style.marginTop = '8px'; el.style.padding = '8px 12px'; el.style.borderRadius = '8px'; el.style.color = '#fff';
+    el.style.marginTop = '8px';
+    el.style.padding = '8px 12px';
+    el.style.borderRadius = '8px';
+    el.style.color = '#fff';
     el.style.boxShadow = '0 6px 18px rgba(0,0,0,0.08)';
     el.style.background = type === 'error' ? '#ef4444' : (type === 'success' ? '#10b981' : '#2563eb');
     c.appendChild(el);
-    setTimeout(()=>{ el.style.opacity = '0'; setTimeout(()=>el.remove(),300); }, 3000);
-  } catch(e) { console.log('toast error', e); }
+    setTimeout(() => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  } catch(e) {
+    console.log('Toast error:', e);
+  }
 }
 
-function _showLoading(show=true) {
+function _showLoading(show = true) {
   try {
     const id = 'ww_loading_overlay';
     let o = document.getElementById(id);
     if (!o) {
-      o = document.createElement('div'); o.id = id;
-      Object.assign(o.style, {position:'fixed',left:0,top:0,width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,0.6)',zIndex:9998});
+      o = document.createElement('div');
+      o.id = id;
+      Object.assign(o.style, {
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(255,255,255,0.6)',
+        zIndex: 9998
+      });
       o.innerHTML = '<div style="padding:12px;border-radius:8px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,0.08);font-weight:600;">Working...</div>';
       document.body.appendChild(o);
     }
     o.style.display = show ? 'flex' : 'none';
-  } catch(e) { console.log(e); }
+  } catch(e) {
+    console.log('Loading error:', e);
+  }
 }
 
-/* Live sync with USER-SCOPED collections */
+/* Live sync caches */
 let _empUnsub = null;
 let _attUnsub = null;
 window._employees_cache = [];
 window._attendance_cache = {};
 
+/* Sync employees */
 async function startLiveSyncEmployees(uid) {
   try {
-    if (_empUnsub) { _empUnsub(); _empUnsub = null; }
+    if (_empUnsub) {
+      _empUnsub();
+      _empUnsub = null;
+    }
     const q = query(collection(db, 'users', uid, 'employees'), orderBy('updatedAt'));
     _empUnsub = onSnapshot(q, snapshot => {
       const arr = [];
-      snapshot.forEach(d => arr.push({ id: d.id, ...d.data() }));
+      snapshot.forEach(d => arr.push({
+        id: d.id,
+        ...d.data()
+      }));
       window._employees_cache = arr;
-      try { if (typeof renderEmployeeTable === 'function') renderEmployeeTable(); } catch(e) { console.error('renderEmployeeTable', e); }
-      try { if (typeof populatePayrollEmployeeDropdown === 'function') populatePayrollEmployeeDropdown(); } catch(e) {}
-    }, err => {
-      console.error('employees onSnapshot', err);
-    });
-  } catch(e) { console.error('startLiveSyncEmployees', e); }
+      if (typeof renderEmployeeTable === 'function') renderEmployeeTable();
+      if (typeof populatePayrollEmployeeDropdown === 'function') populatePayrollEmployeeDropdown();
+    }, err => console.error('Employees sync error:', err));
+  } catch(e) {
+    console.error('startLiveSyncEmployees error:', e);
+  }
 }
 
+/* Sync attendance */
 async function startLiveSyncAttendance(uid) {
   try {
-    if (_attUnsub) { _attUnsub(); _attUnsub = null; }
+    if (_attUnsub) {
+      _attUnsub();
+      _attUnsub = null;
+    }
     const q = query(collection(db, 'users', uid, 'attendance'), orderBy('date'));
     _attUnsub = onSnapshot(q, snapshot => {
       const map = {};
       snapshot.forEach(d => map[d.id] = d.data());
       window._attendance_cache = map;
-      try { if (typeof renderEmployeeAttendanceList === 'function') renderEmployeeAttendanceList(); } catch(e) { console.error('renderEmployeeAttendanceList', e); }
-      try { if (typeof updateAttendanceSummary === 'function') updateAttendanceSummary(); } catch(e) {}
-    }, err => {
-      console.error('attendance onSnapshot', err);
-    });
-  } catch(e) { console.error('startLiveSyncAttendance', e); }
+      if (typeof renderEmployeeAttendanceList === 'function') renderEmployeeAttendanceList();
+      if (typeof updateAttendanceSummary === 'function') updateAttendanceSummary();
+    }, err => console.error('Attendance sync error:', err));
+  } catch(e) {
+    console.error('startLiveSyncAttendance error:', e);
+  }
 }
 
 /* Save employee */
 async function saveEmployeeToFirestore(employeeData) {
   const user = auth.currentUser;
-  if (!user) { _toast('Login required','error'); return; }
+  if (!user) {
+    _toast('Login required', 'error');
+    return;
+  }
   _showLoading(true);
   try {
-    const id = employeeData.id || ('EMP' + Math.random().toString(36).slice(2,9).toUpperCase());
-    await setDoc(doc(db, 'users', user.uid, 'employees', id), { ...employeeData, updatedAt: serverTimestamp() });
-    _toast('Employee saved','success');
-  } catch(e) { console.error('saveEmployeeToFirestore', e); _toast('Save failed','error'); }
-  finally { _showLoading(false); }
+    const id = employeeData.id || ('EMP' + Math.random().toString(36).slice(2, 9).toUpperCase());
+    await setDoc(doc(db, 'users', user.uid, 'employees', id), {
+      ...employeeData,
+      updatedAt: serverTimestamp()
+    });
+    _toast('Employee saved', 'success');
+  } catch(e) {
+    console.error('Save error:', e);
+    _toast('Save failed: ' + e.message, 'error');
+  }
+  finally {
+    _showLoading(false);
+  }
 }
 
 /* Delete employee */
 async function deleteEmployeeFromFirestore(id) {
   const user = auth.currentUser;
-  if (!user) { _toast('Login required','error'); return; }
+  if (!user) {
+    _toast('Login required', 'error');
+    return;
+  }
   _showLoading(true);
   try {
     await deleteDoc(doc(db, 'users', user.uid, 'employees', id));
-    _toast('Employee deleted','success');
-  } catch(e) { console.error('deleteEmployeeFromFirestore', e); _toast('Delete failed','error'); }
-  finally { _showLoading(false); }
+    _toast('Employee deleted', 'success');
+  } catch(e) {
+    console.error('Delete error:', e);
+    _toast('Delete failed: ' + e.message, 'error');
+  }
+  finally {
+    _showLoading(false);
+  }
 }
 
 /* Save attendance */
 async function saveSingleAttendanceDate(date, recordObj) {
   const user = auth.currentUser;
-  if (!user) { _toast('Login required','error'); return; }
+  if (!user) {
+    _toast('Login required', 'error');
+    return;
+  }
   _showLoading(true);
   try {
-    await setDoc(doc(db, 'users', user.uid, 'attendance', date), { ...recordObj, date, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', user.uid, 'attendance', date), {
+      ...recordObj,
+      date,
+      updatedAt: serverTimestamp()
+    });
     window._attendance_cache[date] = recordObj;
-    _toast('Attendance saved for ' + date, 'success');
-  } catch(e) { console.error('saveSingleAttendanceDate', e); _toast('Save failed','error'); }
-  finally { _showLoading(false); }
+    _toast('Attendance saved', 'success');
+  } catch(e) {
+    console.error('Attendance save error:', e);
+    _toast('Save failed: ' + e.message, 'error');
+  }
+  finally {
+    _showLoading(false);
+  }
 }
 
-/* Push all attendance */
+/* Push attendance */
 async function pushAttendanceToFirebase() {
   const user = auth.currentUser;
-  if (!user) { _toast('Login required','error'); return; }
+  if (!user) {
+    _toast('Login required', 'error');
+    return;
+  }
   _showLoading(true);
   try {
     const batch = writeBatch(db);
     const existing = await getDocs(collection(db, 'users', user.uid, 'attendance'));
     existing.forEach(s => batch.delete(doc(db, 'users', user.uid, 'attendance', s.id)));
     Object.keys(window.attendanceRecords || {}).forEach(date => {
-      batch.set(doc(db, 'users', user.uid, 'attendance', date), { ...window.attendanceRecords[date], date, updatedAt: serverTimestamp() });
+      batch.set(doc(db, 'users', user.uid, 'attendance', date), {
+        ...window.attendanceRecords[date],
+        date,
+        updatedAt: serverTimestamp()
+      });
     });
     await batch.commit();
-    _toast('Attendance pushed','success');
-  } catch(e) { console.error('pushAttendanceToFirebase', e); _toast('Push failed','error'); }
-  finally { _showLoading(false); }
+    _toast('Attendance pushed', 'success');
+  } catch(e) {
+    console.error('Push error:', e);
+    _toast('Push failed: ' + e.message, 'error');
+  }
+  finally {
+    _showLoading(false);
+  }
 }
 
-/* SIGNUP - exposed globally */
+/* SIGNUP - EXPOSED */
 window.signUp = async function() {
-  const email = (document.getElementById('signup-email')||{}).value || '';
-  const password = (document.getElementById('signup-password')||{}).value || '';
-  const confirmPassword = (document.getElementById('confirm-password')||{}).value || '';
+  const email = (document.getElementById('signup-email') || {}).value || '';
+  const password = (document.getElementById('signup-password') || {}).value || '';
+  const confirmPassword = (document.getElementById('confirm-password') || {}).value || '';
   
   if (!email || !password || !confirmPassword) {
     _toast('All fields required', 'error');
     return;
   }
-  
   if (password !== confirmPassword) {
     _toast('Passwords do not match', 'error');
     return;
   }
-  
   if (password.length < 6) {
-    _toast('Password must be at least 6 characters', 'error');
+    _toast('Password must be 6+ characters', 'error');
     return;
   }
   
   _showLoading(true);
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    _toast('Account created! You are logged in.', 'success');
-    // UI should update automatically via onAuthStateChanged
+    _toast('Account created!', 'success');
   } catch(err) {
     console.error('Signup error:', err);
-    let msg = 'Signup failed: ' + (err.message || err.code);
-    if (err.code === 'auth/email-already-in-use') msg = 'Email already in use';
-    if (err.code === 'auth/invalid-email') msg = 'Invalid email';
-    if (err.code === 'auth/weak-password') msg = 'Password too weak';
-    _toast(msg, 'error');
+    _toast('Signup failed: ' + err.message, 'error');
   }
-  finally { _showLoading(false); }
+  finally {
+    _showLoading(false);
+  }
 };
 
-/* LOGIN - exposed globally */
+/* LOGIN - EXPOSED */
 window.login = async function() {
-  const email = (document.getElementById('login-email')||{}).value || '';
-  const password = (document.getElementById('login-password')||{}).value || '';
+  const email = (document.getElementById('login-email') || {}).value || '';
+  const password = (document.getElementById('login-password') || {}).value || '';
   
   if (!email || !password) {
     _toast('Email and password required', 'error');
@@ -3859,102 +3932,73 @@ window.login = async function() {
   _showLoading(true);
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    _toast('Logged in successfully!', 'success');
-    // UI should update automatically via onAuthStateChanged
+    _toast('Logged in!', 'success');
   } catch(err) {
     console.error('Login error:', err);
-    let msg = 'Login failed: ' + (err.message || err.code);
-    if (err.code === 'auth/user-not-found') msg = 'No account with this email';
-    if (err.code === 'auth/wrong-password') msg = 'Incorrect password';
-    if (err.code === 'auth/invalid-email') msg = 'Invalid email';
-    _toast(msg, 'error');
+    _toast('Login failed: ' + err.message, 'error');
   }
-  finally { _showLoading(false); }
+  finally {
+    _showLoading(false);
+  }
 };
 
-/* LOGOUT - exposed globally */
+/* LOGOUT - EXPOSED */
 window.logout = async function() {
   _showLoading(true);
   try {
     await signOut(auth);
     _toast('Logged out', 'info');
-    // UI should update automatically via onAuthStateChanged
   } catch(err) {
     console.error('Logout error:', err);
-    _toast('Logout failed', 'error');
+    _toast('Logout failed: ' + err.message, 'error');
   }
-  finally { _showLoading(false); }
+  finally {
+    _showLoading(false);
+  }
 };
 
-/* Expose helper functions */
+/* Expose functions */
 window.saveEmployeeToFirestore = saveEmployeeToFirestore;
 window.deleteEmployeeFromFirestore = deleteEmployeeFromFirestore;
 window.saveSingleAttendanceDate = saveSingleAttendanceDate;
 window.pushAttendanceToFirebase = pushAttendanceToFirebase;
-/* Initialize Application on Login */
+
+/* Initialize app */
 async function initializeApplication() {
   try {
     console.log('⏳ Initializing application...');
-    
-    if (typeof renderEmployeeTable === 'function') {
-      console.log('📋 Loading employees...');
-      renderEmployeeTable();
-    }
-    
-    if (typeof populatePayrollEmployeeDropdown === 'function') {
-      console.log('💰 Loading payroll dropdown...');
-      populatePayrollEmployeeDropdown();
-    }
-    
-    if (typeof renderEmployeeAttendanceList === 'function') {
-      console.log('📅 Loading attendance...');
-      renderEmployeeAttendanceList();
-    }
-    
-    if (typeof updateAttendanceSummary === 'function') {
-      console.log('📊 Updating summary...');
-      updateAttendanceSummary();
-    }
-    
-    console.log('✅ Application initialized successfully');
+    if (typeof renderEmployeeTable === 'function') renderEmployeeTable();
+    if (typeof populatePayrollEmployeeDropdown === 'function') populatePayrollEmployeeDropdown();
+    if (typeof renderEmployeeAttendanceList === 'function') renderEmployeeAttendanceList();
+    if (typeof updateAttendanceSummary === 'function') updateAttendanceSummary();
+    console.log('✅ Application initialized');
   } catch(e) {
-    console.error('❌ Error initializing application:', e);
+    console.error('Init error:', e);
   }
 }
 
-/* Start sync on auth change */
-onAuthStateChanged(auth, (user) => {
-/* Start sync on auth change */
+/* Auth listener */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log('🔥 Firebase initialized successfully - User: ' + user.email);
-    
-    // ✅ HIDE LOGIN PAGE AND SHOW APP
+    console.log('🔥 Firebase initialized - User: ' + user.email);
     document.getElementById('login-page').style.display = 'none';
     document.getElementById('app-container').style.display = 'flex';
     document.getElementById('logged-in-user').textContent = user.email;
-    
-    // ✅ INITIALIZE THE APP
-    try {
-      initializeApplication();
-    } catch(e) {
-      console.error('Error in initializeApplication:', e);
-    }
-    
-    // ✅ START SYNCING DATA
-    try { startLiveSyncEmployees(user.uid); } catch(e) { console.error('sync employees', e); }
-    try { startLiveSyncAttendance(user.uid); } catch(e) { console.error('sync attendance', e); }
-    
+    initializeApplication();
+    startLiveSyncEmployees(user.uid);
+    startLiveSyncAttendance(user.uid);
   } else {
     console.log('User logged out');
-    
-    // ✅ SHOW LOGIN PAGE AND HIDE APP
     document.getElementById('login-page').style.display = 'flex';
     document.getElementById('app-container').style.display = 'none';
-    
-    // ✅ CLEANUP
-    if (_empUnsub) { _empUnsub(); _empUnsub = null; }
-    if (_attUnsub) { _attUnsub(); _attUnsub = null; }
+    if (_empUnsub) {
+      _empUnsub();
+      _empUnsub = null;
+    }
+    if (_attUnsub) {
+      _attUnsub();
+      _attUnsub = null;
+    }
     window._employees_cache = [];
     window._attendance_cache = {};
   }
@@ -3962,7 +4006,6 @@ onAuthStateChanged(auth, (user) => {
 
 console.log('✅ Firebase module loaded');
 </script>
-
 });
 /* Start sync on auth change */
 onAuthStateChanged(auth, (user) => {
