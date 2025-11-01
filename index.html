@@ -954,185 +954,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            onAuthStateChanged, 
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDytXwqVBTKJBBpTymDadTpmt8CR0LQSCM",
-            authDomain: "wagewise-payroll-e6a84.firebaseapp.com",
-            projectId: "wagewise-payroll-e6a84",
-            storageBucket: "wagewise-payroll-e6a84.firebasestorage.app",
-            messagingSenderId: "1077952021877",
-            appId: "1:1077952021877:web:6844674a44973506d2bf3c"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Make Firebase available globally
-        window.firebaseAuth = auth;
-        window.firebaseDb = db;
-
-        // Signup function
-        window.signUp = async function() {
-            const email = document.getElementById("signup-email").value;
-            const password = document.getElementById("signup-password").value;
-            const confirmPassword = document.getElementById("confirm-password").value;
-            
-            // Reset error messages
-            document.getElementById('signup-email-error').style.display = 'none';
-            document.getElementById('signup-password-error').style.display = 'none';
-            document.getElementById('confirm-password-error').style.display = 'none';
-            
-            // Validation
-            let isValid = true;
-            
-            if (!email) {
-                document.getElementById('signup-email-error').textContent = 'Email is required';
-                document.getElementById('signup-email-error').style.display = 'block';
-                isValid = false;
-            } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-                document.getElementById('signup-email-error').textContent = 'Email is invalid';
-                document.getElementById('signup-email-error').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!password) {
-                document.getElementById('signup-password-error').textContent = 'Password is required';
-                document.getElementById('signup-password-error').style.display = 'block';
-                isValid = false;
-            } else if (password.length < 6) {
-                document.getElementById('signup-password-error').textContent = 'Password must be at least 6 characters';
-                document.getElementById('signup-password-error').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (password !== confirmPassword) {
-                document.getElementById('confirm-password-error').textContent = 'Passwords do not match';
-                document.getElementById('confirm-password-error').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!isValid) return;
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert("Account created successfully!");
-                // Switch to login form
-                document.getElementById('signup-form').classList.add('hidden');
-                document.getElementById('login-form').classList.remove('hidden');
-                // Pre-fill email
-                document.getElementById('login-email').value = email;
-            } catch (error) {
-                console.error("Signup error:", error);
-                let errorMessage = "Failed to create account. ";
-                switch(error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage += "Email already in use.";
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage += "Invalid email address.";
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage += "Password is too weak.";
-                        break;
-                    default:
-                        errorMessage += error.message;
-                }
-                alert(errorMessage);
-            }
-        }
-
-        // Login function
-        window.login = async function() {
-            const email = document.getElementById("login-email").value;
-            const password = document.getElementById("login-password").value;
-            
-            // Reset error messages
-            document.getElementById('login-email-error').style.display = 'none';
-            document.getElementById('login-password-error').style.display = 'none';
-            
-            // Validation
-            let isValid = true;
-            
-            if (!email) {
-                document.getElementById('login-email-error').textContent = 'Email is required';
-                document.getElementById('login-email-error').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!password) {
-                document.getElementById('login-password-error').textContent = 'Password is required';
-                document.getElementById('login-password-error').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!isValid) return;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // Success handled by onAuthStateChanged
-            } catch (error) {
-                console.error("Login error:", error);
-                let errorMessage = "Login failed. ";
-                switch(error.code) {
-                    case 'auth/invalid-email':
-                        errorMessage += "Invalid email address.";
-                        break;
-                    case 'auth/user-disabled':
-                        errorMessage += "User account is disabled.";
-                        break;
-                    case 'auth/user-not-found':
-                        errorMessage += "No account found with this email.";
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage += "Incorrect password.";
-                        break;
-                    default:
-                        errorMessage += error.message;
-                }
-                alert(errorMessage);
-            }
-        }
-
-        // Logout function
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-            } catch (error) {
-                console.error("Logout error:", error);
-            }
-        }
-
-        // Auto login on page load (multi-device persistence)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("User logged in:", user.email);
-                document.getElementById('logged-in-user').textContent = user.email;
-                // Hide login page and show application
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('app-container').style.display = 'flex';
-                // Initialize the application
-                initializeApplication();
-            } else {
-                console.log("No user logged in.");
-                // Show login page and hide application
-                document.getElementById('login-page').style.display = 'flex';
-                document.getElementById('app-container').style.display = 'none';
-            }
-        });
-    </script>
+    
 </head>
 <body>
     <!-- Login Page (Initially shown) -->
@@ -2074,18 +1896,41 @@
             syncAttendanceWithFirebase();
         }
 
-        // Firebase Sync Functions
-        async function syncEmployeesWithFirebase() {
-            try {
-                updateSyncStatus('employees', 'syncing');
-                
-                // Get employees from Firebase
-                const snapshot = await window.firebaseDb.collection('employees').get();
-                const firebaseEmployees = [];
-                
-                snapshot.forEach(doc => {
-                    firebaseEmployees.push({ id: doc.id, ...doc.data() });
-                });
+        // Firebase Sync Functions - UPDATED FOR v9
+async function syncEmployeesFromFirebase() {
+    if (!currentUserId) return;
+
+    try {
+        updateSyncStatus('employees', 'syncing');
+        
+        const employeesRef = collection(db, 'users', currentUserId, 'employees');
+        const snapshot = await getDocs(employeesRef);
+        
+        if (!snapshot.empty) {
+            const firebaseEmployees = [];
+            snapshot.forEach(docSnap => {
+                firebaseEmployees.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            
+            window.employees = firebaseEmployees;
+            localStorage.setItem('employees', JSON.stringify(firebaseEmployees));
+            
+            if (typeof renderEmployeeTable === 'function') renderEmployeeTable();
+            if (typeof populatePayrollEmployeeDropdown === 'function') populatePayrollEmployeeDropdown();
+            
+            console.log(`✅ Synced ${firebaseEmployees.length} employees from Firebase`);
+            updateSyncStatus('employees', 'synced');
+        } else {
+            console.log("ℹ️ No employees in Firebase yet");
+            updateSyncStatus('employees', 'synced');
+        }
+        
+    } catch (error) {
+        console.error("❌ Error syncing employees:", error);
+        updateSyncStatus('employees', 'error');
+    }
+}
+
                 
                 // If Firebase has data, use it (Firebase as source of truth)
                 if (firebaseEmployees.length > 0) {
@@ -2105,81 +1950,104 @@
             }
         }
 
-        async function pushEmployeesToFirebase() {
-            try {
-                const batch = window.firebaseDb.batch();
-                
-                // Clear existing employees in Firebase
-                const snapshot = await window.firebaseDb.collection('employees').get();
-                snapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                
-                // Add all local employees to Firebase
-                employees.forEach(employee => {
-                    const docRef = window.firebaseDb.collection('employees').doc(employee.id);
-                    batch.set(docRef, employee);
-                });
-                
-                await batch.commit();
-                updateSyncStatus('employees', 'synced');
-            } catch (error) {
-                console.error('Error pushing employees to Firebase:', error);
-                updateSyncStatus('employees', 'error');
-            }
-        }
+       async function pushEmployeesToFirebase() {
+    if (!currentUserId) {
+        console.error("❌ No user logged in");
+        return;
+    }
 
-        async function syncAttendanceWithFirebase() {
-            try {
-                updateSyncStatus('attendance', 'syncing');
+    if (!window.employees || window.employees.length === 0) {
+        console.log("ℹ️ No employees to push");
+        return;
+    }
+
+    try {
+        updateSyncStatus('employees', 'syncing');
+        
+        const employeesRef = collection(db, 'users', currentUserId, 'employees');
+        
+        for (const employee of window.employees) {
+            const employeeDocRef = doc(employeesRef, employee.id);
+            await setDoc(employeeDocRef, employee, { merge: true });
+        }
+        
+        console.log(`✅ Pushed ${window.employees.length} employees to Firebase`);
+        updateSyncStatus('employees', 'synced');
+        
+    } catch (error) {
+        console.error("❌ Error pushing employees:", error);
+        updateSyncStatus('employees', 'error');
+        alert("⚠️ Failed to sync employees: " + error.message);
+    }
+}
+
+
+              updateSyncStatus('attendance', 'syncing');
                 
                 // Get attendance from Firebase
-                const snapshot = await window.firebaseDb.collection('attendance').get();
-                const firebaseAttendance = {};
-                
-                snapshot.forEach(doc => {
-                    firebaseAttendance[doc.id] = doc.data();
-                });
-                
-                // If Firebase has data, use it (Firebase as source of truth)
-                if (Object.keys(firebaseAttendance).length > 0) {
-                    attendanceRecords = firebaseAttendance;
-                    localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
-                    updateSyncStatus('attendance', 'synced');
-                } else {
-                    // If no data in Firebase, push local data to Firebase
-                    await pushAttendanceToFirebase();
-                    updateSyncStatus('attendance', 'synced');
-                }
-            } catch (error) {
-                console.error('Error syncing attendance with Firebase:', error);
-                updateSyncStatus('attendance', 'error');
-            }
-        }
+              async function syncAttendanceFromFirebase() {
+    if (!currentUserId) return;
 
-        async function pushAttendanceToFirebase() {
-            try {
-                const batch = window.firebaseDb.batch();
-                
-                // Clear existing attendance in Firebase
-                const snapshot = await window.firebaseDb.collection('attendance').get();
-                snapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                
-                // Add all local attendance records to Firebase
-                Object.keys(attendanceRecords).forEach(date => {
-                    const docRef = window.firebaseDb.collection('attendance').doc(date);
-                    batch.set(docRef, attendanceRecords[date]);
-                });
-                
-                await batch.commit();
-                updateSyncStatus('attendance', 'synced');
-            } catch (error) {
-                console.error('Error pushing attendance to Firebase:', error);
-                updateSyncStatus('attendance', 'error');
-            }
+    try {
+        updateSyncStatus('attendance', 'syncing');
+        
+        const attendanceRef = collection(db, 'users', currentUserId, 'attendance');
+        const snapshot = await getDocs(attendanceRef);
+        
+        if (!snapshot.empty) {
+            const firebaseAttendance = {};
+            snapshot.forEach(docSnap => {
+                firebaseAttendance[docSnap.id] = docSnap.data();
+            });
+            
+            window.attendanceRecords = firebaseAttendance;
+            localStorage.setItem('attendanceRecords', JSON.stringify(firebaseAttendance));
+            
+            console.log(`✅ Synced ${Object.keys(firebaseAttendance).length} attendance records`);
+            updateSyncStatus('attendance', 'synced');
+        } else {
+            console.log("ℹ️ No attendance records in Firebase yet");
+            updateSyncStatus('attendance', 'synced');
         }
+        
+    } catch (error) {
+        console.error("❌ Error syncing attendance:", error);
+        updateSyncStatus('attendance', 'error');
+    }
+}
+
+
+       async function pushAttendanceToFirebase() {
+    if (!currentUserId) {
+        console.error("❌ No user logged in");
+        return;
+    }
+
+    if (!window.attendanceRecords || Object.keys(window.attendanceRecords).length === 0) {
+        console.log("ℹ️ No attendance to push");
+        return;
+    }
+
+    try {
+        updateSyncStatus('attendance', 'syncing');
+        
+        const attendanceRef = collection(db, 'users', currentUserId, 'attendance');
+        
+        for (const date in window.attendanceRecords) {
+            const attendanceDocRef = doc(attendanceRef, date);
+            await setDoc(attendanceDocRef, window.attendanceRecords[date], { merge: true });
+        }
+        
+        console.log(`✅ Pushed ${Object.keys(window.attendanceRecords).length} attendance records`);
+        updateSyncStatus('attendance', 'synced');
+        
+    } catch (error) {
+        console.error("❌ Error pushing attendance:", error);
+        updateSyncStatus('attendance', 'error');
+        alert("⚠️ Failed to sync attendance: " + error.message);
+    }
+}
+
 
         function updateSyncStatus(section, status) {
             const statusElement = document.getElementById(`sync-${section}-status`);
@@ -3793,14 +3661,14 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-/* --- Your Firebase config --- */
+/* Your Firebase config */
 const firebaseConfig = {
-  apiKey: "AIzaSyDytXwqVBTKJBBpTymDadTpmt8CR0LQSCM",
-  authDomain: "wagewise-payroll-e6a84.firebaseapp.com",
-  projectId: "wagewise-payroll-e6a84",
-  storageBucket: "wagewise-payroll-e6a84.appspot.com",
-  messagingSenderId: "1077952021877",
-  appId: "1:1077952021877:web:6844674a44973506d2bf3c"
+  apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
+  authDomain: "testpayroll-60439.firebaseapp.com",
+  projectId: "testpayroll-60439",
+  storageBucket: "testpayroll-60439.appspot.com",
+  messagingSenderId: "240505247731",
+  appId: "1:240505247731:web:6844674a44973506d2bf3c"
 };
 
 /* Initialize Firebase */
@@ -3808,10 +3676,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* Persist auth across sessions */
+/* Persist auth */
 await setPersistence(auth, browserLocalPersistence).catch(e => console.warn('setPersistence', e));
 
-/* Simple helpers (non-intrusive) */
+/* Toast notifications */
 function _toast(msg, type='info') {
   try {
     const id = 'ww_toast_container';
@@ -3841,37 +3709,7 @@ function _showLoading(show=true) {
   } catch(e) { console.log(e); }
 }
 
-/* Attach to existing login/signup buttons if present (non-intrusive) */
-try {
-  const loginBtn = document.getElementById('login-btn');
-  const signupBtn = document.getElementById('signup-btn');
-  const logoutButtons = document.querySelectorAll('#logout-btn');
-
-  if (signupBtn) signupBtn.addEventListener('click', async (ev) => {
-    ev.preventDefault();
-    const email = (document.getElementById('signup-email')||{}).value || '';
-    const password = (document.getElementById('signup-password')||{}).value || '';
-    try { _showLoading(true); await createUserWithEmailAndPassword(auth, email, password); _toast('Signed up & logged in','success'); }
-    catch(err){ console.error(err); _toast(err.message || 'Signup failed','error'); }
-    finally{ _showLoading(false); }
-  });
-
-  if (loginBtn) loginBtn.addEventListener('click', async (ev) => {
-    ev.preventDefault();
-    const email = (document.getElementById('login-email')||{}).value || '';
-    const password = (document.getElementById('login-password')||{}).value || '';
-    try { _showLoading(true); await signInWithEmailAndPassword(auth, email, password); _toast('Logged in','success'); }
-    catch(err){ console.error(err); _toast(err.message || 'Login failed','error'); }
-    finally{ _showLoading(false); }
-  });
-
-  logoutButtons.forEach(b => b.addEventListener('click', async () => {
-    try { await signOut(auth); _toast('Logged out','info'); }
-    catch(e) { console.error('logout', e); _toast('Logout failed','error'); }
-  }));
-} catch(e) { console.error('attach auth handlers', e); }
-
-/* Live-sync per-user functions (exposed on window so your existing UI calls continue to work) */
+/* Live sync with USER-SCOPED collections */
 let _empUnsub = null;
 let _attUnsub = null;
 window._employees_cache = [];
@@ -3880,7 +3718,7 @@ window._attendance_cache = {};
 async function startLiveSyncEmployees(uid) {
   try {
     if (_empUnsub) { _empUnsub(); _empUnsub = null; }
-    const q = query(collection(db, 'employees'), where('ownerUid', '==', uid), orderBy('updatedAt'));
+    const q = query(collection(db, 'users', uid, 'employees'), orderBy('updatedAt'));
     _empUnsub = onSnapshot(q, snapshot => {
       const arr = [];
       snapshot.forEach(d => arr.push({ id: d.id, ...d.data() }));
@@ -3896,7 +3734,7 @@ async function startLiveSyncEmployees(uid) {
 async function startLiveSyncAttendance(uid) {
   try {
     if (_attUnsub) { _attUnsub(); _attUnsub = null; }
-    const q = query(collection(db, 'attendance'), where('ownerUid', '==', uid), orderBy('date'));
+    const q = query(collection(db, 'users', uid, 'attendance'), orderBy('date'));
     _attUnsub = onSnapshot(q, snapshot => {
       const map = {};
       snapshot.forEach(d => map[d.id] = d.data());
@@ -3909,14 +3747,14 @@ async function startLiveSyncAttendance(uid) {
   } catch(e) { console.error('startLiveSyncAttendance', e); }
 }
 
-/* Save employee (create/update) */
+/* Save employee */
 async function saveEmployeeToFirestore(employeeData) {
   const user = auth.currentUser;
   if (!user) { _toast('Login required','error'); return; }
   _showLoading(true);
   try {
     const id = employeeData.id || ('EMP' + Math.random().toString(36).slice(2,9).toUpperCase());
-    await setDoc(doc(db, 'employees', id), { ...employeeData, ownerUid: user.uid, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', user.uid, 'employees', id), { ...employeeData, updatedAt: serverTimestamp() });
     _toast('Employee saved','success');
   } catch(e) { console.error('saveEmployeeToFirestore', e); _toast('Save failed','error'); }
   finally { _showLoading(false); }
@@ -3928,14 +3766,8 @@ async function deleteEmployeeFromFirestore(id) {
   if (!user) { _toast('Login required','error'); return; }
   _showLoading(true);
   try {
-    const ref = doc(db, 'employees', id);
-    const snap = await getDoc(ref);
-    if (snap.exists() && snap.data().ownerUid === user.uid) {
-      await deleteDoc(ref);
-      _toast('Employee deleted','success');
-    } else {
-      _toast('Not authorized to delete','error');
-    }
+    await deleteDoc(doc(db, 'users', user.uid, 'employees', id));
+    _toast('Employee deleted','success');
   } catch(e) { console.error('deleteEmployeeFromFirestore', e); _toast('Delete failed','error'); }
   finally { _showLoading(false); }
 }
@@ -3946,24 +3778,24 @@ async function saveSingleAttendanceDate(date, recordObj) {
   if (!user) { _toast('Login required','error'); return; }
   _showLoading(true);
   try {
-    await setDoc(doc(db, 'attendance', date), { ...recordObj, ownerUid: user.uid, date, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', user.uid, 'attendance', date), { ...recordObj, date, updatedAt: serverTimestamp() });
     window._attendance_cache[date] = recordObj;
     _toast('Attendance saved for ' + date, 'success');
   } catch(e) { console.error('saveSingleAttendanceDate', e); _toast('Save failed','error'); }
   finally { _showLoading(false); }
 }
 
-/* Push all attendance (batch) */
+/* Push all attendance */
 async function pushAttendanceToFirebase() {
   const user = auth.currentUser;
   if (!user) { _toast('Login required','error'); return; }
   _showLoading(true);
   try {
     const batch = writeBatch(db);
-    const existing = await getDocs(query(collection(db, 'attendance'), where('ownerUid', '==', user.uid)));
-    existing.forEach(s => batch.delete(doc(db, 'attendance', s.id)));
+    const existing = await getDocs(collection(db, 'users', user.uid, 'attendance'));
+    existing.forEach(s => batch.delete(doc(db, 'users', user.uid, 'attendance', s.id)));
     Object.keys(window.attendanceRecords || {}).forEach(date => {
-      batch.set(doc(db, 'attendance', date), { ...window.attendanceRecords[date], ownerUid: user.uid, date, updatedAt: serverTimestamp() });
+      batch.set(doc(db, 'users', user.uid, 'attendance', date), { ...window.attendanceRecords[date], date, updatedAt: serverTimestamp() });
     });
     await batch.commit();
     _toast('Attendance pushed','success');
@@ -3971,17 +3803,18 @@ async function pushAttendanceToFirebase() {
   finally { _showLoading(false); }
 }
 
-/* Expose functions for existing UI code */
+/* Expose functions */
 window.saveEmployeeToFirestore = saveEmployeeToFirestore;
 window.deleteEmployeeFromFirestore = deleteEmployeeFromFirestore;
 window.saveSingleAttendanceDate = saveSingleAttendanceDate;
 window.pushAttendanceToFirebase = pushAttendanceToFirebase;
 
-/* Start live sync when auth state changes */
+/* Start sync on auth change */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    try { startLiveSyncEmployees(user.uid); } catch(e) {}
-    try { startLiveSyncAttendance(user.uid); } catch(e) {}
+    console.log('🔥 Firebase initialized successfully');
+    try { startLiveSyncEmployees(user.uid); } catch(e) { console.error('sync employees', e); }
+    try { startLiveSyncAttendance(user.uid); } catch(e) { console.error('sync attendance', e); }
   } else {
     if (_empUnsub) { _empUnsub(); _empUnsub = null; }
     if (_attUnsub) { _attUnsub(); _attUnsub = null; }
@@ -3990,6 +3823,5 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
-
 </body>
 </html>
