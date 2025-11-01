@@ -3891,22 +3891,38 @@ window.saveEmployeeToFirestore = saveEmployeeToFirestore;
 window.deleteEmployeeFromFirestore = deleteEmployeeFromFirestore;
 window.saveSingleAttendanceDate = saveSingleAttendanceDate;
 window.pushAttendanceToFirebase = pushAttendanceToFirebase;
-
 /* Start sync on auth change */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log('🔥 Firebase initialized successfully - User:', user.email);
+    console.log('🔥 Firebase initialized successfully - User: ' + user.email);
+    
+    // ✅ HIDE LOGIN PAGE AND SHOW APP
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('app-container').style.display = 'flex';
+    document.getElementById('logged-in-user').textContent = user.email;
+    
+    // ✅ START SYNCING
     try { startLiveSyncEmployees(user.uid); } catch(e) { console.error('sync employees', e); }
     try { startLiveSyncAttendance(user.uid); } catch(e) { console.error('sync attendance', e); }
+    
+    // ✅ INITIALIZE APP
+    if (typeof initializeApplication === 'function') {
+      initializeApplication();
+    }
+    
   } else {
     console.log('User logged out');
+    
+    // ✅ SHOW LOGIN PAGE AND HIDE APP
+    document.getElementById('login-page').style.display = 'flex';
+    document.getElementById('app-container').style.display = 'none';
+    
     if (_empUnsub) { _empUnsub(); _empUnsub = null; }
     if (_attUnsub) { _attUnsub(); _attUnsub = null; }
     window._employees_cache = [];
     window._attendance_cache = {};
   }
 });
-
 console.log('✅ Firebase module loaded');
 </script>
 </body>
