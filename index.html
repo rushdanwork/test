@@ -1814,7 +1814,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
         // Employee Data Management
         let employees = JSON.parse(localStorage.getItem('employees')) || [];
         
@@ -3905,12 +3905,12 @@ console.log('✅ Auth functions loaded: window.login, window.signUp, window.logo
     from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
-  authDomain: "testpayroll-60439.firebaseapp.com",
-  projectId: "testpayroll-60439",
-  storageBucket: "testpayroll-60439.appspot.com",
-  messagingSenderId: "240505247731",
-  appId: "1:240505247731:web:6844674a44973506d2bf3c"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -4001,6 +4001,32 @@ console.log('✅ Auth functions loaded: window.login, window.signUp, window.logo
       alert("Logout failed: " + error.message);
     }
   };
+</script>
+
+
+<script>
+// ✅ Ensure showSection is globally available
+window.showSection = function(sectionId) {
+  // Hide all sections
+  document.querySelectorAll('.page-section').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  // Show the selected section
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) targetSection.classList.add('active');
+
+  // Update active menu item
+  document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => {
+    item.classList.remove('active');
+  });
+
+  const menuItem = document.querySelector(`.sidebar-menu .menu-item[onclick="showSection('${sectionId}')"]`);
+  if (menuItem) menuItem.classList.add('active');
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+};
 </script>
 
 </body>
