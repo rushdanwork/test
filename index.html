@@ -1859,7 +1859,7 @@
         };
 
         // Initialize the application
-        async function initializeApplication() {
+        function initializeApplication() {
             renderEmployeeTable();
             setupEmployeeEventListeners();
             setupPayrollEventListeners();
@@ -1897,7 +1897,7 @@
         }
 
         // Firebase Sync Functions - UPDATED FOR v9
-async async function syncEmployeesFromFirebase() {
+ async function syncEmployeesFromFirebase() {
     if (!currentUserId) return;
 
     try {
@@ -1950,7 +1950,7 @@ async async function syncEmployeesFromFirebase() {
             }
         }
 
-       async async function pushEmployeesToFirebase() {
+       async function pushEmployeesToFirebase() {
     if (!currentUserId) {
         console.error("❌ No user logged in");
         return;
@@ -1985,7 +1985,7 @@ async async function syncEmployeesFromFirebase() {
               updateSyncStatus('attendance', 'syncing');
                 
                 // Get attendance from Firebase
-              async async function syncAttendanceFromFirebase() {
+               async function syncAttendanceFromFirebase() {
     if (!currentUserId) return;
 
     try {
@@ -2017,7 +2017,7 @@ async async function syncEmployeesFromFirebase() {
 }
 
 
-       async async function pushAttendanceToFirebase() {
+        async function pushAttendanceToFirebase() {
     if (!currentUserId) {
         console.error("❌ No user logged in");
         return;
@@ -3822,6 +3822,81 @@ onAuthStateChanged(auth, (user) => {
     window._attendance_cache = {};
   }
 });
+</script>
+<script>
+// ============================================
+// GLOBAL AUTH FUNCTIONS
+// These functions are called by your HTML buttons
+// ============================================
+
+window.login = async function() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    if (!email || !password) {
+        alert('❌ Please enter email and password');
+        return;
+    }
+    
+    console.log('🔄 Logging in with:', email);
+    try {
+        const result = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
+        console.log('✅ Login successful:', result.user.email);
+        alert('✅ Login successful!');
+    } catch(error) {
+        console.error('❌ Login error:', error);
+        alert('❌ Login failed: ' + error.message);
+    }
+};
+
+window.signUp = async function() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    
+    if (!email || !password || !confirmPassword) {
+        alert('❌ Please fill all fields');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        alert('❌ Passwords do not match');
+        return;
+    }
+    
+    if (password.length < 6) {
+        alert('❌ Password must be at least 6 characters');
+        return;
+    }
+    
+    console.log('🔄 Creating account with:', email);
+    try {
+        const result = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
+        console.log('✅ Account created:', result.user.email);
+        alert('✅ Account created! You are now logged in.');
+    } catch(error) {
+        console.error('❌ Signup error:', error);
+        let message = error.message;
+        if (error.code === 'auth/email-already-in-use') message = 'Email already in use';
+        if (error.code === 'auth/invalid-email') message = 'Invalid email';
+        if (error.code === 'auth/weak-password') message = 'Password too weak';
+        alert('❌ Signup failed: ' + message);
+    }
+};
+
+window.logout = async function() {
+    console.log('🔄 Logging out...');
+    try {
+        await window.firebaseAuth.signOut();
+        console.log('✅ Logged out successfully');
+        alert('✅ Logged out!');
+    } catch(error) {
+        console.error('❌ Logout error:', error);
+        alert('❌ Logout failed: ' + error.message);
+    }
+};
+
+console.log('✅ Auth functions loaded: window.login, window.signUp, window.logout');
 </script>
 </body>
 </html>
