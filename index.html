@@ -3898,6 +3898,111 @@ window.logout = async function() {
 
 console.log('✅ Auth functions loaded: window.login, window.signUp, window.logout');
 </script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } 
+    from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
+  authDomain: "testpayroll-60439.firebaseapp.com",
+  projectId: "testpayroll-60439",
+  storageBucket: "testpayroll-60439.appspot.com",
+  messagingSenderId: "240505247731",
+  appId: "1:240505247731:web:6844674a44973506d2bf3c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  console.log("🔥 Firebase initialized successfully");
+
+  window.login = async function() {
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+    const emailError = document.getElementById("login-email-error");
+    const passError = document.getElementById("login-password-error");
+
+    emailError.style.display = passError.style.display = "none";
+
+    try {
+      console.log("🔄 Logging in with:", email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("✅ Logged in:", user.email);
+      document.getElementById("login-page").style.display = "none";
+      document.getElementById("app-container").style.display = "flex";
+      document.querySelectorAll("#logged-in-user-1, #logged-in-user-2, #logged-in-user-3")
+        .forEach(el => el.textContent = user.email);
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      if (error.code === "auth/invalid-email") {
+        emailError.textContent = "Invalid email format.";
+        emailError.style.display = "block";
+      } else if (error.code === "auth/wrong-password") {
+        passError.textContent = "Incorrect password.";
+        passError.style.display = "block";
+      } else if (error.code === "auth/user-not-found") {
+        emailError.textContent = "No account found with this email.";
+        emailError.style.display = "block";
+      } else {
+        passError.textContent = error.message;
+        passError.style.display = "block";
+      }
+    }
+  };
+
+  window.signUp = async function() {
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+    const emailError = document.getElementById("signup-email-error");
+    const passError = document.getElementById("signup-password-error");
+    const confirmError = document.getElementById("confirm-password-error");
+
+    emailError.style.display = passError.style.display = confirmError.style.display = "none";
+
+    if (password !== confirmPassword) {
+      confirmError.textContent = "Passwords do not match.";
+      confirmError.style.display = "block";
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("✅ User signed up:", user.email);
+      alert("Account created successfully! Please log in.");
+      document.getElementById("signup-form").classList.add("hidden");
+      document.getElementById("login-form").classList.remove("hidden");
+    } catch (error) {
+      console.error("❌ Signup error:", error);
+      if (error.code === "auth/email-already-in-use") {
+        emailError.textContent = "Email is already registered.";
+        emailError.style.display = "block";
+      } else if (error.code === "auth/weak-password") {
+        passError.textContent = "Password should be at least 6 characters.";
+        passError.style.display = "block";
+      } else {
+        emailError.textContent = error.message;
+        emailError.style.display = "block";
+      }
+    }
+  };
+
+  window.logout = async function() {
+    try {
+      await signOut(auth);
+      console.log("🚪 Logged out successfully");
+      document.getElementById("app-container").style.display = "none";
+      document.getElementById("login-page").style.display = "flex";
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+      alert("Logout failed: " + error.message);
+    }
+  };
+</script>
+
 </body>
 </html>
 </script>
