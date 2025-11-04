@@ -1897,7 +1897,7 @@
         }
 
         // Firebase Sync Functions - UPDATED FOR v9
- async function syncEmployeesFromFirebase() {
+ async async function syncEmployeesFromFirebase() {
     if (!currentUserId) return;
 
     try {
@@ -1950,7 +1950,7 @@
             }
         }
 
-       async function pushEmployeesToFirebase() {
+       async async function pushEmployeesToFirebase() {
     if (!currentUserId) {
         console.error("❌ No user logged in");
         return;
@@ -1985,7 +1985,7 @@
               updateSyncStatus('attendance', 'syncing');
                 
                 // Get attendance from Firebase
-               async function syncAttendanceFromFirebase() {
+               async async function syncAttendanceFromFirebase() {
     if (!currentUserId) return;
 
     try {
@@ -2017,7 +2017,7 @@
 }
 
 
-        async function pushAttendanceToFirebase() {
+        async async function pushAttendanceToFirebase() {
     if (!currentUserId) {
         console.error("❌ No user logged in");
         return;
@@ -3786,7 +3786,7 @@ async function saveSingleAttendanceDate(date, recordObj) {
 }
 
 /* Push all attendance */
-async function pushAttendanceToFirebase() {
+async async function pushAttendanceToFirebase() {
   const user = auth.currentUser;
   if (!user) { _toast('Login required','error'); return; }
   _showLoading(true);
@@ -3823,7 +3823,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
-<script>
+<script type="module">
 // ============================================
 // GLOBAL AUTH FUNCTIONS
 // These functions are called by your HTML buttons
@@ -4004,29 +4004,20 @@ console.log('✅ Auth functions loaded: window.login, window.signUp, window.logo
 </script>
 
 
+
+
+
 <script>
-// ✅ Ensure showSection is globally available
-window.showSection = function(sectionId) {
-  // Hide all sections
-  document.querySelectorAll('.page-section').forEach(section => {
-    section.classList.remove('active');
-  });
-
-  // Show the selected section
-  const targetSection = document.getElementById(sectionId);
-  if (targetSection) targetSection.classList.add('active');
-
-  // Update active menu item
-  document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => {
-    item.classList.remove('active');
-  });
-
-  const menuItem = document.querySelector(`.sidebar-menu .menu-item[onclick="showSection('${sectionId}')"]`);
-  if (menuItem) menuItem.classList.add('active');
-
-  // Scroll to top
-  window.scrollTo(0, 0);
-};
+  // ✅ Global showSection to fix ReferenceError
+  window.showSection = function(sectionId) {
+    document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) targetSection.classList.add('active');
+    document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => item.classList.remove('active'));
+    const menuItem = document.querySelector(`.sidebar-menu .menu-item[onclick="showSection('${sectionId}')"]`);
+    if (menuItem) menuItem.classList.add('active');
+    window.scrollTo(0, 0);
+  };
 </script>
 
 </body>
