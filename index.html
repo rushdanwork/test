@@ -2077,39 +2077,230 @@ window.showSection = function(sectionId) {
 <script>
 // ✅ Final Global Fix for Non-Working Buttons
 
-window.addEmployee = function() {
-  console.log("🔘 addEmployee() triggered");
-  alert("Add Employee button clicked!");
-  const form = document.getElementById("employeeForm");
-  if (form) form.style.display = "block";
-};
+<script>
+/*
+  Full UI wiring for Add / Edit / Save / Delete employee.
+  Works locally (localStorage) and will call your Firebase push helpers if you have them.
+  Paste before </body> and remove older test stubs that only logged clicks.
+*/
 
-window.editEmployee = function(empId) {
-  console.log("🔘 editEmployee() triggered for:", empId);
-  alert("Edit Employee button clicked!");
-  const form = document.getElementById("employeeForm");
-  if (form) form.style.display = "block";
-};
+(function() {
+  // Utility: get element by id safely
+  const $ = id => document.getElementById(id);
 
-window.saveEmployee = function() {
-  console.log("💾 saveEmployee() triggered");
-  alert("Employee saved! (Implement real logic)");
-  const form = document.getElementById("employeeForm");
-  if (form) form.style.display = "none";
-};
+  // Ensure employees array exists (load from localStorage if present)
+  window.employees = window.employees || JSON.parse(localStorage.getItem('employees') || '[]');
 
-window.cancelEmployee = function() {
-  console.log("❌ cancelEmployee() triggered");
-  alert("Cancelled employee edit!");
-  const form = document.getElementById("employeeForm");
-  if (form) form.style.display = "none";
-};
+  // Render employee table rows
+  window.renderEmployeeTable = function() {
+    const tbody = $('employeeTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const list = window.employees || [];
+    list.forEach(emp => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${emp.empId || emp.id}</td>
+        <td>${emp.name || emp.empName || ''}</td>
+        <td>${emp.department || ''}</td>
+        <td>${emp.position || ''}</td>
+        <td>${emp.email || ''}</td>
+        <td>${emp.phone || ''}</td>
+        <td>${emp.location || ''}</td>
+        <td>${emp.bankName || emp.empBankName || ''}</td>
+        <td>${emp.pfId || emp.empPFID || ''}</td>
+        <td>${emp.pfUan || emp.empPFUAN || ''}</td>
+        <td>${emp.salary || emp.baseSalary || ''}</td>
+        <td>${emp.allowances || emp.empAllowances || ''}</td>
+        <td>${emp.deductions || emp.empDeductions || ''}</td>
+        <td>${emp.accountNo || emp.empAccountNo || ''}</td>
+        <td>${emp.ifsc || emp.empIFSCCode || ''}</td>
+        <td>${emp.status || 'active'}</td>
+        <td>
+          <button class="btn btn-edit btn-sm" data-action="edit" data-id="${emp.id}"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm" data-action="delete" data-id="${emp.id}"><i class="fas fa-trash"></i></button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  };
 
-// For debugging – log clicks on any button
-document.addEventListener("click", e => {
-  const btn = e.target.closest("button");
-  if (btn) console.log("CLICK:", btn.id || btn.textContent.trim());
-});
+  // Show the employee form and optionally populate with employee data
+  window.addEmployee = function() {
+    // Clear form for new entry
+    const form = $('employeeForm');
+    if (!form) return;
+    form.style.display = 'block';
+    $('employeeId').value = '';
+    $('empId').value = '';
+    $('empName').value = '';
+    $('empDepartment').value = '';
+    $('empPosition').value = '';
+    $('empEmail').value = '';
+    $('empPhone').value = '';
+    $('empLocation').value = '';
+    $('empSalary').value = '';
+    $('empBankName').value = '';
+    $('empAccountNo').value = '';
+    $('empIFSCCode').value = '';
+    $('empPFID').value = '';
+    $('empPFUAN').value = '';
+    $('empAllowances').value = '';
+    $('empDeductions').value = '';
+    $('empTaxIdentification').value = '';
+    $('empStatus').value = 'active';
+    $('empJoinDate').value = '';
+    // show save/cancel buttons in form-actions area
+    $('saveEmployeeBtn_1')?.classList.remove('hidden');
+    $('cancelEmployeeBtn_1')?.classList.remove('hidden');
+    // focus first field
+    $('empId')?.focus();
+  };
+
+  // Open form with employee data to edit
+  window.editEmployee = function(empId) {
+    const emp = (window.employees || []).find(e => e.id === empId || e.empId === empId);
+    if (!emp) {
+      alert('Employee not found.');
+      return;
+    }
+    const form = $('employeeForm');
+    if (!form) return;
+    form.style.display = 'block';
+    $('employeeId').value = emp.id || '';
+    $('empId').value = emp.empId || emp.id || '';
+    $('empName').value = emp.name || emp.empName || '';
+    $('empDepartment').value = emp.department || '';
+    $('empPosition').value = emp.position || '';
+    $('empEmail').value = emp.email || '';
+    $('empPhone').value = emp.phone || '';
+    $('empLocation').value = emp.location || '';
+    $('empSalary').value = emp.salary || '';
+    $('empBankName').value = emp.bankName || '';
+    $('empAccountNo').value = emp.accountNo || '';
+    $('empIFSCCode').value = emp.ifsc || '';
+    $('empPFID').value = emp.pfId || '';
+    $('empPFUAN').value = emp.pfUan || '';
+    $('empAllowances').value = emp.allowances || '';
+    $('empDeductions').value = emp.deductions || '';
+    $('empTaxIdentification').value = emp.taxIdentification || '';
+    $('empStatus').value = emp.status || 'active';
+    $('empJoinDate').value = emp.joinDate || '';
+    // show action buttons
+    $('saveEmployeeBtn_1')?.classList.remove('hidden');
+    $('cancelEmployeeBtn_1')?.classList.remove('hidden');
+    $('empName')?.focus();
+  };
+
+  // Save handler (called from form submit or Save button)
+  window.saveEmployeeHandler = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const id = $('employeeId').value || Date.now().toString();
+    const emp = {
+      id: id,
+      empId: $('empId').value.trim(),
+      name: $('empName').value.trim(),
+      department: $('empDepartment').value,
+      position: $('empPosition').value.trim(),
+      email: $('empEmail').value.trim(),
+      phone: $('empPhone').value.trim(),
+      location: $('empLocation').value.trim(),
+      salary: parseFloat($('empSalary').value || 0),
+      bankName: $('empBankName').value.trim(),
+      accountNo: $('empAccountNo').value.trim(),
+      ifsc: $('empIFSCCode').value.trim(),
+      pfId: $('empPFID').value.trim(),
+      pfUan: $('empPFUAN').value.trim(),
+      allowances: parseFloat($('empAllowances').value || 0),
+      deductions: parseFloat($('empDeductions').value || 0),
+      taxIdentification: $('empTaxIdentification').value.trim(),
+      status: $('empStatus').value,
+      joinDate: $('empJoinDate').value
+    };
+
+    window.employees = window.employees || [];
+    const idx = window.employees.findIndex(e => e.id === id || e.empId === emp.empId);
+    if (idx >= 0) {
+      window.employees[idx] = emp;
+    } else {
+      window.employees.push(emp);
+    }
+
+    localStorage.setItem('employees', JSON.stringify(window.employees));
+    // hide form
+    $('employeeForm').style.display = 'none';
+    // refresh table
+    if (typeof renderEmployeeTable === 'function') renderEmployeeTable();
+    else window.renderEmployeeTable();
+    // optional: push to firebase if function exists
+    if (typeof window.pushEmployeesToFirestore === 'function') {
+      // best-effort push (non-blocking)
+      try { window.pushEmployeesToFirestore(); } catch(err) { console.warn('pushEmployeesToFirestore error', err); }
+    }
+    return false;
+  };
+
+  // Delete employee
+  window.deleteEmployee = function(empId) {
+    if (!confirm('Delete this employee?')) return;
+    window.employees = (window.employees || []).filter(e => !(e.id === empId || e.empId === empId));
+    localStorage.setItem('employees', JSON.stringify(window.employees));
+    if (typeof renderEmployeeTable === 'function') renderEmployeeTable();
+    else window.renderEmployeeTable();
+    // optional: update remote DB
+    if (typeof window.pushEmployeesToFirestore === 'function') {
+      try { window.pushEmployeesToFirestore(); } catch(err) { console.warn(err); }
+    }
+  };
+
+  // Cancel button
+  window.cancelEmployee = function() {
+    const form = $('employeeForm');
+    if (form) form.style.display = 'none';
+  };
+
+  // Wire form submit to save handler
+  const formEl = $('employeeDataForm');
+  if (formEl) {
+    formEl.removeEventListener('submit', window.saveEmployeeHandler);
+    formEl.addEventListener('submit', window.saveEmployeeHandler);
+  }
+
+  // Wire Save/Cancel buttons (IDs present in HTML)
+  const saveBtn1 = $('saveEmployeeBtn_1');
+  if (saveBtn1) {
+    saveBtn1.type = 'button'; // prevent accidental submit duplication
+    saveBtn1.removeEventListener('click', window.saveEmployeeHandler);
+    saveBtn1.addEventListener('click', window.saveEmployeeHandler);
+  }
+  const cancelBtn1 = $('cancelEmployeeBtn_1');
+  if (cancelBtn1) {
+    cancelBtn1.type = 'button';
+    cancelBtn1.removeEventListener('click', window.cancelEmployee);
+    cancelBtn1.addEventListener('click', window.cancelEmployee);
+  }
+
+  // Delegate clicks from the table action buttons (edit/delete)
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    if (action === 'edit') return window.editEmployee(id);
+    if (action === 'delete') return window.deleteEmployee(id);
+  });
+
+  // Wire the top Add Employee button if present
+  const addBtn = $('addEmployeeBtn');
+  if (addBtn) {
+    addBtn.removeEventListener('click', window.addEmployee);
+    addBtn.addEventListener('click', function(e){ e.preventDefault(); window.addEmployee(); });
+  }
+
+  // Initial render
+  window.renderEmployeeTable();
+})();
 </script>
+
 </body>
 </html>
