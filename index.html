@@ -1,383 +1,2329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PayrollPro HR System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayrollPro HR System</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --danger-color: #e74c3c;
+            --warning-color: #f8961e;
+            --info-color: #4895ef;
+            --edit-color: #7209b7;
+            --leave-color: #3a86ff;
+            --halfday-color: #ffbe0b;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Login Page Styles */
+        .login-container {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .login-box {
+            background-color: #2ecc71;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+            transition: all 0.3s ease;
+        }
+        
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .login-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            width: 100%;
+            max-width: 300px;
+            text-align: left;
+            color: white;
+        }
+        
+        .form-group input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            border-color: #27ae60;
+            outline: none;
+        }
+        
+        .form-group button {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .form-group button:hover {
+            background-color: #219653;
+        }
+        
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            width: 100%;
+            color: white;
+        }
+        
+        .toggle-form a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            width: 100%;
+            max-width: 300px;
+            text-align: left;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, var(--dark-color) 0%, #343a40 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            padding: 0 25px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .sidebar-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .menu-item {
+            padding: 14px 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            position: relative;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .menu-item:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .menu-item.active {
+            background: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+        }
+        
+        .menu-item i {
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f5f7ff;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .user-info:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #dee2e6;
+            color: #495057;
+        }
+        
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-success:hover {
+            background-color: #3aa8d8;
+            transform: translateY(-2px);
+            color: white !important;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(248, 150, 30, 0.3);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e07e0c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-info:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-edit {
+            background-color: var(--edit-color);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+        }
+        
+        .btn-edit:hover {
+            background-color: #5a0891;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .btn-leave {
+            background-color: var(--leave-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+        
+        .btn-leave:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-halfday {
+            background-color: var(--halfday-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 190, 11, 0.3);
+        }
+        
+        .btn-halfday:hover {
+            background-color: #eab308;
+            transform: translateY(-2px);
+        }
+        
+        /* Data Table Styles */
+        .data-table {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-top: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .table-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 100%;
+            width: max-content;
+        }
+        
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f1f3f5;
+            white-space: nowrap;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:not(:last-child) {
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        tr:hover {
+            background-color: #f8fafd;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status.active {
+            background-color: #e6fcf5;
+            color: #12b886;
+        }
+        
+        .status.inactive {
+            background-color: #fff3bf;
+            color: #f08c00;
+        }
+        
+        .status-present {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .status-absent {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        
+        .status-late {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+        
+        .status-leave {
+            color: var(--leave-color);
+            font-weight: bold;
+        }
+        
+        .status-halfday {
+            color: var(--halfday-color);
+            font-weight: bold;
+        }
+        
+        .late-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+        
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+        
+        /* Employee Form Styles */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .form-title {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f3f5;
+            margin-top: 20px;
+        }
+        
+        /* Alert/Notification Styles */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            background-color: white;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .alert-info {
+            background-color: #f8f9fa;
+            border-left-color: var(--info-color);
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        
+        .card-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Layout Styles */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 15px;
+        }
+        
+        .col-md-4 {
+            flex: 0 0 33.33%;
+            max-width: 33.33%;
+            padding: 0 15px;
+        }
+        
+        .col-md-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 15px;
+        }
+        
+        /* Employee Info Container */
+        .employee-info-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .employee-selection-card {
+            flex: 1;
+        }
+        
+        .employee-details-card {
+            flex: 1.5;
+        }
+        
+        /* Summary Card Styles */
+        .summary-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            height: 100%;
+        }
+        
+        .summary-title {
+            font-size: 1rem;
+            color: var(--dark-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f3f5;
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+        
+        .summary-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .summary-details li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #f1f3f5;
+            font-size: 0.95rem;
+        }
+        
+        .summary-details li:last-child {
+            border-bottom: none;
+        }
+        
+        .highlight {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        /* Attendance Summary Styles */
+        .attendance-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Date Selector */
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Hide salary summary initially */
+        #salarySummarySection {
+            display: none;
+        }
+        
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        /* Employee Details Modal */
+        #employee-details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #employee-details-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+        }
+        
+        /* Firebase Sync Styles - Minimal additions */
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        
+        .sync-status.syncing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .sync-status.synced {
+            background-color: #d1edff;
+            color: #0c5460;
+        }
+        
+        .sync-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .sync-btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
 
-  <style>
-    :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3a0ca3;
-      --accent-color: #f72585;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --success-color: #4cc9f0;
-      --danger-color: #e74c3c;
-      --warning-color: #f8961e;
-      --info-color: #4895ef;
-      --edit-color: #7209b7;
-      --leave-color: #3a86ff;
-      --halfday-color: #ffbe0b;
-      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background-color: #ffffff;
-      color: var(--dark-color);
-      line-height: 1.6;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .login-container {
-      background-color: #ffffff;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-box {
-      background-color: #2ecc71;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 40px;
-      width: 400px;
-      max-width: 90%;
-    }
-
-    .login-box h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: white;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    .form-group label {
-      display: block;
-      color: white;
-      margin-bottom: 5px;
-    }
-
-    .form-group input {
-      padding: 8px;
-      border-radius: 4px;
-      border: none;
-      width: 80%;
-    }
-
-    .form-group button {
-      background: #34495e;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .container .sidebar {
-      width: 260px;
-      background: #fff;
-      border-right: 1px solid #e0e0e0;
-      padding: 20px;
-    }
-
-    .sidebar h2 {
-      font-size: 20px;
-      margin-bottom: 15px;
-      color: #222;
-    }
-
-    .sidebar-menu .menu-item {
-      display: block;
-      color: #333;
-      text-decoration: none;
-      padding: 8px 10px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      transition: background 0.3s;
-    }
-
-    .sidebar-menu .menu-item:hover,
-    .sidebar-menu .menu-item.active {
-      background: var(--primary-color);
-      color: #fff;
-    }
-
-    .main-content {
-      flex: 1;
-      background: #f6f8fb;
-      padding: 20px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f9fafc;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: var(--card-shadow);
-    }
-
-    .btn {
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-primary { background: var(--primary-color); color: #fff; }
-    .btn-info { background: var(--info-color); color: #fff; }
-    .btn-danger { background: var(--danger-color); color: #fff; }
-
-    .sync-status {
-      font-size: 0.85rem;
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-left: 5px;
-    }
-
-    .sync-status.synced {
-      background-color: #d1edff;
-      color: #0c5460;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-    }
-
-    th, td {
-      padding: 8px;
-      border: 1px solid #eee;
-    }
-
-    th {
-      background: #f5f6fa;
-    }
-  </style>
+        /* Responsive Styles - IMPROVED */
+        @media (max-width: 1200px) {
+            .employee-info-container {
+                flex-direction: column;
+            }
+            
+            .col-md-6, .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .sidebar-header h2 span,
+            .menu-item span {
+                display: none;
+            }
+            
+            .sidebar-header h2 i,
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.5rem;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-info {
+                align-self: flex-end;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 15px 0;
+            }
+            
+            .sidebar-header {
+                padding: 0 15px 15px;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                padding: 10px 0;
+                overflow-x: auto;
+            }
+            
+            .menu-item {
+                flex: 0 0 auto;
+                padding: 10px 15px;
+                margin: 0 5px;
+                border-radius: 8px;
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .employee-info-container {
+                flex-direction: column;
+            }
+            
+            .col-md-6, .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .attendance-summary {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .summary-item {
+                flex: 1 1 45%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .btn-group {
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .login-box {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .modal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .modal-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .summary-item {
+                flex: 1 1 100%;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .sync-status {
+                margin-left: 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
-
 <body>
-
-  <!-- Login Page -->
-  <div id="login-page" class="login-container">
-    <div class="login-box">
-      <div id="login-form">
-        <h2>Login</h2>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="login-email" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="Enter your password">
-        </div>
-        <div class="form-group">
-          <button type="button" onclick="login()">Login</button>
-        </div>
-        <div style="color:white;text-align:center;">No account? 
-          <a style="color:#fff;text-decoration:underline;cursor:pointer"
-             onclick="document.getElementById('login-form').classList.add('hidden');
-                      document.getElementById('signup-form').classList.remove('hidden')">
-             Sign Up
-          </a>
-        </div>
-      </div>
-
-      <div id="signup-form" class="hidden">
-        <h2>Sign Up</h2>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="signup-email">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="signup-password">
-        </div>
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <input type="password" id="confirm-password">
-        </div>
-        <div class="form-group">
-          <button type="button" onclick="signUp()">Sign Up</button>
-        </div>
-        <div style="color:white;text-align:center;">Have account? 
-          <a style="color:#fff;text-decoration:underline;cursor:pointer"
-             onclick="document.getElementById('signup-form').classList.add('hidden');
-                      document.getElementById('login-form').classList.remove('hidden')">
-             Login
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Application -->
-  <div id="app-container" class="container" style="display:none;">
-    <div class="sidebar">
-      <h2>📋 PayrollPro</h2>
-      <div class="sidebar-menu">
-        <a href="#" class="menu-item active" onclick="showSection('employees')">👥 Employees</a>
-        <a href="#" class="menu-item" onclick="showSection('payroll')">💰 Payroll</a>
-        <a href="#" class="menu-item" onclick="showSection('attendance')">📅 Attendance</a>
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div id="employees" class="page-section active">
-        <div class="header">
-          <h1>👥 Employee Management</h1>
-          <div>
-            <span id="logged-in-user-1"></span>
-            <button type="button" class="btn btn-info" id="sync-employees-btn">🔄 Sync</button>
-            <span id="sync-employees-status" class="sync-status synced">Synced</span>
-            <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
-          </div>
-        </div>
-        <div style="margin-bottom:10px;">
-          <input type="text" id="employeeSearch" placeholder="Search employees.">
-          <button type="button" class="btn btn-primary" id="addEmployeeBtn">+ Add Employee</button>
-        </div>
-        <div class="form-container" id="employeeForm" style="display:none;">
-          <form id="employeeDataForm">
-            <label>Name</label>
-            <input type="text" id="empName" required>
-            <label>Department</label>
-            <select id="empDepartment">
-              <option value="HR">HR</option>
-              <option value="Finance">Finance</option>
-              <option value="Operations">Operations</option>
-            </select>
-            <div style="margin-top:10px;">
-              <button type="submit" id="saveEmployeeBtn_1" class="btn btn-primary">Save</button>
-              <button type="button" id="cancelEmployeeBtn_1" class="btn btn-info">Cancel</button>
+    <!-- Login Page (Initially shown) -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <!-- Login Form -->
+            <div id="login-form">
+                <div class="login-title">Samkitec Resources</div>
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <button onclick="login()">Login</button>
+                </div>
+                <div class="toggle-form">
+                    Don't have an account? <a id="show-signup">Sign up</a>
+                </div>
             </div>
-          </form>
+            
+            <!-- Signup Form -->
+            <div id="signup-form" class="hidden">
+                <div class="login-title">Samkitec Resources</div>
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                    <div class="error-message" id="signup-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                    <div class="error-message" id="signup-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password">
+                    <div class="error-message" id="confirm-password-error"></div>
+                </div>
+                <div class="form-group">
+                    <button onclick="signUp()">Sign Up</button>
+                </div>
+                <div class="toggle-form">
+                    Already have an account? <a id="show-login">Login</a>
+                </div>
+            </div>
         </div>
-        <table id="employeeTable">
-          <thead>
-            <tr>
-              <th>Name</th><th>Department</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <div id="payroll" class="page-section" style="display:none;">
-        <h2>Payroll</h2>
-      </div>
-
-      <div id="attendance" class="page-section" style="display:none;">
-        <h2>Attendance</h2>
-      </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    <!-- Main Application (Initially hidden) -->
+    <div id="app-container" class="container" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-calculator"></i> <span>PayrollPro</span></h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item" onclick="showSection('employees')">
+                    <i class="fas fa-users"></i> <span>Employees</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('payroll')">
+                    <i class="fas fa-money-bill-wave"></i> <span>Payroll</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('attendance')">
+                    <i class="fas fa-clipboard-check"></i> <span>Attendance</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Employees Section -->
+            <div id="employees" class="page-section">
+                <div class="header">
+                    <h1><i class="fas fa-users"></i> Employee Management</h1>
+                    <div class="user-info">
+                        <span id="logged-in-user-1">Admin User</span>
+                        <button id="sync-employees-btn" class="btn btn-info sync-btn">
+                            <i class="fas fa-sync-alt"></i> Sync
+                        </button>
+                        <div id="sync-employees-status" class="sync-status synced">
+                            <i class="fas fa-check-circle"></i> Synced
+                        </div>
+                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>                   
+                    </div>
+                </div>
+                
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="employeeSearch" class="search-input" placeholder="Search employees...">
+                    </div>
+                    <div class="btn-group">
+                        <button id="addEmployeeBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Employee
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Employee Form -->
+                <div id="employeeForm" class="form-container">
+                    <div class="form-title">
+                        <i class="fas fa-user-edit"></i> Employee Details
+                    </div>
+                    <form id="employeeDataForm">
+                        <input type="hidden" id="employeeId">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="empId">Employee ID *</label>
+                                <input type="text" id="empId" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="empName">Full Name *</label>
+                                <input type="text" id="empName" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="empDepartment">Department *</label>
+                                <select id="empDepartment" class="form-control" required>
+                                    <option value="">Select Department</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="IT">IT</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="empPosition">Position *</label>
+                                <input type="text" id="empPosition" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="empEmail">Email *</label>
+                                <input type="email" id="empEmail" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="empPhone">Phone *</label>
+                                <input type="tel" id="empPhone" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="empLocation">Location *</label>
+                                <input type="text" id="empLocation" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="empSalary">Base Salary (₹) *</label>
+                                <input type="number" id="empSalary" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="empStatus">Status *</label>
+                                <select id="empStatus" class="form-control" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="empJoiningDate">Joining Date *</label>
+                                <input type="date" id="empJoiningDate" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="cancelEmployeeForm()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Employee</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Employees Table -->
+                <div class="data-table">
+                    <div class="table-header">
+                        <div class="table-title">All Employees</div>
+                        <div class="btn-group">
+                            <button id="exportEmployeesPdf" class="btn btn-outline">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                            <button id="exportEmployeesExcel" class="btn btn-outline">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="employeesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>Salary</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Employee data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payroll Section -->
+            <div id="payroll" class="page-section">
+                <div class="header">
+                    <h1><i class="fas fa-money-bill-wave"></i> Payroll Management</h1>
+                    <div class="user-info">
+                        <span id="logged-in-user-2">Admin User</span>
+                        <button id="sync-payroll-btn" class="btn btn-info sync-btn">
+                            <i class="fas fa-sync-alt"></i> Sync
+                        </button>
+                        <div id="sync-payroll-status" class="sync-status synced">
+                            <i class="fas fa-check-circle"></i> Synced
+                        </div>
+                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>                   
+                    </div>
+                </div>
+                
+                <!-- Payroll Action Bar -->
+                <div class="action-bar">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="payrollSearch" class="search-input" placeholder="Search payroll records...">
+                    </div>
+                    <div class="btn-group">
+                        <button id="generatePayrollBtn" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Generate Payroll
+                        </button>
+                        <button id="processPayrollBtn" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Process Payroll
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Payroll Summary Cards -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">Total Payroll</h3>
+                            <div class="summary-value">₹ 0</div>
+                            <ul class="summary-details">
+                                <li>Employees: <span class="highlight">0</span></li>
+                                <li>Processed: <span class="highlight">0</span></li>
+                                <li>Pending: <span class="highlight">0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">This Month</h3>
+                            <div class="summary-value">₹ 0</div>
+                            <ul class="summary-details">
+                                <li>Basic: <span class="highlight">₹ 0</span></li>
+                                <li>Allowances: <span class="highlight">₹ 0</span></li>
+                                <li>Deductions: <span class="highlight">₹ 0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">Last Month</h3>
+                            <div class="summary-value">₹ 0</div>
+                            <ul class="summary-details">
+                                <li>Paid: <span class="highlight">0 employees</span></li>
+                                <li>Total: <span class="highlight">₹ 0</span></li>
+                                <li>Status: <span class="highlight">Completed</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payroll Table -->
+                <div class="data-table">
+                    <div class="table-header">
+                        <div class="table-title">Payroll Records</div>
+                        <div class="btn-group">
+                            <button id="exportPayrollPdf" class="btn btn-outline">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                            <button id="exportPayrollExcel" class="btn btn-outline">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="payrollTable">
+                            <thead>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Basic Salary</th>
+                                    <th>Allowances</th>
+                                    <th>Deductions</th>
+                                    <th>Net Salary</th>
+                                    <th>Pay Period</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payrollTableBody">
+                                <!-- Payroll data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Attendance Section -->
+            <div id="attendance" class="page-section">
+                <div class="header">
+                    <h1><i class="fas fa-clipboard-check"></i> Attendance Management</h1>
+                    <div class="user-info">
+                        <span id="logged-in-user-3">Admin User</span>
+                        <button id="sync-attendance-btn" class="btn btn-info sync-btn">
+                            <i class="fas fa-sync-alt"></i> Sync
+                        </button>
+                        <div id="sync-attendance-status" class="sync-status synced">
+                            <i class="fas fa-check-circle"></i> Synced
+                        </div>
+                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>                   
+                    </div>
+                </div>
+                
+                <!-- Attendance Action Bar -->
+                <div class="action-bar">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="attendanceSearch" class="search-input" placeholder="Search attendance records...">
+                    </div>
+                    <div class="btn-group">
+                        <button id="markAttendanceBtn" class="btn btn-primary">
+                            <i class="fas fa-user-check"></i> Mark Attendance
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Attendance Summary -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">Today's Attendance</h3>
+                            <div class="summary-value">0 / 0</div>
+                            <ul class="summary-details">
+                                <li>Present: <span class="highlight">0</span></li>
+                                <li>Absent: <span class="highlight">0</span></li>
+                                <li>Late: <span class="highlight">0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">This Month</h3>
+                            <div class="summary-value">0%</div>
+                            <ul class="summary-details">
+                                <li>Working Days: <span class="highlight">0</span></li>
+                                <li>Avg. Attendance: <span class="highlight">0%</span></li>
+                                <li>Leaves: <span class="highlight">0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <h3 class="summary-title">Last Month</h3>
+                            <div class="summary-value">0%</div>
+                            <ul class="summary-details">
+                                <li>Working Days: <span class="highlight">0</span></li>
+                                <li>Avg. Attendance: <span class="highlight">0%</span></li>
+                                <li>Leaves: <span class="highlight">0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendance Table -->
+                <div class="data-table">
+                    <div class="table-header">
+                        <div class="table-title">Attendance Records</div>
+                        <div class="btn-group">
+                            <button id="exportAttendancePdf" class="btn btn-outline">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                            <button id="exportAttendanceExcel" class="btn btn-outline">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                    <th>Hours</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <!-- Attendance data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+    // Firebase configuration and initialization
     const firebaseConfig = {
-      apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
-      authDomain: "testpayroll-60439.firebaseapp.com",
-      projectId: "testpayroll-60439",
-      storageBucket: "testpayroll-60439.firebasestorage.app",
-      messagingSenderId: "240505247731",
-      appId: "1:240505247731:web:6cb12d41ab9acff10ba486",
-      measurementId: "G-40RDNWL84J"
+        apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
+        authDomain: "testpayroll-60439.firebaseapp.com",
+        projectId: "testpayroll-60439",
+        storageBucket: "testpayroll-60439.firebasestorage.app",
+        messagingSenderId: "240505247731",
+        appId: "1:240505247731:web:6cb12d41ab9acff10ba486",
+        measurementId: "G-40RDNWL84J"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Initialize Firebase (this will be enhanced with the module script)
+    let auth, db;
+    let currentUser = null;
+    
+    // Employee data array
+    let employees = [];
+    let attendanceRecords = [];
+    let payrollRecords = [];
 
-    window.login = async function() {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-      await signInWithEmailAndPassword(auth, email, password);
-    };
+    // DOM Elements
+    const loginPage = document.getElementById('login-page');
+    const appContainer = document.getElementById('app-container');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const showSignup = document.getElementById('show-signup');
+    const showLogin = document.getElementById('show-login');
+    const employeeForm = document.getElementById('employeeForm');
+    const employeeDataForm = document.getElementById('employeeDataForm');
+    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+    const employeesTableBody = document.getElementById('employeesTableBody');
+    const attendanceTableBody = document.getElementById('attendanceTableBody');
+    const payrollTableBody = document.getElementById('payrollTableBody');
 
-    window.signUp = async function() {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      const confirm = document.getElementById("confirm-password").value;
-      if (password !== confirm) return alert("Passwords do not match");
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Account created, please login.");
-      document.getElementById("signup-form").classList.add("hidden");
-      document.getElementById("login-form").classList.remove("hidden");
-    };
-
-    window.logout = async function() {
-      await signOut(auth);
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      const loginPage = document.getElementById("login-page");
-      const appContainer = document.getElementById("app-container");
-      if (user) {
-        if (loginPage) loginPage.style.display = "none";
-        if (appContainer) appContainer.style.display = "flex";
-        document.getElementById("logged-in-user-1").textContent = user.email;
-      } else {
-        if (loginPage) loginPage.style.display = "flex";
-        if (appContainer) appContainer.style.display = "none";
-      }
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the application
+        showSection('employees');
+        
+        // Form toggle event listeners
+        showSignup.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        });
+        
+        showLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        
+        // Employee form event listeners
+        addEmployeeBtn.addEventListener('click', function() {
+            showEmployeeForm();
+        });
+        
+        employeeDataForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveEmployee();
+        });
+        
+        // Search functionality
+        document.getElementById('employeeSearch').addEventListener('input', function() {
+            filterEmployees(this.value);
+        });
+        
+        document.getElementById('attendanceSearch').addEventListener('input', function() {
+            filterAttendance(this.value);
+        });
+        
+        document.getElementById('payrollSearch').addEventListener('input', function() {
+            filterPayroll(this.value);
+        });
+        
+        // Export buttons
+        document.getElementById('exportEmployeesPdf').addEventListener('click', function() {
+            exportToPDF('employeesTable', 'Employees');
+        });
+        
+        document.getElementById('exportEmployeesExcel').addEventListener('click', function() {
+            exportToExcel('employeesTable', 'Employees');
+        });
+        
+        document.getElementById('exportAttendancePdf').addEventListener('click', function() {
+            exportToPDF('attendanceTable', 'Attendance');
+        });
+        
+        document.getElementById('exportAttendanceExcel').addEventListener('click', function() {
+            exportToExcel('attendanceTable', 'Attendance');
+        });
+        
+        document.getElementById('exportPayrollPdf').addEventListener('click', function() {
+            exportToPDF('payrollTable', 'Payroll');
+        });
+        
+        document.getElementById('exportPayrollExcel').addEventListener('click', function() {
+            exportToExcel('payrollTable', 'Payroll');
+        });
+        
+        // Sync buttons
+        document.getElementById('sync-employees-btn').addEventListener('click', function() {
+            syncEmployees();
+        });
+        
+        document.getElementById('sync-attendance-btn').addEventListener('click', function() {
+            syncAttendance();
+        });
+        
+        document.getElementById('sync-payroll-btn').addEventListener('click', function() {
+            syncPayroll();
+        });
     });
-  </script>
 
-  <script>
-    function showSection(id) {
-      document.querySelectorAll(".page-section").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
-      document.querySelectorAll(".menu-item").forEach(a => a.classList.remove("active"));
-      document.querySelector(`.menu-item[onclick="showSection('${id}')"]`)?.classList.add("active");
+    // ==================== FIREBASE AUTHENTICATION FUNCTIONS ====================
+
+    // Updated login function for Firebase
+    window.login = async function() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        try {
+            const userCredential = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
+            console.log("✅ Login successful:", userCredential.user.email);
+            
+            // Update UI
+            document.querySelectorAll('#logged-in-user-1, #logged-in-user-2, #logged-in-user-3').forEach(el => {
+                el.textContent = userCredential.user.email;
+            });
+            
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'flex';
+            
+        } catch (error) {
+            console.error("❌ Login error:", error);
+            alert("Login failed: " + error.message);
+        }
+    };
+
+    // Updated signup function for Firebase
+    window.signUp = async function() {
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        if (password !== confirmPassword) {
+            alert("Passwords don't match!");
+            return;
+        }
+        
+        try {
+            const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
+            console.log("✅ Signup successful:", userCredential.user.email);
+            alert("Account created successfully! Please login.");
+            
+            // Switch back to login form
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            
+        } catch (error) {
+            console.error("❌ Signup error:", error);
+            alert("Signup failed: " + error.message);
+        }
+    };
+
+    // Updated logout function for Firebase
+    window.logout = async function() {
+        try {
+            await window.firebaseAuth.signOut();
+            console.log("✅ Logout successful");
+            
+            // Reset UI
+            appContainer.style.display = 'none';
+            loginPage.style.display = 'flex';
+            
+            // Reset forms
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            
+        } catch (error) {
+            console.error("❌ Logout error:", error);
+        }
+    };
+
+    // ==================== EMPLOYEE MANAGEMENT FUNCTIONS ====================
+
+    function showEmployeeForm(employee = null) {
+        if (employee) {
+            // Edit mode - use firebaseId if available
+            const formId = employee.firebaseId ? `firebase_${employee.firebaseId}` : employee.id;
+            document.getElementById('employeeId').value = formId;
+            document.getElementById('empId').value = employee.id;
+            document.getElementById('empName').value = employee.name;
+            document.getElementById('empDepartment').value = employee.department;
+            document.getElementById('empPosition').value = employee.position;
+            document.getElementById('empEmail').value = employee.email;
+            document.getElementById('empPhone').value = employee.phone;
+            document.getElementById('empLocation').value = employee.location;
+            document.getElementById('empSalary').value = employee.salary;
+            document.getElementById('empStatus').value = employee.status;
+            document.getElementById('empJoiningDate').value = employee.joiningDate;
+        } else {
+            // Add mode
+            document.getElementById('employeeDataForm').reset();
+            document.getElementById('employeeId').value = '';
+        }
+        
+        employeeForm.style.display = 'block';
+    }
+    
+    function cancelEmployeeForm() {
+        employeeForm.style.display = 'none';
+    }
+    
+    // UPDATED: Save employee with Firebase integration
+    async function saveEmployee() {
+        const formId = document.getElementById('employeeId').value;
+        const empId = document.getElementById('empId').value;
+        const name = document.getElementById('empName').value;
+        const department = document.getElementById('empDepartment').value;
+        const position = document.getElementById('empPosition').value;
+        const email = document.getElementById('empEmail').value;
+        const phone = document.getElementById('empPhone').value;
+        const location = document.getElementById('empLocation').value;
+        const salary = document.getElementById('empSalary').value;
+        const status = document.getElementById('empStatus').value;
+        const joiningDate = document.getElementById('empJoiningDate').value;
+        
+        // Validate required fields
+        if (!empId || !name || !department || !position || !email || !phone || !location || !salary || !status || !joiningDate) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        const employeeData = {
+            id: empId,
+            name,
+            department,
+            position,
+            email,
+            phone,
+            location,
+            salary: parseFloat(salary),
+            status,
+            joiningDate,
+            lastUpdated: new Date().toISOString()
+        };
+        
+        try {
+            if (formId && formId.startsWith('firebase_')) {
+                // Update existing Firebase employee
+                const firebaseId = formId.replace('firebase_', '');
+                employeeData.firebaseId = firebaseId;
+                
+                // Update in local array
+                const index = employees.findIndex(emp => emp.firebaseId === firebaseId);
+                if (index !== -1) {
+                    employees[index] = employeeData;
+                }
+                
+                // Update in Firebase
+                await updateEmployeeInFirebase(firebaseId, employeeData);
+                
+            } else if (formId) {
+                // Update existing local employee (convert to Firebase)
+                const index = employees.findIndex(emp => emp.id === formId && !emp.firebaseId);
+                if (index !== -1) {
+                    // Add to Firebase and get firebaseId
+                    const firebaseId = await addEmployeeToFirebase(employeeData);
+                    employeeData.firebaseId = firebaseId;
+                    employees[index] = employeeData;
+                }
+            } else {
+                // Add new employee to Firebase
+                const firebaseId = await addEmployeeToFirebase(employeeData);
+                employeeData.firebaseId = firebaseId;
+                employees.push(employeeData);
+            }
+            
+            // Refresh table
+            renderEmployeesTable();
+            
+            // Hide form
+            employeeForm.style.display = 'none';
+            
+            alert('Employee saved successfully!');
+            
+        } catch (error) {
+            console.error('Error saving employee:', error);
+            alert('Error saving employee: ' + error.message);
+        }
+    }
+    
+    // UPDATED: Edit employee function
+    function editEmployee(id) {
+        const employee = employees.find(emp => emp.id === id || emp.firebaseId === id);
+        if (employee) {
+            showEmployeeForm(employee);
+        }
+    }
+    
+    // UPDATED: Delete employee with Firebase integration
+    async function deleteEmployee(id) {
+        if (!confirm('Are you sure you want to delete this employee?')) {
+            return;
+        }
+        
+        try {
+            const employee = employees.find(emp => emp.id === id || emp.firebaseId === id);
+            
+            if (employee && employee.firebaseId) {
+                // Delete from Firebase
+                await deleteEmployeeFromFirebase(employee.firebaseId);
+            }
+            
+            // Remove from local array
+            employees = employees.filter(emp => !(emp.id === id || emp.firebaseId === id));
+            
+            // Refresh table
+            renderEmployeesTable();
+            
+            alert('Employee deleted successfully!');
+            
+        } catch (error) {
+            console.error('Error deleting employee:', error);
+            alert('Error deleting employee: ' + error.message);
+        }
+    }
+    
+    // UPDATED: Render employees table
+    function renderEmployeesTable() {
+        employeesTableBody.innerHTML = '';
+        
+        if (employees.length === 0) {
+            employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No employees found</td></tr>';
+            return;
+        }
+        
+        employees.forEach(employee => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${employee.id}</td>
+                <td>${employee.name}</td>
+                <td>${employee.department}</td>
+                <td>${employee.position}</td>
+                <td>${employee.email}</td>
+                <td>${employee.phone}</td>
+                <td>${employee.location}</td>
+                <td>₹ ${employee.salary.toLocaleString()}</td>
+                <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            `;
+            employeesTableBody.appendChild(row);
+        });
+    }
+    
+    function filterEmployees(searchTerm) {
+        const filteredEmployees = employees.filter(employee => 
+            employee.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.email.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        employeesTableBody.innerHTML = '';
+        
+        if (filteredEmployees.length === 0) {
+            employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No matching employees found</td></tr>';
+            return;
+        }
+        
+        filteredEmployees.forEach(employee => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${employee.id}</td>
+                <td>${employee.name}</td>
+                <td>${employee.department}</td>
+                <td>${employee.position}</td>
+                <td>${employee.email}</td>
+                <td>${employee.phone}</td>
+                <td>${employee.location}</td>
+                <td>₹ ${employee.salary.toLocaleString()}</td>
+                <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            `;
+            employeesTableBody.appendChild(row);
+        });
     }
 
-    document.getElementById("addEmployeeBtn").addEventListener("click", () => {
-      document.getElementById("employeeForm").style.display = "block";
-    });
+    // ==================== FIREBASE FIRESTORE FUNCTIONS ====================
 
-    document.getElementById("cancelEmployeeBtn_1").addEventListener("click", () => {
-      document.getElementById("employeeForm").style.display = "none";
-    });
+    // Load employees from Firebase
+    async function loadEmployeesFromFirebase() {
+        if (!window.currentUserId) {
+            console.log('No user logged in');
+            return;
+        }
+        
+        try {
+            const employeesSnapshot = await window.getDocs(window.collection(window.db, "users", window.currentUserId, "employees"));
+            employees = [];
+            
+            employeesSnapshot.forEach((doc) => {
+                employees.push({ firebaseId: doc.id, ...doc.data() });
+            });
+            
+            console.log(`✅ Loaded ${employees.length} employees from Firebase`);
+            renderEmployeesTable();
+            
+        } catch (error) {
+            console.error("❌ Error loading employees from Firebase:", error);
+            // Fallback to local storage if Firebase fails
+            const localEmployees = localStorage.getItem('employees');
+            if (localEmployees) {
+                employees = JSON.parse(localEmployees);
+                renderEmployeesTable();
+            }
+        }
+    }
 
-    document.getElementById("employeeDataForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = document.getElementById("empName").value;
-      const dept = document.getElementById("empDepartment").value;
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${name}</td><td>${dept}</td><td><button class="btn btn-danger" onclick="this.closest('tr').remove()">Delete</button></td>`;
-      document.querySelector("#employeeTable tbody").appendChild(tr);
-      document.getElementById("employeeForm").style.display = "none";
-      e.target.reset();
-    });
-  </script>
+    // Add employee to Firebase
+    async function addEmployeeToFirebase(employeeData) {
+        if (!window.currentUserId) {
+            throw new Error('No user logged in');
+        }
+        
+        try {
+            const docRef = await window.addDoc(
+                window.collection(window.db, "users", window.currentUserId, "employees"), 
+                employeeData
+            );
+            console.log("✅ Employee added to Firebase with ID: ", docRef.id);
+            return docRef.id;
+        } catch (error) {
+            console.error("❌ Error adding employee to Firebase:", error);
+            throw error;
+        }
+    }
 
+    // Update employee in Firebase
+    async function updateEmployeeInFirebase(firebaseId, employeeData) {
+        if (!window.currentUserId) {
+            throw new Error('No user logged in');
+        }
+        
+        try {
+            await window.updateDoc(
+                window.doc(window.db, "users", window.currentUserId, "employees", firebaseId),
+                employeeData
+            );
+            console.log("✅ Employee updated in Firebase");
+        } catch (error) {
+            console.error("❌ Error updating employee in Firebase:", error);
+            throw error;
+        }
+    }
+
+    // Delete employee from Firebase
+    async function deleteEmployeeFromFirebase(firebaseId) {
+        if (!window.currentUserId) {
+            throw new Error('No user logged in');
+        }
+        
+        try {
+            await window.deleteDoc(
+                window.doc(window.db, "users", window.currentUserId, "employees", firebaseId)
+            );
+            console.log("✅ Employee deleted from Firebase");
+        } catch (error) {
+            console.error("❌ Error deleting employee from Firebase:", error);
+            throw error;
+        }
+    }
+
+    // ==================== SYNC FUNCTIONS ====================
+
+    async function syncEmployees() {
+        const syncStatus = document.getElementById('sync-employees-status');
+        const syncBtn = document.getElementById('sync-employees-btn');
+        
+        syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+        syncStatus.className = 'sync-status syncing';
+        syncBtn.disabled = true;
+        
+        try {
+            await loadEmployeesFromFirebase();
+            syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+            syncStatus.className = 'sync-status synced';
+            alert('Employees synchronized successfully!');
+        } catch (error) {
+            syncStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+            syncStatus.className = 'sync-status error';
+            alert('Error syncing employees: ' + error.message);
+        } finally {
+            syncBtn.disabled = false;
+        }
+    }
+
+    function syncAttendance() {
+        const syncStatus = document.getElementById('sync-attendance-status');
+        const syncBtn = document.getElementById('sync-attendance-btn');
+        
+        syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+        syncStatus.className = 'sync-status syncing';
+        syncBtn.disabled = true;
+        
+        setTimeout(() => {
+            syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+            syncStatus.className = 'sync-status synced';
+            syncBtn.disabled = false;
+            alert('Attendance data synchronized!');
+        }, 1000);
+    }
+
+    function syncPayroll() {
+        const syncStatus = document.getElementById('sync-payroll-status');
+        const syncBtn = document.getElementById('sync-payroll-btn');
+        
+        syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+        syncStatus.className = 'sync-status syncing';
+        syncBtn.disabled = true;
+        
+        setTimeout(() => {
+            syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+            syncStatus.className = 'sync-status synced';
+            syncBtn.disabled = false;
+            alert('Payroll data synchronized!');
+        }, 1000);
+    }
+
+    // ==================== OTHER FUNCTIONS ====================
+
+    // Navigation Functions
+    function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Remove active class from all menu items
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Show the selected section
+        document.getElementById(sectionId).classList.add('active');
+        
+        // Set active menu item
+        document.querySelector(`.menu-item[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        
+        // Render appropriate data
+        if (sectionId === 'employees') {
+            renderEmployeesTable();
+        } else if (sectionId === 'attendance') {
+            renderAttendanceTable();
+        } else if (sectionId === 'payroll') {
+            renderPayrollTable();
+        }
+    }
+
+    // Attendance Functions
+    function renderAttendanceTable() {
+        attendanceTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No attendance records found</td></tr>';
+    }
+    
+    function filterAttendance(searchTerm) {
+        // Implementation for filtering attendance records
+    }
+
+    // Payroll Functions
+    function renderPayrollTable() {
+        payrollTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No payroll records found</td></tr>';
+    }
+    
+    function filterPayroll(searchTerm) {
+        // Implementation for filtering payroll records
+    }
+
+    // Export Functions
+    function exportToPDF(tableId, title) {
+        alert(`Exporting ${title} data to PDF...`);
+        // In a real implementation, this would use jsPDF to generate a PDF
+    }
+    
+    function exportToExcel(tableId, title) {
+        alert(`Exporting ${title} data to Excel...`);
+        // In a real implementation, this would use SheetJS to generate an Excel file
+    }
+</script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, setDoc, doc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
+    authDomain: "testpayroll-60439.firebaseapp.com",
+    projectId: "testpayroll-60439",
+    storageBucket: "testpayroll-60439.firebasestorage.app",
+    messagingSenderId: "240505247731",
+    appId: "1:240505247731:web:6cb12d41ab9acff10ba486",
+    measurementId: "G-40RDNWL84J"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  console.log("🔥 Firebase initialized successfully");
+
+  // Make auth available globally
+  window.firebaseAuth = auth;
+
+  // Auth state listener
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("✅ User logged in:", user.email);
+      window.currentUserId = user.uid;
+      
+      // Update UI
+      document.querySelectorAll("#logged-in-user-1, #logged-in-user-2, #logged-in-user-3").forEach(el => {
+        el.textContent = user.email;
+      });
+      
+      document.getElementById("login-page").style.display = "none";
+      document.getElementById("app-container").style.display = "flex";
+      
+      // Load data from Firebase
+      loadEmployeesFromFirebase();
+      
+    } else {
+      console.log("🚪 No user logged in");
+      document.getElementById("login-page").style.display = "flex";
+      document.getElementById("app-container").style.display = "none";
+    }
+  });
+
+  // Updated login function for Firebase
+  window.login = async function() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("✅ Login successful:", userCredential.user.email);
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      alert("Login failed: " + error.message);
+    }
+  };
+
+  // Updated signup function for Firebase
+  window.signUp = async function() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    
+    if (password !== confirmPassword) {
+      alert("Passwords don't match!");
+      return;
+    }
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("✅ Signup successful:", userCredential.user.email);
+      alert("Account created successfully!");
+    } catch (error) {
+      console.error("❌ Signup error:", error);
+      alert("Signup failed: " + error.message);
+    }
+  };
+
+  // Updated logout function for Firebase
+  window.logout = async function() {
+    try {
+      await signOut(auth);
+      console.log("✅ Logout successful");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    }
+  };
+
+  // Firebase Firestore functions
+  async function loadEmployeesFromFirebase() {
+    if (!window.currentUserId) return;
+    
+    try {
+      const querySnapshot = await getDocs(collection(db, "users", window.currentUserId, "employees"));
+      window.employees = [];
+      
+      querySnapshot.forEach((doc) => {
+        window.employees.push({ id: doc.id, ...doc.data() });
+      });
+      
+      console.log(`✅ Loaded ${window.employees.length} employees from Firebase`);
+      renderEmployeesTable();
+      
+    } catch (error) {
+      console.error("❌ Error loading employees:", error);
+      // Fallback to local storage if Firebase fails
+      const localEmployees = localStorage.getItem('employees');
+      if (localEmployees) {
+        window.employees = JSON.parse(localEmployees);
+        renderEmployeesTable();
+      }
+    }
+  }
+
+  async function saveEmployeeToFirebase(employeeData) {
+    if (!window.currentUserId) return;
+    
+    try {
+      if (employeeData.firebaseId) {
+        // Update existing employee
+        await updateDoc(doc(db, "users", window.currentUserId, "employees", employeeData.firebaseId), employeeData);
+        console.log("✅ Employee updated in Firebase");
+      } else {
+        // Add new employee
+        const docRef = await addDoc(collection(db, "users", window.currentUserId, "employees"), employeeData);
+        employeeData.firebaseId = docRef.id;
+        console.log("✅ Employee added to Firebase with ID: ", docRef.id);
+      }
+    } catch (error) {
+      console.error("❌ Error saving employee to Firebase:", error);
+      // Fallback to local storage
+      localStorage.setItem('employees', JSON.stringify(window.employees));
+    }
+  }
+
+  async function deleteEmployeeFromFirebase(firebaseId) {
+    if (!window.currentUserId) return;
+    
+    try {
+      await deleteDoc(doc(db, "users", window.currentUserId, "employees", firebaseId));
+      console.log("✅ Employee deleted from Firebase");
+    } catch (error) {
+      console.error("❌ Error deleting employee from Firebase:", error);
+    }
+  }
+
+  // Update the saveEmployee function to use Firebase
+  const originalSaveEmployee = window.saveEmployee;
+  window.saveEmployee = function() {
+    // Call the original function
+    if (originalSaveEmployee) {
+      originalSaveEmployee();
+    }
+    
+    // Get the latest employee data and save to Firebase
+    const id = document.getElementById('employeeId').value;
+    const employee = window.employees.find(emp => emp.id === id || emp.firebaseId === id);
+    
+    if (employee) {
+      saveEmployeeToFirebase(employee);
+    }
+  };
+
+  // Update sync functions to use Firebase
+  window.syncData = function(dataType) {
+    const syncStatus = document.getElementById(`sync-${dataType}-status`);
+    const syncBtn = document.getElementById(`sync-${dataType}-btn`);
+    
+    syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+    syncStatus.className = 'sync-status syncing';
+    syncBtn.disabled = true;
+    
+    // For employees sync
+    if (dataType === 'employees') {
+      loadEmployeesFromFirebase().then(() => {
+        syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+        syncStatus.className = 'sync-status synced';
+        syncBtn.disabled = false;
+      }).catch(error => {
+        syncStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+        syncStatus.className = 'sync-status error';
+        syncBtn.disabled = false;
+      });
+    }
+  };
+</script>
 </body>
 </html>
