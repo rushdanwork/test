@@ -1106,7 +1106,7 @@
                     <div class="error-message" id="login-password-error"></div>
                 </div>
                 <div class="form-group">
-                    <button onclick="login()">Login</button>
+                    <button onclick="handleLogin()">Login</button>
                 </div>
                 <div class="toggle-form">
                     Don't have an account? <a id="show-signup">Sign up</a>
@@ -1133,7 +1133,7 @@
                     <div class="error-message" id="confirm-password-error"></div>
                 </div>
                 <div class="form-group">
-                    <button onclick="signUp()">Sign Up</button>
+                    <button onclick="handleSignUp()">Sign Up</button>
                 </div>
                 <div class="toggle-form">
                     Already have an account? <a id="show-login">Login</a>
@@ -1169,14 +1169,14 @@
                 <div class="header">
                     <h1><i class="fas fa-users"></i> Employee Management</h1>
                     <div class="user-info">
-                        <span id="logged-in-user-1">Admin User</span>
+                        <span id="logged-in-user">Admin User</span>
                         <button id="sync-employees-btn" class="btn btn-info sync-btn">
                             <i class="fas fa-sync-alt"></i> Sync
                         </button>
                         <div id="sync-employees-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
-                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                        <button onclick="handleLogout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>                   
                     </div>
@@ -1310,106 +1310,22 @@
                 <div class="header">
                     <h1><i class="fas fa-money-bill-wave"></i> Payroll Management</h1>
                     <div class="user-info">
-                        <span id="logged-in-user-2">Admin User</span>
+                        <span id="logged-in-user-payroll">Admin User</span>
                         <button id="sync-payroll-btn" class="btn btn-info sync-btn">
                             <i class="fas fa-sync-alt"></i> Sync
                         </button>
                         <div id="sync-payroll-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
-                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                        <button onclick="handleLogout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>                   
                     </div>
                 </div>
                 
-                <!-- Payroll Action Bar -->
-                <div class="action-bar">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="payrollSearch" class="search-input" placeholder="Search payroll records...">
-                    </div>
-                    <div class="btn-group">
-                        <button id="generatePayrollBtn" class="btn btn-primary">
-                            <i class="fas fa-calculator"></i> Generate Payroll
-                        </button>
-                        <button id="processPayrollBtn" class="btn btn-success">
-                            <i class="fas fa-check-circle"></i> Process Payroll
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Payroll Summary Cards -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">Total Payroll</h3>
-                            <div class="summary-value">₹ 0</div>
-                            <ul class="summary-details">
-                                <li>Employees: <span class="highlight">0</span></li>
-                                <li>Processed: <span class="highlight">0</span></li>
-                                <li>Pending: <span class="highlight">0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">This Month</h3>
-                            <div class="summary-value">₹ 0</div>
-                            <ul class="summary-details">
-                                <li>Basic: <span class="highlight">₹ 0</span></li>
-                                <li>Allowances: <span class="highlight">₹ 0</span></li>
-                                <li>Deductions: <span class="highlight">₹ 0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">Last Month</h3>
-                            <div class="summary-value">₹ 0</div>
-                            <ul class="summary-details">
-                                <li>Paid: <span class="highlight">0 employees</span></li>
-                                <li>Total: <span class="highlight">₹ 0</span></li>
-                                <li>Status: <span class="highlight">Completed</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Payroll Table -->
-                <div class="data-table">
-                    <div class="table-header">
-                        <div class="table-title">Payroll Records</div>
-                        <div class="btn-group">
-                            <button id="exportPayrollPdf" class="btn btn-outline">
-                                <i class="fas fa-file-pdf"></i> Export PDF
-                            </button>
-                            <button id="exportPayrollExcel" class="btn btn-outline">
-                                <i class="fas fa-file-excel"></i> Export Excel
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-container">
-                        <table id="payrollTable">
-                            <thead>
-                                <tr>
-                                    <th>Employee ID</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Basic Salary</th>
-                                    <th>Allowances</th>
-                                    <th>Deductions</th>
-                                    <th>Net Salary</th>
-                                    <th>Pay Period</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="payrollTableBody">
-                                <!-- Payroll data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Payroll content would go here -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Payroll management features coming soon.
                 </div>
             </div>
             
@@ -1418,786 +1334,639 @@
                 <div class="header">
                     <h1><i class="fas fa-clipboard-check"></i> Attendance Management</h1>
                     <div class="user-info">
-                        <span id="logged-in-user-3">Admin User</span>
+                        <span id="logged-in-user-attendance">Admin User</span>
                         <button id="sync-attendance-btn" class="btn btn-info sync-btn">
                             <i class="fas fa-sync-alt"></i> Sync
                         </button>
                         <div id="sync-attendance-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
-                        <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
+                        <button onclick="handleLogout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>                   
                     </div>
                 </div>
                 
-                <!-- Attendance Action Bar -->
-                <div class="action-bar">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="attendanceSearch" class="search-input" placeholder="Search attendance records...">
-                    </div>
-                    <div class="btn-group">
-                        <button id="markAttendanceBtn" class="btn btn-primary">
-                            <i class="fas fa-user-check"></i> Mark Attendance
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Attendance Summary -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">Today's Attendance</h3>
-                            <div class="summary-value">0 / 0</div>
-                            <ul class="summary-details">
-                                <li>Present: <span class="highlight">0</span></li>
-                                <li>Absent: <span class="highlight">0</span></li>
-                                <li>Late: <span class="highlight">0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">This Month</h3>
-                            <div class="summary-value">0%</div>
-                            <ul class="summary-details">
-                                <li>Working Days: <span class="highlight">0</span></li>
-                                <li>Avg. Attendance: <span class="highlight">0%</span></li>
-                                <li>Leaves: <span class="highlight">0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="summary-card">
-                            <h3 class="summary-title">Last Month</h3>
-                            <div class="summary-value">0%</div>
-                            <ul class="summary-details">
-                                <li>Working Days: <span class="highlight">0</span></li>
-                                <li>Avg. Attendance: <span class="highlight">0%</span></li>
-                                <li>Leaves: <span class="highlight">0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Attendance Table -->
-                <div class="data-table">
-                    <div class="table-header">
-                        <div class="table-title">Attendance Records</div>
-                        <div class="btn-group">
-                            <button id="exportAttendancePdf" class="btn btn-outline">
-                                <i class="fas fa-file-pdf"></i> Export PDF
-                            </button>
-                            <button id="exportAttendanceExcel" class="btn btn-outline">
-                                <i class="fas fa-file-excel"></i> Export Excel
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-container">
-                        <table id="attendanceTable">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Employee ID</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Status</th>
-                                    <th>Check In</th>
-                                    <th>Check Out</th>
-                                    <th>Hours</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendanceTableBody">
-                                <!-- Attendance data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Attendance content would go here -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Attendance management features coming soon.
                 </div>
             </div>
         </div>
     </div>
 
-   <script>
-    // Employee data array
-    let employees = [];
-    let isFirebaseConnected = false;
+    <!-- Firebase and App Script -->
+    <script>
+        // Global variables
+        let employees = [];
+        let currentUser = null;
+        let firebaseInitialized = false;
 
-    // DOM Elements
-    const loginPage = document.getElementById('login-page');
-    const appContainer = document.getElementById('app-container');
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const showSignup = document.getElementById('show-signup');
-    const showLogin = document.getElementById('show-login');
-    const employeeForm = document.getElementById('employeeForm');
-    const employeeDataForm = document.getElementById('employeeDataForm');
-    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
-    const employeesTableBody = document.getElementById('employeesTableBody');
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const showSignup = document.getElementById('show-signup');
+        const showLogin = document.getElementById('show-login');
+        const employeeForm = document.getElementById('employeeForm');
+        const employeeDataForm = document.getElementById('employeeDataForm');
+        const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+        const employeesTableBody = document.getElementById('employeesTableBody');
 
-    // Event Listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("🔄 DOM loaded, initializing app...");
-        
-        // Initialize the application
-        showSection('employees');
-        
-        // Form toggle event listeners
-        showSignup.addEventListener('click', function(e) {
-            e.preventDefault();
-            loginForm.classList.add('hidden');
-            signupForm.classList.remove('hidden');
-        });
-        
-        showLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            signupForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-        });
-        
-        // Employee form event listeners
-        addEmployeeBtn.addEventListener('click', function() {
-            showEmployeeForm();
-        });
-        
-        employeeDataForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            saveEmployee();
-        });
-        
-        // Search functionality
-        document.getElementById('employeeSearch').addEventListener('input', function() {
-            filterEmployees(this.value);
-        });
-        
-        // Sync buttons
-        document.getElementById('sync-employees-btn').addEventListener('click', function() {
-            syncEmployees();
-        });
-        
-        // Check if we're already logged in (page refresh)
-        checkExistingAuth();
-    });
+        // Initialize Firebase (simplified approach)
+        function initializeFirebase() {
+            if (firebaseInitialized) return;
 
-    // Check if user was already authenticated
-    function checkExistingAuth() {
-        if (window.currentUserId) {
-            console.log("🔄 User already authenticated, loading data...");
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
+                authDomain: "testpayroll-60439.firebaseapp.com",
+                projectId: "testpayroll-60439",
+                storageBucket: "testpayroll-60439.firebasestorage.app",
+                messagingSenderId: "240505247731",
+                appId: "1:240505247731:web:6cb12d41ab9acff10ba486",
+                measurementId: "G-40RDNWL84J"
+            };
+
+            // Initialize Firebase (using CDN)
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                window.firebaseAuth = firebase.auth();
+                window.firestore = firebase.firestore();
+                window.db = firebase.firestore();
+                firebaseInitialized = true;
+                console.log("✅ Firebase initialized successfully");
+            } else {
+                console.error("❌ Firebase CDN not loaded");
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🔄 DOM loaded, initializing app...");
+            
+            // Initialize Firebase
+            initializeFirebase();
+            
+            // Initialize the application
+            showSection('employees');
+            
+            // Form toggle event listeners
+            showSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+            });
+            
+            showLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            });
+            
+            // Employee form event listeners
+            addEmployeeBtn.addEventListener('click', function() {
+                showEmployeeForm();
+            });
+            
+            employeeDataForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEmployee();
+            });
+            
+            // Search functionality
+            document.getElementById('employeeSearch').addEventListener('input', function() {
+                filterEmployees(this.value);
+            });
+            
+            // Sync buttons
+            document.getElementById('sync-employees-btn').addEventListener('click', function() {
+                syncEmployees();
+            });
+            
+            // Check if user is already logged in
+            checkAuthState();
+        });
+
+        // Check authentication state
+        function checkAuthState() {
+            if (window.firebaseAuth) {
+                window.firebaseAuth.onAuthStateChanged((user) => {
+                    if (user) {
+                        console.log("✅ User already logged in:", user.email);
+                        handleAuthSuccess(user);
+                    } else {
+                        console.log("🚪 No user logged in");
+                    }
+                });
+            }
+        }
+
+        // ==================== AUTHENTICATION FUNCTIONS ====================
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert("Please enter both email and password");
+                return;
+            }
+            
+            try {
+                console.log("🔄 Attempting login...");
+                const userCredential = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
+                console.log("✅ Login successful:", userCredential.user.email);
+                handleAuthSuccess(userCredential.user);
+                
+            } catch (error) {
+                console.error("❌ Login error:", error);
+                let errorMessage = "Login failed: " + error.message;
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = "No account found with this email. Please sign up first.";
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = "Incorrect password. Please try again.";
+                }
+                alert(errorMessage);
+            }
+        }
+
+        async function handleSignUp() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!email || !password || !confirmPassword) {
+                alert("Please fill in all fields");
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert("Passwords don't match!");
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long!");
+                return;
+            }
+            
+            try {
+                console.log("🔄 Creating account...");
+                const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
+                console.log("✅ Account created:", userCredential.user.email);
+                alert("Account created successfully! You are now logged in.");
+                handleAuthSuccess(userCredential.user);
+                
+            } catch (error) {
+                console.error("❌ Signup error:", error);
+                let errorMessage = "Signup failed: " + error.message;
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = "This email is already registered. Please login instead.";
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = "Invalid email address.";
+                }
+                alert(errorMessage);
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await window.firebaseAuth.signOut();
+                console.log("✅ Logout successful");
+                handleAuthLogout();
+            } catch (error) {
+                console.error("❌ Logout error:", error);
+                alert("Logout failed: " + error.message);
+            }
+        }
+
+        function handleAuthSuccess(user) {
+            currentUser = user;
+            
+            // Update UI
+            document.querySelectorAll('#logged-in-user, #logged-in-user-payroll, #logged-in-user-attendance').forEach(el => {
+                el.textContent = user.email;
+            });
+            
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'flex';
+            
+            // Load data from Firebase
             loadEmployeesFromFirebase();
         }
-    }
 
-    // ==================== FIREBASE AUTHENTICATION FUNCTIONS ====================
-
-    window.login = async function() {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        if (!email || !password) {
-            alert("Please enter both email and password");
-            return;
+        function handleAuthLogout() {
+            currentUser = null;
+            employees = [];
+            
+            // Reset UI
+            appContainer.style.display = 'none';
+            loginPage.style.display = 'flex';
+            
+            // Reset forms
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            
+            // Clear table
+            renderEmployeesTable();
         }
-        
-        try {
-            console.log("🔄 Attempting login...");
-            const userCredential = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
-            console.log("✅ Login successful:", userCredential.user.email);
-            
-            // The onAuthStateChanged listener will handle the UI update and data loading
-            
-        } catch (error) {
-            console.error("❌ Login error:", error);
-            let errorMessage = "Login failed: " + error.message;
-            if (error.code === 'auth/user-not-found') {
-                errorMessage = "No account found with this email. Please sign up first.";
-            } else if (error.code === 'auth/wrong-password') {
-                errorMessage = "Incorrect password. Please try again.";
+
+        // ==================== EMPLOYEE MANAGEMENT FUNCTIONS ====================
+
+        function showEmployeeForm(employee = null) {
+            if (employee) {
+                // Edit mode
+                const formId = employee.firebaseId ? employee.firebaseId : employee.id;
+                document.getElementById('employeeId').value = formId;
+                document.getElementById('empId').value = employee.id;
+                document.getElementById('empName').value = employee.name;
+                document.getElementById('empDepartment').value = employee.department;
+                document.getElementById('empPosition').value = employee.position;
+                document.getElementById('empEmail').value = employee.email;
+                document.getElementById('empPhone').value = employee.phone;
+                document.getElementById('empLocation').value = employee.location;
+                document.getElementById('empSalary').value = employee.salary;
+                document.getElementById('empStatus').value = employee.status;
+                document.getElementById('empJoiningDate').value = employee.joiningDate;
+            } else {
+                // Add mode
+                document.getElementById('employeeDataForm').reset();
+                document.getElementById('employeeId').value = '';
+                // Generate a simple ID for new employees
+                document.getElementById('empId').value = 'EMP' + Date.now().toString().slice(-4);
             }
-            alert(errorMessage);
-        }
-    };
-
-    window.signUp = async function() {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        
-        if (!email || !password || !confirmPassword) {
-            alert("Please fill in all fields");
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            alert("Passwords don't match!");
-            return;
-        }
-        
-        if (password.length < 6) {
-            alert("Password must be at least 6 characters long!");
-            return;
-        }
-        
-        try {
-            console.log("🔄 Creating account...");
-            const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
-            console.log("✅ Account created:", userCredential.user.email);
             
-            alert("Account created successfully! You are now logged in.");
+            employeeForm.style.display = 'block';
+        }
+        
+        function cancelEmployeeForm() {
+            employeeForm.style.display = 'none';
+        }
+        
+        async function saveEmployee() {
+            const formId = document.getElementById('employeeId').value;
+            const empId = document.getElementById('empId').value;
+            const name = document.getElementById('empName').value;
+            const department = document.getElementById('empDepartment').value;
+            const position = document.getElementById('empPosition').value;
+            const email = document.getElementById('empEmail').value;
+            const phone = document.getElementById('empPhone').value;
+            const location = document.getElementById('empLocation').value;
+            const salary = document.getElementById('empSalary').value;
+            const status = document.getElementById('empStatus').value;
+            const joiningDate = document.getElementById('empJoiningDate').value;
             
-            // The onAuthStateChanged listener will handle the rest
-            
-        } catch (error) {
-            console.error("❌ Signup error:", error);
-            let errorMessage = "Signup failed: " + error.message;
-            if (error.code === 'auth/email-already-in-use') {
-                errorMessage = "This email is already registered. Please login instead.";
-            } else if (error.code === 'auth/invalid-email') {
-                errorMessage = "Invalid email address.";
+            // Validate required fields
+            if (!empId || !name || !department || !position || !email || !phone || !location || !salary || !status || !joiningDate) {
+                alert('Please fill in all required fields');
+                return;
             }
-            alert(errorMessage);
-        }
-    };
-
-    window.logout = async function() {
-        try {
-            await window.firebaseAuth.signOut();
-            console.log("✅ Logout successful");
-            // The onAuthStateChanged listener will handle the UI reset
-        } catch (error) {
-            console.error("❌ Logout error:", error);
-            alert("Logout failed: " + error.message);
-        }
-    };
-
-    // ==================== EMPLOYEE MANAGEMENT FUNCTIONS ====================
-
-    function showEmployeeForm(employee = null) {
-        if (employee) {
-            // Edit mode
-            const formId = employee.firebaseId ? employee.firebaseId : employee.id;
-            document.getElementById('employeeId').value = formId;
-            document.getElementById('empId').value = employee.id;
-            document.getElementById('empName').value = employee.name;
-            document.getElementById('empDepartment').value = employee.department;
-            document.getElementById('empPosition').value = employee.position;
-            document.getElementById('empEmail').value = employee.email;
-            document.getElementById('empPhone').value = employee.phone;
-            document.getElementById('empLocation').value = employee.location;
-            document.getElementById('empSalary').value = employee.salary;
-            document.getElementById('empStatus').value = employee.status;
-            document.getElementById('empJoiningDate').value = employee.joiningDate;
-        } else {
-            // Add mode
-            document.getElementById('employeeDataForm').reset();
-            document.getElementById('employeeId').value = '';
-            // Generate a simple ID for new employees
-            document.getElementById('empId').value = 'EMP' + Date.now().toString().slice(-4);
-        }
-        
-        employeeForm.style.display = 'block';
-    }
-    
-    function cancelEmployeeForm() {
-        employeeForm.style.display = 'none';
-    }
-    
-    async function saveEmployee() {
-        const formId = document.getElementById('employeeId').value;
-        const empId = document.getElementById('empId').value;
-        const name = document.getElementById('empName').value;
-        const department = document.getElementById('empDepartment').value;
-        const position = document.getElementById('empPosition').value;
-        const email = document.getElementById('empEmail').value;
-        const phone = document.getElementById('empPhone').value;
-        const location = document.getElementById('empLocation').value;
-        const salary = document.getElementById('empSalary').value;
-        const status = document.getElementById('empStatus').value;
-        const joiningDate = document.getElementById('empJoiningDate').value;
-        
-        // Validate required fields
-        if (!empId || !name || !department || !position || !email || !phone || !location || !salary || !status || !joiningDate) {
-            alert('Please fill in all required fields');
-            return;
-        }
-        
-        const employeeData = {
-            id: empId,
-            name,
-            department,
-            position,
-            email,
-            phone,
-            location,
-            salary: parseFloat(salary),
-            status,
-            joiningDate,
-            lastUpdated: new Date().toISOString()
-        };
-        
-        console.log("💾 Saving employee:", employeeData);
-        
-        try {
-            // Check if Firebase is available and user is logged in
-            if (window.firebaseServices && window.currentUserId) {
-                console.log("🔥 Using Firebase for save operation");
-                
-                if (formId && !formId.startsWith('EMP')) {
-                    // This is a Firebase document ID - update existing employee
-                    employeeData.firebaseId = formId;
+            
+            const employeeData = {
+                id: empId,
+                name,
+                department,
+                position,
+                email,
+                phone,
+                location,
+                salary: parseFloat(salary),
+                status,
+                joiningDate,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            console.log("💾 Saving employee:", employeeData);
+            
+            try {
+                if (currentUser && window.firestore) {
+                    console.log("🔥 Using Firebase for save operation");
                     
-                    // Update in local array
-                    const index = employees.findIndex(emp => emp.firebaseId === formId);
-                    if (index !== -1) {
-                        employees[index] = employeeData;
+                    if (formId && !formId.startsWith('EMP')) {
+                        // This is a Firebase document ID - update existing employee
+                        employeeData.firebaseId = formId;
+                        
+                        // Update in local array
+                        const index = employees.findIndex(emp => emp.firebaseId === formId);
+                        if (index !== -1) {
+                            employees[index] = employeeData;
+                        }
+                        
+                        // Update in Firebase
+                        await window.firestore.collection('users').doc(currentUser.uid).collection('employees').doc(formId).update(employeeData);
+                        console.log("✅ Employee updated in Firebase");
+                        
+                    } else {
+                        // Add new employee to Firebase
+                        const docRef = await window.firestore.collection('users').doc(currentUser.uid).collection('employees').add(employeeData);
+                        employeeData.firebaseId = docRef.id;
+                        employees.push(employeeData);
+                        console.log("✅ Employee added to Firebase with ID:", docRef.id);
                     }
                     
-                    // Update in Firebase
-                    await updateEmployeeInFirebase(formId, employeeData);
-                    console.log("✅ Employee updated in Firebase");
-                    
                 } else {
-                    // Add new employee to Firebase
-                    const firebaseId = await addEmployeeToFirebase(employeeData);
-                    employeeData.firebaseId = firebaseId;
-                    employees.push(employeeData);
-                    console.log("✅ Employee added to Firebase with ID:", firebaseId);
+                    // Fallback to local storage only
+                    console.log("📱 Using local storage (Firebase not available)");
+                    
+                    if (formId) {
+                        // Update existing
+                        const index = employees.findIndex(emp => emp.id === formId);
+                        if (index !== -1) {
+                            employees[index] = employeeData;
+                        }
+                    } else {
+                        // Add new
+                        employees.push(employeeData);
+                    }
+                    localStorage.setItem('employees', JSON.stringify(employees));
                 }
                 
-                isFirebaseConnected = true;
+                renderEmployeesTable();
+                employeeForm.style.display = 'none';
+                alert('Employee saved successfully!');
                 
-            } else {
-                // Fallback to local storage only
-                console.log("📱 Using local storage (Firebase not available)");
+            } catch (error) {
+                console.error('❌ Error saving employee:', error);
                 
+                // Fallback to local storage
+                console.log("🔄 Falling back to local storage");
                 if (formId) {
-                    // Update existing
                     const index = employees.findIndex(emp => emp.id === formId);
                     if (index !== -1) {
                         employees[index] = employeeData;
                     }
                 } else {
-                    // Add new
                     employees.push(employeeData);
                 }
                 localStorage.setItem('employees', JSON.stringify(employees));
-                isFirebaseConnected = false;
+                renderEmployeesTable();
+                employeeForm.style.display = 'none';
+                alert('Employee saved locally (Firebase unavailable)');
             }
-            
-            renderEmployeesTable();
-            employeeForm.style.display = 'none';
-            alert('Employee saved successfully!');
-            
-        } catch (error) {
-            console.error('❌ Error saving employee:', error);
-            
-            // Fallback to local storage
-            console.log("🔄 Falling back to local storage");
-            if (formId) {
-                const index = employees.findIndex(emp => emp.id === formId);
-                if (index !== -1) {
-                    employees[index] = employeeData;
-                }
-            } else {
-                employees.push(employeeData);
-            }
-            localStorage.setItem('employees', JSON.stringify(employees));
-            renderEmployeesTable();
-            employeeForm.style.display = 'none';
-            alert('Employee saved locally (Firebase unavailable)');
-        }
-    }
-    
-    function editEmployee(id) {
-        console.log("✏️ Editing employee:", id);
-        const employee = employees.find(emp => emp.firebaseId === id || emp.id === id);
-        if (employee) {
-            showEmployeeForm(employee);
-        } else {
-            alert("Employee not found!");
-        }
-    }
-    
-    async function deleteEmployee(id) {
-        if (!confirm('Are you sure you want to delete this employee?')) {
-            return;
         }
         
-        console.log("🗑️ Deleting employee:", id);
-        
-        try {
+        function editEmployee(id) {
+            console.log("✏️ Editing employee:", id);
             const employee = employees.find(emp => emp.firebaseId === id || emp.id === id);
-            
-            if (employee && employee.firebaseId && window.firebaseServices && window.currentUserId) {
-                await deleteEmployeeFromFirebase(employee.firebaseId);
-                console.log("✅ Employee deleted from Firebase");
+            if (employee) {
+                showEmployeeForm(employee);
+            } else {
+                alert("Employee not found!");
+            }
+        }
+        
+        async function deleteEmployee(id) {
+            if (!confirm('Are you sure you want to delete this employee?')) {
+                return;
             }
             
-            // Remove from local array
-            employees = employees.filter(emp => !(emp.firebaseId === id || emp.id === id));
-            renderEmployeesTable();
-            alert('Employee deleted successfully!');
+            console.log("🗑️ Deleting employee:", id);
             
-        } catch (error) {
-            console.error('❌ Error deleting employee:', error);
-            alert('Error deleting employee from Firebase. Removing locally.');
-            employees = employees.filter(emp => !(emp.firebaseId === id || emp.id === id));
-            renderEmployeesTable();
-        }
-    }
-    
-    function renderEmployeesTable() {
-        console.log("🔄 Rendering employees table, count:", employees.length);
-        employeesTableBody.innerHTML = '';
-        
-        if (employees.length === 0) {
-            employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px;">No employees found. Click "Add Employee" to get started.</td></tr>';
-            return;
-        }
-        
-        employees.forEach(employee => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${employee.id}</td>
-                <td>${employee.name}</td>
-                <td>${employee.department}</td>
-                <td>${employee.position}</td>
-                <td>${employee.email}</td>
-                <td>${employee.phone}</td>
-                <td>${employee.location}</td>
-                <td>₹ ${employee.salary.toLocaleString()}</td>
-                <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </td>
-            `;
-            employeesTableBody.appendChild(row);
-        });
-    }
-    
-    function filterEmployees(searchTerm) {
-        const filteredEmployees = employees.filter(employee => 
-            employee.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            employee.email.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        
-        employeesTableBody.innerHTML = '';
-        
-        if (filteredEmployees.length === 0) {
-            employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No matching employees found</td></tr>';
-            return;
+            try {
+                const employee = employees.find(emp => emp.firebaseId === id || emp.id === id);
+                
+                if (employee && employee.firebaseId && currentUser && window.firestore) {
+                    await window.firestore.collection('users').doc(currentUser.uid).collection('employees').doc(employee.firebaseId).delete();
+                    console.log("✅ Employee deleted from Firebase");
+                }
+                
+                // Remove from local array
+                employees = employees.filter(emp => !(emp.firebaseId === id || emp.id === id));
+                renderEmployeesTable();
+                alert('Employee deleted successfully!');
+                
+            } catch (error) {
+                console.error('❌ Error deleting employee:', error);
+                alert('Error deleting employee from Firebase. Removing locally.');
+                employees = employees.filter(emp => !(emp.firebaseId === id || emp.id === id));
+                renderEmployeesTable();
+            }
         }
         
-        filteredEmployees.forEach(employee => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${employee.id}</td>
-                <td>${employee.name}</td>
-                <td>${employee.department}</td>
-                <td>${employee.position}</td>
-                <td>${employee.email}</td>
-                <td>${employee.phone}</td>
-                <td>${employee.location}</td>
-                <td>₹ ${employee.salary.toLocaleString()}</td>
-                <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </td>
-            `;
-            employeesTableBody.appendChild(row);
-        });
-    }
-
-    // ==================== FIREBASE FIRESTORE FUNCTIONS ====================
-
-    async function loadEmployeesFromFirebase() {
-        console.log("🔄 loadEmployeesFromFirebase called");
-        console.log("🔍 Current User ID:", window.currentUserId);
-        console.log("🔍 Firebase Services:", !!window.firebaseServices);
-        
-        if (!window.currentUserId) {
-            console.log("❌ No user ID available");
-            loadFromLocalStorage();
-            return;
+        function renderEmployeesTable() {
+            console.log("🔄 Rendering employees table, count:", employees.length);
+            employeesTableBody.innerHTML = '';
+            
+            if (employees.length === 0) {
+                employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px;">No employees found. Click "Add Employee" to get started.</td></tr>';
+                return;
+            }
+            
+            employees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.id}</td>
+                    <td>${employee.name}</td>
+                    <td>${employee.department}</td>
+                    <td>${employee.position}</td>
+                    <td>${employee.email}</td>
+                    <td>${employee.phone}</td>
+                    <td>${employee.location}</td>
+                    <td>₹ ${employee.salary.toLocaleString()}</td>
+                    <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                employeesTableBody.appendChild(row);
+            });
         }
         
-        if (!window.firebaseServices) {
-            console.log("❌ Firebase services not available");
-            loadFromLocalStorage();
-            return;
-        }
-        
-        try {
-            console.log("🔥 Loading from Firebase...");
-            const employeesRef = window.firebaseServices.firestore.collection(
-                window.firebaseServices.db, 
-                "users", 
-                window.currentUserId, 
-                "employees"
+        function filterEmployees(searchTerm) {
+            const filteredEmployees = employees.filter(employee => 
+                employee.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                employee.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                employee.email.toLowerCase().includes(searchTerm.toLowerCase())
             );
             
-            const employeesSnapshot = await window.firebaseServices.firestore.getDocs(employeesRef);
-            employees = [];
+            employeesTableBody.innerHTML = '';
             
-            employeesSnapshot.forEach((doc) => {
-                employees.push({ 
-                    firebaseId: doc.id, 
-                    ...doc.data() 
+            if (filteredEmployees.length === 0) {
+                employeesTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No matching employees found</td></tr>';
+                return;
+            }
+            
+            filteredEmployees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.id}</td>
+                    <td>${employee.name}</td>
+                    <td>${employee.department}</td>
+                    <td>${employee.position}</td>
+                    <td>${employee.email}</td>
+                    <td>${employee.phone}</td>
+                    <td>${employee.location}</td>
+                    <td>₹ ${employee.salary.toLocaleString()}</td>
+                    <td><span class="status ${employee.status.toLowerCase()}">${employee.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editEmployee('${employee.firebaseId || employee.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${employee.firebaseId || employee.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                employeesTableBody.appendChild(row);
+            });
+        }
+
+        // ==================== FIREBASE FIRESTORE FUNCTIONS ====================
+
+        async function loadEmployeesFromFirebase() {
+            console.log("🔄 loadEmployeesFromFirebase called");
+            console.log("🔍 Current User:", currentUser ? currentUser.email : 'No user');
+            
+            if (!currentUser || !window.firestore) {
+                console.log("❌ No user or Firestore available");
+                loadFromLocalStorage();
+                return;
+            }
+            
+            try {
+                console.log("🔥 Loading from Firebase...");
+                const querySnapshot = await window.firestore
+                    .collection('users')
+                    .doc(currentUser.uid)
+                    .collection('employees')
+                    .get();
+                
+                employees = [];
+                
+                querySnapshot.forEach((doc) => {
+                    employees.push({ 
+                        firebaseId: doc.id, 
+                        ...doc.data() 
+                    });
                 });
+                
+                console.log(`✅ Loaded ${employees.length} employees from Firebase`);
+                
+                // Update sync status
+                updateSyncStatus('employees', 'synced', `Synced (${employees.length} employees)`);
+                
+                renderEmployeesTable();
+                
+                // Also save to localStorage as backup
+                localStorage.setItem('employees', JSON.stringify(employees));
+                
+            } catch (error) {
+                console.error("❌ Error loading employees from Firebase:", error);
+                updateSyncStatus('employees', 'error', 'Sync Failed');
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            console.log("📱 Loading from local storage...");
+            const localEmployees = localStorage.getItem('employees');
+            if (localEmployees) {
+                employees = JSON.parse(localEmployees);
+                console.log(`✅ Loaded ${employees.length} employees from local storage`);
+                renderEmployeesTable();
+                updateSyncStatus('employees', 'synced', 'Local Data');
+            } else {
+                console.log("📱 No local data found");
+                employees = [];
+                renderEmployeesTable();
+            }
+        }
+
+        // ==================== SYNC FUNCTIONS ====================
+
+        async function syncEmployees() {
+            console.log("🔄 Manual sync triggered");
+            const syncStatus = document.getElementById('sync-employees-status');
+            const syncBtn = document.getElementById('sync-employees-btn');
+            
+            syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+            syncStatus.className = 'sync-status syncing';
+            syncBtn.disabled = true;
+            
+            try {
+                await loadEmployeesFromFirebase();
+                alert('Employees synchronized successfully across all devices!');
+            } catch (error) {
+                console.error('Sync error:', error);
+                alert('Sync failed: ' + error.message);
+            } finally {
+                syncBtn.disabled = false;
+            }
+        }
+
+        function updateSyncStatus(type, status, message) {
+            const syncStatus = document.getElementById(`sync-${type}-status`);
+            if (syncStatus) {
+                syncStatus.innerHTML = `<i class="fas fa-${getStatusIcon(status)}"></i> ${message}`;
+                syncStatus.className = `sync-status ${status}`;
+            }
+        }
+
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'syncing': return 'sync fa-spin';
+                case 'synced': return 'check-circle';
+                case 'error': return 'exclamation-circle';
+                default: return 'info-circle';
+            }
+        }
+
+        // ==================== NAVIGATION FUNCTIONS ====================
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
             });
             
-            console.log(`✅ Loaded ${employees.length} employees from Firebase`);
-            isFirebaseConnected = true;
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
             
-            // Update sync status
-            updateSyncStatus('employees', 'synced', `Synced (${employees.length} employees)`);
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`.menu-item[onclick="showSection('${sectionId}')"]`).classList.add('active');
             
-            renderEmployeesTable();
+            if (sectionId === 'employees') {
+                renderEmployeesTable();
+            }
+        }
+
+        // Debug function to check Firebase connection
+        window.checkFirebaseConnection = function() {
+            console.log("🔍 Firebase Connection Check:");
+            console.log(" - Current User:", currentUser ? currentUser.email : 'No user');
+            console.log(" - Firebase Auth:", !!window.firebaseAuth);
+            console.log(" - Firestore:", !!window.firestore);
+            console.log(" - Employees count:", employees.length);
             
-            // Also save to localStorage as backup
-            localStorage.setItem('employees', JSON.stringify(employees));
-            
-        } catch (error) {
-            console.error("❌ Error loading employees from Firebase:", error);
-            updateSyncStatus('employees', 'error', 'Sync Failed');
-            loadFromLocalStorage();
-        }
-    }
+            if (currentUser && window.firestore) {
+                alert(`Firebase is connected!\nUser: ${currentUser.email}\nEmployees: ${employees.length}`);
+            } else {
+                alert("Firebase is NOT connected. Using local storage only.");
+            }
+        };
+    </script>
 
-    async function addEmployeeToFirebase(employeeData) {
-        if (!window.currentUserId || !window.firebaseServices) {
-            throw new Error('No Firebase connection available');
-        }
-        
-        const docRef = await window.firebaseServices.firestore.addDoc(
-            window.firebaseServices.firestore.collection(
-                window.firebaseServices.db, 
-                "users", 
-                window.currentUserId, 
-                "employees"
-            ), 
-            employeeData
-        );
-        return docRef.id;
-    }
-
-    async function updateEmployeeInFirebase(firebaseId, employeeData) {
-        if (!window.currentUserId || !window.firebaseServices) {
-            throw new Error('No Firebase connection available');
-        }
-        
-        await window.firebaseServices.firestore.updateDoc(
-            window.firebaseServices.firestore.doc(
-                window.firebaseServices.db, 
-                "users", 
-                window.currentUserId, 
-                "employees", 
-                firebaseId
-            ),
-            employeeData
-        );
-    }
-
-    async function deleteEmployeeFromFirebase(firebaseId) {
-        if (!window.currentUserId || !window.firebaseServices) {
-            throw new Error('No Firebase connection available');
-        }
-        
-        await window.firebaseServices.firestore.deleteDoc(
-            window.firebaseServices.firestore.doc(
-                window.firebaseServices.db, 
-                "users", 
-                window.currentUserId, 
-                "employees", 
-                firebaseId
-            )
-        );
-    }
-
-    function loadFromLocalStorage() {
-        console.log("📱 Loading from local storage...");
-        const localEmployees = localStorage.getItem('employees');
-        if (localEmployees) {
-            employees = JSON.parse(localEmployees);
-            console.log(`✅ Loaded ${employees.length} employees from local storage`);
-            renderEmployeesTable();
-            updateSyncStatus('employees', 'synced', 'Local Data');
-        } else {
-            console.log("📱 No local data found");
-            employees = [];
-            renderEmployeesTable();
-        }
-        isFirebaseConnected = false;
-    }
-
-    // ==================== SYNC FUNCTIONS ====================
-
-    async function syncEmployees() {
-        console.log("🔄 Manual sync triggered");
-        const syncStatus = document.getElementById('sync-employees-status');
-        const syncBtn = document.getElementById('sync-employees-btn');
-        
-        syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
-        syncStatus.className = 'sync-status syncing';
-        syncBtn.disabled = true;
-        
-        try {
-            await loadEmployeesFromFirebase();
-            alert('Employees synchronized successfully across all devices!');
-        } catch (error) {
-            console.error('Sync error:', error);
-            alert('Sync failed: ' + error.message);
-        } finally {
-            syncBtn.disabled = false;
-        }
-    }
-
-    function updateSyncStatus(type, status, message) {
-        const syncStatus = document.getElementById(`sync-${type}-status`);
-        if (syncStatus) {
-            syncStatus.innerHTML = `<i class="fas fa-${getStatusIcon(status)}"></i> ${message}`;
-            syncStatus.className = `sync-status ${status}`;
-        }
-    }
-
-    function getStatusIcon(status) {
-        switch(status) {
-            case 'syncing': return 'sync fa-spin';
-            case 'synced': return 'check-circle';
-            case 'error': return 'exclamation-circle';
-            default: return 'info-circle';
-        }
-    }
-
-    // ==================== NAVIGATION FUNCTIONS ====================
-
-    function showSection(sectionId) {
-        document.querySelectorAll('.page-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        document.getElementById(sectionId).classList.add('active');
-        document.querySelector(`.menu-item[onclick="showSection('${sectionId}')"]`).classList.add('active');
-        
-        if (sectionId === 'employees') {
-            renderEmployeesTable();
-        }
-    }
-
-    // Debug function to check Firebase connection
-    window.checkFirebaseConnection = function() {
-        console.log("🔍 Firebase Connection Check:");
-        console.log(" - Current User ID:", window.currentUserId);
-        console.log(" - Firebase Services:", !!window.firebaseServices);
-        console.log(" - Firebase Auth:", !!window.firebaseAuth);
-        console.log(" - Employees count:", employees.length);
-        console.log(" - Firebase Connected:", isFirebaseConnected);
-        
-        if (window.firebaseServices && window.currentUserId) {
-            alert(`Firebase is connected!\nUser: ${window.currentUserId}\nEmployees: ${employees.length}`);
-        } else {
-            alert("Firebase is NOT connected. Using local storage only.");
-        }
-    };
-</script>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, setDoc, doc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
-    authDomain: "testpayroll-60439.firebaseapp.com",
-    projectId: "testpayroll-60439",
-    storageBucket: "testpayroll-60439.firebasestorage.app",
-    messagingSenderId: "240505247731",
-    appId: "1:240505247731:web:6cb12d41ab9acff10ba486",
-    measurementId: "G-40RDNWL84J"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  console.log("🔥 Firebase initialized successfully");
-
-  // Create a global Firebase service object with all functions
-  window.firebaseServices = {
-    auth: auth,
-    db: db,
-    firestore: {
-      collection: collection,
-      getDocs: getDocs,
-      addDoc: addDoc,
-      updateDoc: updateDoc,
-      deleteDoc: deleteDoc,
-      doc: doc,
-      setDoc: setDoc
-    }
-  };
-
-  // Make auth available globally
-  window.firebaseAuth = auth;
-  window.db = db;
-
-  // Auth state listener
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("✅ User logged in:", user.email);
-      window.currentUserId = user.uid;
-      
-      // Update UI
-      document.querySelectorAll("#logged-in-user-1, #logged-in-user-2, #logged-in-user-3").forEach(el => {
-        el.textContent = user.email;
-      });
-      
-      document.getElementById("login-page").style.display = "none";
-      document.getElementById("app-container").style.display = "flex";
-      
-      // Load data from Firebase - IMPORTANT: Wait a bit for the services to be available
-      setTimeout(() => {
-        if (typeof loadEmployeesFromFirebase === 'function') {
-          console.log("🔄 Loading employees from Firebase...");
-          loadEmployeesFromFirebase();
-        } else {
-          console.log("❌ loadEmployeesFromFirebase function not found");
-        }
-      }, 500);
-      
-    } else {
-      console.log("🚪 No user logged in");
-      window.currentUserId = null;
-      document.getElementById("login-page").style.display = "flex";
-      document.getElementById("app-container").style.display = "none";
-    }
-  });
-
-  // Debug: Check if services are available
-  console.log("🛠️ Firebase services available:", !!window.firebaseServices);
-  console.log("🛠️ Firebase auth available:", !!window.firebaseAuth);
-  console.log("🛠️ Firebase db available:", !!window.db);
-</script>
+    <!-- Load Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </body>
 </html>
