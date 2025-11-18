@@ -166,6 +166,84 @@
             max-width: 300px;
             text-align: left;
         }
+
+        .connection-panel {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        .firebase-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+        }
+
+        .firebase-status .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #f1c40f;
+            flex-shrink: 0;
+        }
+
+        .firebase-status.checking .status-dot {
+            background-color: #f1c40f;
+        }
+
+        .firebase-status.success .status-dot {
+            background-color: #2ecc71;
+        }
+
+        .firebase-status.error .status-dot {
+            background-color: #e74c3c;
+        }
+
+        .firebase-status.warning .status-dot {
+            background-color: #f39c12;
+        }
+
+        .firebase-status-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .firebase-status-message {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .connection-retry-btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            background: transparent;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .connection-retry-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .connection-hint {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 8px;
+            text-align: center;
+        }
         
         /* Sidebar Styles */
         .sidebar {
@@ -1209,6 +1287,94 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        const firebaseConnectionSnapshot = {
+            status: 'checking',
+            message: 'Checking Firebase connection...'
+        };
+
+        function applyFirebaseConnectionState() {
+            const container = document.getElementById('firebase-connection-status');
+            const messageEl = document.getElementById('firebase-connection-message');
+            if (!container || !messageEl) return;
+
+            ['checking', 'success', 'error', 'warning'].forEach(cls => container.classList.remove(cls));
+            container.classList.add(firebaseConnectionSnapshot.status);
+            messageEl.textContent = firebaseConnectionSnapshot.message;
+        }
+
+        function setFirebaseConnectionState(status, message) {
+            firebaseConnectionSnapshot.status = status;
+            firebaseConnectionSnapshot.message = message;
+            applyFirebaseConnectionState();
+        }
+
+        async function verifyFirebaseConnection(showAlerts = false) {
+            if (window.location.protocol === 'file:') {
+                const message = 'Firebase SDK modules cannot load while using the file:// protocol. Please start a local web server (for example, `npx http-server`) and open http://localhost to continue.';
+                setFirebaseConnectionState('warning', message);
+                if (showAlerts) alert(message);
+                return false;
+            }
+
+            if (!navigator.onLine) {
+                const message = 'You appear to be offline. Connect to the internet to reach Firebase services.';
+                setFirebaseConnectionState('error', message);
+                if (showAlerts) alert(message);
+                return false;
+            }
+
+            try {
+                setFirebaseConnectionState('checking', 'Contacting Firebase services...');
+                await getDocs(collection(db, 'employees'));
+                setFirebaseConnectionState('success', 'Connected to Firebase. You can sign in now.');
+                return true;
+            } catch (error) {
+                console.error('Firebase connectivity test failed:', error);
+                const friendlyMessage = describeFirebaseConnectionIssue(error);
+                setFirebaseConnectionState('error', friendlyMessage);
+                if (showAlerts) {
+                    alert(`Firebase connection failed. ${friendlyMessage}\n\n${error?.message || ''}`);
+                }
+                return false;
+            }
+        }
+
+        function describeFirebaseConnectionIssue(error) {
+            if (!navigator.onLine) {
+                return 'You are offline. Connect to the internet and retry.';
+            }
+
+            if (error?.code === 'permission-denied') {
+                return 'Firestore rejected the request. Check authentication and Firestore security rules.';
+            }
+
+            if (error?.code === 'unavailable') {
+                return 'Firestore is temporarily unavailable or blocked by the network. Please retry in a moment.';
+            }
+
+            return 'Unable to reach Firebase. Double-check the Firebase configuration values and ensure Firestore is enabled.';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyFirebaseConnectionState();
+            const retryButton = document.getElementById('retry-firebase-connection');
+            if (retryButton) {
+                retryButton.addEventListener('click', () => verifyFirebaseConnection(true));
+            }
+        });
+
+        window.addEventListener('online', () => {
+            setFirebaseConnectionState('checking', 'Back online. Reconnecting to Firebase...');
+            verifyFirebaseConnection();
+        });
+
+        window.addEventListener('offline', () => {
+            setFirebaseConnectionState('error', 'You went offline. Firebase requires an active internet connection.');
+        });
+
+        verifyFirebaseConnection();
+        window.verifyFirebaseConnection = verifyFirebaseConnection;
+
         // Make Firebase available globally
         window.firebaseAuth = auth;
         window.firebaseDb = db;
@@ -1417,6 +1583,24 @@
                 <div class="toggle-form">
                     Already have an account? <a id="show-login">Login</a>
                 </div>
+            </div>
+
+            <div class="connection-panel">
+                <div id="firebase-connection-status" class="firebase-status checking">
+                    <div class="status-dot"></div>
+                    <div>
+                        <div class="firebase-status-title">Firebase Connection</div>
+                        <div id="firebase-connection-message" class="firebase-status-message">
+                            Checking Firebase connection...
+                        </div>
+                    </div>
+                </div>
+                <button id="retry-firebase-connection" type="button" class="connection-retry-btn">
+                    <i class="fas fa-redo"></i> Retry Connection
+                </button>
+                <p class="connection-hint">
+                    Tip: Serve this page using http://localhost instead of opening it directly from your files for the Firebase SDK to load correctly.
+                </p>
             </div>
         </div>
     </div>
