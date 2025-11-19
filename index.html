@@ -1361,6 +1361,26 @@
             if (retryButton) {
                 retryButton.addEventListener('click', () => verifyFirebaseConnection(true));
             }
+
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const showSignupButton = document.getElementById('show-signup');
+            const showLoginButton = document.getElementById('show-login');
+
+            const toggleForms = () => {
+                if (loginForm && signupForm) {
+                    loginForm.classList.toggle('hidden');
+                    signupForm.classList.toggle('hidden');
+                }
+            };
+
+            if (showSignupButton) {
+                showSignupButton.addEventListener('click', toggleForms);
+            }
+
+            if (showLoginButton) {
+                showLoginButton.addEventListener('click', toggleForms);
+            }
         });
 
         window.addEventListener('online', () => {
@@ -3520,16 +3540,6 @@
             // Import button
             document.getElementById('importEmployeesBtn').addEventListener('click', importEmployeeData);
 
-            // Toggle between login/signup forms
-            document.getElementById('show-signup').addEventListener('click', () => {
-                document.getElementById('login-form').classList.add('hidden');
-                document.getElementById('signup-form').classList.remove('hidden');
-            });
-            
-            document.getElementById('show-login').addEventListener('click', () => {
-                document.getElementById('signup-form').classList.add('hidden');
-                document.getElementById('login-form').classList.remove('hidden');
-            });
         }
 
         // Enhanced Payroll Functions
