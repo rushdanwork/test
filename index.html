@@ -194,6 +194,13 @@
             flex-shrink: 0;
         }
 
+        .sync-error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-left: 10px;
+            display: none;
+        }
+
         .firebase-status.checking .status-dot {
             background-color: #f1c40f;
         }
@@ -1286,11 +1293,29 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        let firebaseUser = null;
 
         const firebaseConnectionSnapshot = {
             status: 'checking',
             message: 'Checking Firebase connection...'
         };
+
+        function setAuthenticatedFirebaseContext(user) {
+            firebaseUser = user;
+            window.firebaseAuth = auth;
+            window.firebaseDb = db;
+            window.firestoreFunctions = {
+                collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
+            };
+        }
+
+        function clearAuthenticatedFirebaseContext() {
+            firebaseUser = null;
+            window.firebaseDb = null;
+            window.firestoreFunctions = null;
+        }
+
+        clearAuthenticatedFirebaseContext();
 
         function applyFirebaseConnectionState() {
             const container = document.getElementById('firebase-connection-status');
@@ -1396,13 +1421,6 @@
 
         verifyFirebaseConnection();
         window.verifyFirebaseConnection = verifyFirebaseConnection;
-
-        // Make Firebase available globally
-        window.firebaseAuth = auth;
-        window.firebaseDb = db;
-        window.firestoreFunctions = {
-            collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
-        };
 
         // Signup function
         window.signUp = async function() {
@@ -1538,18 +1556,22 @@
         // Auto login on page load (multi-device persistence)
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                setAuthenticatedFirebaseContext(user);
                 console.log("User logged in:", user.email);
                 document.getElementById('logged-in-user').textContent = user.email;
                 // Hide login page and show application
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('app-container').style.display = 'flex';
+                setFirebaseConnectionState('success', 'Authenticated with Firebase.');
                 // Initialize the application
                 initializeApplication();
             } else {
+                clearAuthenticatedFirebaseContext();
                 console.log("No user logged in.");
                 // Show login page and hide application
                 document.getElementById('login-page').style.display = 'flex';
                 document.getElementById('app-container').style.display = 'none';
+                setFirebaseConnectionState('warning', 'Sign in to sync data with Firebase.');
             }
         });
     </script>
@@ -1773,9 +1795,10 @@
                         <div id="sync-employees-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
+                        <div id="sync-employees-message" class="sync-error-message"></div>
                         <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>                   
+                        </button>
                     </div>
                 </div>
                 
@@ -2186,6 +2209,7 @@
                         <div id="sync-payroll-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
+                        <div id="sync-payroll-message" class="sync-error-message"></div>
                         <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
@@ -2641,6 +2665,7 @@
                         <div id="sync-attendance-status" class="sync-status synced">
                             <i class="fas fa-check-circle"></i> Synced
                         </div>
+                        <div id="sync-attendance-message" class="sync-error-message"></div>
                         <button onclick="logout()" class="btn btn-danger" style="margin-left: 10px; padding: 5px 10px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
@@ -3289,6 +3314,8 @@
 
         // Enhanced Firebase Sync Functions
         async function syncEmployeesWithFirebase() {
+            if (!ensureFirebaseReady('employees')) return;
+
             try {
                 updateSyncStatus('employees', 'syncing');
                 
@@ -3318,10 +3345,13 @@
             } catch (error) {
                 console.error('Error syncing employees with Firebase:', error);
                 updateSyncStatus('employees', 'error');
+                setSyncError('employees', describeSyncError(error));
             }
         }
 
         async function pushEmployeesToFirebase() {
+            if (!ensureFirebaseReady('employees')) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
@@ -3344,10 +3374,13 @@
             } catch (error) {
                 console.error('Error pushing employees to Firebase:', error);
                 updateSyncStatus('employees', 'error');
+                setSyncError('employees', describeSyncError(error));
             }
         }
 
         async function syncAttendanceWithFirebase() {
+            if (!ensureFirebaseReady('attendance')) return;
+
             try {
                 updateSyncStatus('attendance', 'syncing');
                 
@@ -3374,10 +3407,13 @@
             } catch (error) {
                 console.error('Error syncing attendance with Firebase:', error);
                 updateSyncStatus('attendance', 'error');
+                setSyncError('attendance', describeSyncError(error));
             }
         }
 
         async function pushAttendanceToFirebase() {
+            if (!ensureFirebaseReady('attendance')) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
@@ -3400,10 +3436,13 @@
             } catch (error) {
                 console.error('Error pushing attendance to Firebase:', error);
                 updateSyncStatus('attendance', 'error');
+                setSyncError('attendance', describeSyncError(error));
             }
         }
 
         async function syncPayrollWithFirebase() {
+            if (!ensureFirebaseReady('payroll')) return;
+
             try {
                 const { collection, getDocs, doc, setDoc } = window.firestoreFunctions;
                 
@@ -3426,10 +3465,14 @@
                 }
             } catch (error) {
                 console.error('Error syncing payroll with Firebase:', error);
+                updateSyncStatus('payroll', 'error');
+                setSyncError('payroll', describeSyncError(error));
             }
         }
 
         async function pushPayrollToFirebase() {
+            if (!ensureFirebaseReady('payroll')) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
@@ -3450,25 +3493,65 @@
                 await Promise.all(addPromises);
             } catch (error) {
                 console.error('Error pushing payroll to Firebase:', error);
+                updateSyncStatus('payroll', 'error');
+                setSyncError('payroll', describeSyncError(error));
             }
+        }
+
+        function setSyncError(section, message) {
+            const messageElement = document.getElementById(`sync-${section}-message`);
+            if (!messageElement) return;
+
+            if (message) {
+                messageElement.textContent = message;
+                messageElement.style.display = 'block';
+            } else {
+                messageElement.textContent = '';
+                messageElement.style.display = 'none';
+            }
+        }
+
+        function ensureFirebaseReady(section) {
+            if (!window.firebaseDb || !window.firestoreFunctions || !firebaseUser) {
+                updateSyncStatus(section, 'error');
+                setSyncError(section, 'Sign in to Firebase to sync data.');
+                return false;
+            }
+
+            setSyncError(section, '');
+            return true;
+        }
+
+        function describeSyncError(error) {
+            if (error?.code === 'permission-denied') {
+                return 'Permission denied. Confirm your Firebase authentication and Firestore rules.';
+            }
+
+            if (error?.code === 'unauthenticated') {
+                return 'Authentication required. Please sign in again.';
+            }
+
+            return 'Sync failed. Please retry or review console errors for details.';
         }
 
         function updateSyncStatus(section, status) {
             const statusElement = document.getElementById(`sync-${section}-status`);
             if (!statusElement) return;
-            
+
             const icon = statusElement.querySelector('i');
-            
+
             statusElement.className = `sync-status ${status}`;
-            
+
             switch(status) {
                 case 'syncing':
                     icon.className = 'fas fa-sync fa-spin';
                     statusElement.innerHTML = '<i class="fas fa-sync fa-spin"></i> Syncing...';
+                    setSyncError(section, '');
                     break;
                 case 'synced':
                     icon.className = 'fas fa-check-circle';
                     statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+                    setSyncError(section, '');
                     break;
                 case 'error':
                     icon.className = 'fas fa-exclamation-triangle';
