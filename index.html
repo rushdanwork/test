@@ -3314,11 +3314,12 @@
             renderEmployeeAttendanceList();
             updateAttendanceSummary();
             updateAttendanceSaveButtonState();
-            
+
             // Sync with Firebase
             syncEmployeesWithFirebase();
             syncAttendanceWithFirebase();
             syncPayrollWithFirebase();
+            syncCompanySettingsWithFirebase();
         }
 
         // Enhanced Firebase Sync Functions
@@ -3507,6 +3508,38 @@
             }
         }
 
+        async function syncCompanySettingsWithFirebase() {
+            if (!isFirebaseAvailable()) return;
+
+            try {
+                const { doc, getDoc, setDoc } = window.firestoreFunctions;
+                const settingsRef = doc(window.firebaseDb, 'settings', 'company');
+                const snapshot = await getDoc(settingsRef);
+
+                if (snapshot.exists()) {
+                    companySettings = { ...companySettings, ...snapshot.data() };
+                    localStorage.setItem('companySettings', JSON.stringify(companySettings));
+                    loadCompanySettings();
+                } else {
+                    await setDoc(settingsRef, companySettings);
+                }
+            } catch (error) {
+                console.error('Error syncing company settings with Firebase:', error);
+            }
+        }
+
+        async function pushCompanySettingsToFirebase() {
+            if (!isFirebaseAvailable()) return;
+
+            try {
+                const { doc, setDoc } = window.firestoreFunctions;
+                const settingsRef = doc(window.firebaseDb, 'settings', 'company');
+                await setDoc(settingsRef, companySettings);
+            } catch (error) {
+                console.error('Error pushing company settings to Firebase:', error);
+            }
+        }
+
         function setSyncError(section, message) {
             const messageElement = document.getElementById(`sync-${section}-message`);
             if (!messageElement) return;
@@ -3530,6 +3563,10 @@
 
             setSyncError(section, '');
             return true;
+        }
+
+        function isFirebaseAvailable() {
+            return Boolean(window.firebaseDb && window.firestoreFunctions && window.firebaseState?.user);
         }
 
         function describeSyncError(error) {
@@ -5977,8 +6014,9 @@ Payment Method: ${record.paymentMethod}`);
             companySettings.companyName = document.getElementById('companyName').value;
             companySettings.companyAddress = document.getElementById('companyAddress').value;
             companySettings.defaultWorkingDays = parseInt(document.getElementById('defaultWorkingDays').value);
-            
+
             localStorage.setItem('companySettings', JSON.stringify(companySettings));
+            pushCompanySettingsToFirebase();
             alert('Company settings saved successfully!');
         }
         
@@ -5987,8 +6025,9 @@ Payment Method: ${record.paymentMethod}`);
             companySettings.defaultESI = parseFloat(document.getElementById('defaultESI').value);
             companySettings.defaultTDS = parseFloat(document.getElementById('defaultTDS').value);
             companySettings.defaultPT = parseFloat(document.getElementById('defaultPT').value);
-            
+
             localStorage.setItem('companySettings', JSON.stringify(companySettings));
+            pushCompanySettingsToFirebase();
             alert('Payroll settings saved successfully!');
         }
         
@@ -6050,6 +6089,7 @@ Payment Method: ${record.paymentMethod}`);
                             pushEmployeesToFirebase();
                             pushAttendanceToFirebase();
                             pushPayrollToFirebase();
+                            pushCompanySettingsToFirebase();
                             
                             // Refresh UI
                             initializeApplication();
