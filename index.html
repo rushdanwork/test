@@ -1293,7 +1293,47 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let firebaseUser = null;
+        let appInitialized = false;
+
+        const firebaseService = {
+            app,
+            auth,
+            db,
+            firestoreFunctions: {
+                collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
+            },
+            user: null,
+            setUser(user) {
+                this.user = user;
+                window.firebaseUser = user;
+                window.firebaseAuth = this.auth;
+                window.firebaseDb = this.db;
+                window.firestoreFunctions = this.firestoreFunctions;
+            },
+            clearUser() {
+                this.user = null;
+                window.firebaseUser = null;
+                window.firebaseAuth = null;
+                window.firebaseDb = null;
+                window.firestoreFunctions = null;
+            },
+            isReady() {
+                return Boolean(this.user && this.db && this.firestoreFunctions);
+            },
+            requireReady(section) {
+                if (this.isReady()) {
+                    setSyncError(section, '');
+                    return true;
+                }
+
+                updateSyncStatus(section, 'error');
+                setSyncError(section, 'Sign in to Firebase to sync data.');
+                return false;
+            }
+        };
+
+        window.firebaseState = firebaseService;
+        window.firebaseService = firebaseService;
 
         const firebaseConnectionSnapshot = {
             status: 'checking',
@@ -1301,18 +1341,11 @@
         };
 
         function setAuthenticatedFirebaseContext(user) {
-            firebaseUser = user;
-            window.firebaseAuth = auth;
-            window.firebaseDb = db;
-            window.firestoreFunctions = {
-                collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
-            };
+            firebaseService.setUser(user);
         }
 
         function clearAuthenticatedFirebaseContext() {
-            firebaseUser = null;
-            window.firebaseDb = null;
-            window.firestoreFunctions = null;
+            firebaseService.clearUser();
         }
 
         clearAuthenticatedFirebaseContext();
@@ -1348,10 +1381,17 @@
                 return false;
             }
 
+            if (!firebaseService.user) {
+                const message = 'Sign in with a Firebase account to verify Firestore access and sync data.';
+                setFirebaseConnectionState('warning', message);
+                if (showAlerts) alert(message);
+                return false;
+            }
+
             try {
-                setFirebaseConnectionState('checking', 'Contacting Firebase services...');
+                setFirebaseConnectionState('checking', 'Validating Firestore permissions...');
                 await getDocs(collection(db, 'employees'));
-                setFirebaseConnectionState('success', 'Connected to Firebase. You can sign in now.');
+                setFirebaseConnectionState('success', 'Connected to Firebase and authenticated.');
                 return true;
             } catch (error) {
                 console.error('Firebase connectivity test failed:', error);
@@ -1554,19 +1594,37 @@
         }
 
         // Auto login on page load (multi-device persistence)
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setAuthenticatedFirebaseContext(user);
                 console.log("User logged in:", user.email);
                 document.getElementById('logged-in-user').textContent = user.email;
-                // Hide login page and show application
+
+                // Validate Firestore access but continue loading the UI even if verification fails.
+                // This keeps verification visible without blocking offline/local usage when
+                // connectivity or permissions temporarily fail.
+                setFirebaseConnectionState('checking', 'Validating Firestore access...');
+                const connected = await verifyFirebaseConnection(true);
+
+                // Always show the application after attempting verification so users can still
+                // access local data while they fix connectivity issues.
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('app-container').style.display = 'flex';
-                setFirebaseConnectionState('success', 'Authenticated with Firebase.');
-                // Initialize the application
-                initializeApplication();
+
+                if (!connected) {
+                    setFirebaseConnectionState(
+                        'warning',
+                        'Firebase connection unavailable. The app is running in local-only mode until access is restored.'
+                    );
+                }
+
+                if (!appInitialized) {
+                    initializeApplication();
+                    appInitialized = true;
+                }
             } else {
                 clearAuthenticatedFirebaseContext();
+                appInitialized = false;
                 console.log("No user logged in.");
                 // Show login page and hide application
                 document.getElementById('login-page').style.display = 'flex';
@@ -3319,10 +3377,10 @@
             try {
                 updateSyncStatus('employees', 'syncing');
                 
-                const { collection, getDocs, doc, setDoc, deleteDoc } = window.firestoreFunctions;
+                const { collection, getDocs, doc, setDoc, deleteDoc } = firebaseService.firestoreFunctions;
                 
                 // Get employees from Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'employees'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'employees'));
                 const firebaseEmployees = [];
                 
                 snapshot.forEach(doc => {
@@ -3353,10 +3411,10 @@
             if (!ensureFirebaseReady('employees')) return;
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
+                const { collection, doc, setDoc, getDocs, deleteDoc } = firebaseService.firestoreFunctions;
                 
                 // Clear existing employees in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'employees'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'employees'));
                 const deletePromises = [];
                 snapshot.forEach(doc => {
                     deletePromises.push(deleteDoc(doc.ref));
@@ -3365,7 +3423,7 @@
                 
                 // Add all local employees to Firebase
                 const addPromises = employees.map(employee => {
-                    const docRef = doc(collection(window.firebaseDb, 'employees'), employee.id);
+                    const docRef = doc(collection(firebaseService.db, 'employees'), employee.id);
                     return setDoc(docRef, employee);
                 });
                 
@@ -3384,10 +3442,10 @@
             try {
                 updateSyncStatus('attendance', 'syncing');
                 
-                const { collection, getDocs, doc, setDoc } = window.firestoreFunctions;
+                const { collection, getDocs, doc, setDoc } = firebaseService.firestoreFunctions;
                 
                 // Get attendance from Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'attendance'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'attendance'));
                 const firebaseAttendance = {};
                 
                 snapshot.forEach(doc => {
@@ -3415,10 +3473,10 @@
             if (!ensureFirebaseReady('attendance')) return;
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
+                const { collection, doc, setDoc, getDocs, deleteDoc } = firebaseService.firestoreFunctions;
                 
                 // Clear existing attendance in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'attendance'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'attendance'));
                 const deletePromises = [];
                 snapshot.forEach(doc => {
                     deletePromises.push(deleteDoc(doc.ref));
@@ -3427,7 +3485,7 @@
                 
                 // Add all local attendance records to Firebase
                 const addPromises = Object.keys(attendanceRecords).map(date => {
-                    const docRef = doc(collection(window.firebaseDb, 'attendance'), date);
+                    const docRef = doc(collection(firebaseService.db, 'attendance'), date);
                     return setDoc(docRef, attendanceRecords[date]);
                 });
                 
@@ -3444,10 +3502,10 @@
             if (!ensureFirebaseReady('payroll')) return;
 
             try {
-                const { collection, getDocs, doc, setDoc } = window.firestoreFunctions;
+                const { collection, getDocs, doc, setDoc } = firebaseService.firestoreFunctions;
                 
                 // Get payroll records from Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'payroll'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'payroll'));
                 const firebasePayroll = [];
                 
                 snapshot.forEach(doc => {
@@ -3474,10 +3532,10 @@
             if (!ensureFirebaseReady('payroll')) return;
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
+                const { collection, doc, setDoc, getDocs, deleteDoc } = firebaseService.firestoreFunctions;
                 
                 // Clear existing payroll in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'payroll'));
+                const snapshot = await getDocs(collection(firebaseService.db, 'payroll'));
                 const deletePromises = [];
                 snapshot.forEach(doc => {
                     deletePromises.push(deleteDoc(doc.ref));
@@ -3486,7 +3544,7 @@
                 
                 // Add all local payroll records to Firebase
                 const addPromises = payrollRecords.map(record => {
-                    const docRef = doc(collection(window.firebaseDb, 'payroll'), record.id || generateId());
+                    const docRef = doc(collection(firebaseService.db, 'payroll'), record.id || generateId());
                     return setDoc(docRef, record);
                 });
                 
@@ -3512,14 +3570,7 @@
         }
 
         function ensureFirebaseReady(section) {
-            if (!window.firebaseDb || !window.firestoreFunctions || !firebaseUser) {
-                updateSyncStatus(section, 'error');
-                setSyncError(section, 'Sign in to Firebase to sync data.');
-                return false;
-            }
-
-            setSyncError(section, '');
-            return true;
+            return firebaseService.requireReady(section);
         }
 
         function describeSyncError(error) {
