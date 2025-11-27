@@ -1443,8 +1443,11 @@
                 document.getElementById('confirm-password-error').style.display = 'block';
                 isValid = false;
             }
-            
+
             if (!isValid) return;
+
+            const connected = await verifyFirebaseConnection(true);
+            if (!connected) return;
 
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
@@ -1497,8 +1500,11 @@
                 document.getElementById('login-password-error').style.display = 'block';
                 isValid = false;
             }
-            
+
             if (!isValid) return;
+
+            const connected = await verifyFirebaseConnection(true);
+            if (!connected) return;
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
@@ -1536,7 +1542,7 @@
         }
 
         // Auto login on page load (multi-device persistence)
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 console.log("User logged in:", user.email);
                 document.getElementById('logged-in-user').textContent = user.email;
@@ -1544,7 +1550,7 @@
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('app-container').style.display = 'flex';
                 // Initialize the application
-                initializeApplication();
+                await initializeApplication();
             } else {
                 console.log("No user logged in.");
                 // Show login page and hide application
@@ -3194,6 +3200,25 @@
             defaultTDS: 10,
             defaultPT: 200
         };
+
+        // Firebase readiness helpers
+        async function ensureFirebaseReadyForSync(section) {
+            if (typeof window.verifyFirebaseConnection === 'function') {
+                const connected = await window.verifyFirebaseConnection();
+                if (!connected) {
+                    if (section) updateSyncStatus(section, 'error');
+                    return false;
+                }
+            }
+
+            const ready = Boolean(window.firebaseDb && window.firestoreFunctions);
+            if (!ready) {
+                console.warn('Firebase SDK is not ready yet.');
+                if (section) updateSyncStatus(section, 'error');
+            }
+
+            return ready;
+        }
         
         // DOM Elements for Employee Management
         const employeeElements = {
@@ -3245,7 +3270,7 @@
         };
 
         // Initialize the application
-        function initializeApplication() {
+        async function initializeApplication() {
             renderEmployeeTable();
             setupEmployeeEventListeners();
             setupPayrollEventListeners();
@@ -3280,15 +3305,21 @@
             renderEmployeeAttendanceList();
             updateAttendanceSummary();
             updateAttendanceSaveButtonState();
-            
+
             // Sync with Firebase
-            syncEmployeesWithFirebase();
-            syncAttendanceWithFirebase();
-            syncPayrollWithFirebase();
+            const firebaseReady = await ensureFirebaseReadyForSync();
+            if (firebaseReady) {
+                await syncEmployeesWithFirebase();
+                await syncAttendanceWithFirebase();
+                await syncPayrollWithFirebase();
+            }
         }
 
         // Enhanced Firebase Sync Functions
         async function syncEmployeesWithFirebase() {
+            const ready = await ensureFirebaseReadyForSync('employees');
+            if (!ready) return;
+
             try {
                 updateSyncStatus('employees', 'syncing');
                 
@@ -3322,6 +3353,9 @@
         }
 
         async function pushEmployeesToFirebase() {
+            const ready = await ensureFirebaseReadyForSync('employees');
+            if (!ready) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
@@ -3348,6 +3382,9 @@
         }
 
         async function syncAttendanceWithFirebase() {
+            const ready = await ensureFirebaseReadyForSync('attendance');
+            if (!ready) return;
+
             try {
                 updateSyncStatus('attendance', 'syncing');
                 
@@ -3378,6 +3415,9 @@
         }
 
         async function pushAttendanceToFirebase() {
+            const ready = await ensureFirebaseReadyForSync('attendance');
+            if (!ready) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
@@ -3404,6 +3444,9 @@
         }
 
         async function syncPayrollWithFirebase() {
+            const ready = await ensureFirebaseReadyForSync('payroll');
+            if (!ready) return;
+
             try {
                 const { collection, getDocs, doc, setDoc } = window.firestoreFunctions;
                 
@@ -3430,6 +3473,9 @@
         }
 
         async function pushPayrollToFirebase() {
+            const ready = await ensureFirebaseReadyForSync('payroll');
+            if (!ready) return;
+
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
                 
