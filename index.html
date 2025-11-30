@@ -4125,62 +4125,7 @@
             renderEmployeeTable(filtered);
         }
 
-        // Enhanced Load sample data
-        function loadSampleData() {
-            const sampleEmployees = [
-                {
-                     id: 'EMP-1001',
-                    name: 'Rajesh Kumar',
-                    gender: 'male',
-                    department: 'IT',
-                    position: 'Software Developer',
-                    email: 'rajesh.kumar@company.com',
-                    phone: '9876543210',
-                    location: 'Hyderabad',
-                    salary: 50000,
-                    salaryType: 'monthly',
-                    bankName: 'HDFC Bank',
-                    accountNo: '123456789012',
-                    IFSCCode: 'HDFC0001234',
-                    PFID: 'PF/12345/6789',
-                    PFUAN: '123456789012',
-                    allowances: 5000,
-                    deductions: 2000,
-                    status: 'active',
-                    joinDate: '2023-01-15',
-                    education: 'bachelor',
-                    skills: 'JavaScript, React, Node.js',
-                    experience: 3
-                },
-                {
-                    id: 'EMP-1002',
-                    name: 'Priya Sharma',
-                    gender: 'female',
-                    department: 'HR',
-                    position: 'HR Manager',
-                    email: 'priya.sharma@company.com',
-                    phone: '9876543211',
-                    location: 'Hyderabad',
-                    salary: 60000,
-                    salaryType: 'monthly',
-                    bankName: 'ICICI Bank',
-                    accountNo: '123456789013',
-                    IFSCCode: 'ICIC0001234',
-                    PFID: 'PF/12345/6790',
-                    PFUAN: '123456789013',
-                    allowances: 6000,
-                    deductions: 2500,
-                    status: 'active',
-                    joinDate: '2022-11-20',
-                    education: 'master',
-                    skills: 'Recruitment, Employee Relations',
-                    experience: 5
-                }
-            ];
-                          
-            employees = sampleEmployees;
-            localStorage.setItem('employees', JSON.stringify(employees));
-        }
+        
 
         // Enhanced Payroll Functions
         function formatCurrency(amount) {
