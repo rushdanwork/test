@@ -1563,7 +1563,7 @@
         }
 
         // Auto login on page load (multi-device persistence)
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setAuthenticatedFirebaseContext(user);
                 console.log("User logged in:", user.email);
@@ -1573,7 +1573,7 @@
                 document.getElementById('app-container').style.display = 'flex';
                 setFirebaseConnectionState('success', 'Authenticated with Firebase.');
                 // Initialize the application
-                initializeApplication();
+                await initializeApplication();
             } else {
                 clearAuthenticatedFirebaseContext();
                 console.log("No user logged in.");
@@ -3213,27 +3213,11 @@
     </div>
 
     <script>
-        // Enhanced Data Management with Firebase
-        let employees = JSON.parse(localStorage.getItem('employees')) || [];
-        let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || {};
-        let monthlyReports = JSON.parse(localStorage.getItem('monthlyReports')) || {};
-        let savedDays = JSON.parse(localStorage.getItem('savedDays')) || [];
-        let payrollRecords = JSON.parse(localStorage.getItem('payrollRecords')) || [];
-        let companySettings = JSON.parse(localStorage.getItem('companySettings')) || {
-            companyName: "Samkitec Resources",
-            companyAddress: "Pyrogreen Energy Private Limited - FLAT NO 304, SAHITI SRI VIDHYA PETAL, Street No-1, Patrika Nagar, HITEC City, Hyderabad, Telangana 500081",
-            defaultWorkingDays: 30,
-            defaultPF: 12,
-            defaultESI: 1.75,
-            defaultTDS: 10,
-            defaultPT: 200
-        };
-        
-        // DOM Elements for Employee Management
+        let employees = [];
+
         const employeeElements = {
             form: document.getElementById('employeeForm'),
             formFields: {
-                id: document.getElementById('employeeId'),
                 empId: document.getElementById('empId'),
                 name: document.getElementById('empName'),
                 gender: document.getElementById('empGender'),
@@ -3252,15 +3236,15 @@
                 location: document.getElementById('empLocation'),
                 salary: document.getElementById('empSalary'),
                 salaryType: document.getElementById('empSalaryType'),
+                allowances: document.getElementById('empAllowances'),
+                deductions: document.getElementById('empDeductions'),
+                taxIdentification: document.getElementById('empTaxIdentification'),
                 bankName: document.getElementById('empBankName'),
                 accountNo: document.getElementById('empAccountNo'),
                 IFSCCode: document.getElementById('empIFSCCode'),
                 branch: document.getElementById('empBranch'),
                 PFID: document.getElementById('empPFID'),
                 PFUAN: document.getElementById('empPFUAN'),
-                allowances: document.getElementById('empAllowances'),
-                deductions: document.getElementById('empDeductions'),
-                taxIdentification: document.getElementById('empTaxIdentification'),
                 status: document.getElementById('empStatus'),
                 joinDate: document.getElementById('empJoinDate'),
                 education: document.getElementById('empEducation'),
@@ -3278,108 +3262,110 @@
             }
         };
 
+        let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || {};
+        let monthlyReports = JSON.parse(localStorage.getItem('monthlyReports')) || {};
+        let savedDays = JSON.parse(localStorage.getItem('savedDays')) || [];
+        let payrollRecords = JSON.parse(localStorage.getItem('payrollRecords')) || [];
+        let companySettings = JSON.parse(localStorage.getItem('companySettings')) || {
+            companyName: "Samkitec Resources",
+            companyAddress: "Pyrogreen Energy Private Limited - FLAT NO 304, SAHITI SRI VIDHYA PETAL, Street No-1, Patrika Nagar, HITEC City, Hyderabad, Telangana 500081",
+            defaultWorkingDays: 30,
+            defaultPF: 12,
+            defaultESI: 1.75,
+            defaultTDS: 10,
+            defaultPT: 200
+        };
+
         // Initialize the application
-        function initializeApplication() {
-            renderEmployeeTable();
+        async function initializeApplication() {
+            await loadEmployeesFromFirebase();
             setupEmployeeEventListeners();
+            renderEmployeeTable();
+
             setupPayrollEventListeners();
             setupAttendanceEventListeners();
             updatePayrollDates();
             loadDashboardData();
             loadCompanySettings();
-            
-            // Load sample data if empty
-            if (employees.length === 0) {
-                loadSampleData();
-            }
-            
+
             // Populate employee dropdowns
             populatePayrollEmployeeDropdown();
             populateReportEmployeeDropdown();
-            
+
             // Set today's date as default for attendance
             setTodayDate();
-            
+
             // Set current month as default for attendance
             const today = new Date();
             const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
             document.getElementById('month-select').value = currentMonth;
             document.getElementById('reportMonthSelect').value = currentMonth;
             document.getElementById('payrollReportMonth').value = currentMonth;
-            
+
             // Show dashboard section by default
             showSection('dashboard');
-            
+
             // Render initial attendance list
             renderEmployeeAttendanceList();
             updateAttendanceSummary();
             updateAttendanceSaveButtonState();
 
             // Sync with Firebase
-            syncEmployeesWithFirebase();
             syncAttendanceWithFirebase();
             syncPayrollWithFirebase();
             syncCompanySettingsWithFirebase();
         }
 
         // Enhanced Firebase Sync Functions
-        async function syncEmployeesWithFirebase() {
-            if (!ensureFirebaseReady('employees')) return;
+        async function loadEmployeesFromFirebase() {
+            if (!window.firebaseDb || !window.firestoreFunctions) return;
 
-            try {
-                updateSyncStatus('employees', 'syncing');
-                
-                const { collection, getDocs, doc, setDoc, deleteDoc } = window.firestoreFunctions;
-                
-                // Get employees from Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'employees'));
-                const firebaseEmployees = [];
-                
-                snapshot.forEach(doc => {
-                    firebaseEmployees.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // If Firebase has data, use it (Firebase as source of truth)
-                if (firebaseEmployees.length > 0) {
-                    employees = firebaseEmployees;
-                    localStorage.setItem('employees', JSON.stringify(employees));
-                    renderEmployeeTable();
-                    populatePayrollEmployeeDropdown();
-                    populateReportEmployeeDropdown();
-                    updateSyncStatus('employees', 'synced');
-                } else {
-                    // If no data in Firebase, push local data to Firebase
-                    await pushEmployeesToFirebase();
-                    updateSyncStatus('employees', 'synced');
-                }
-            } catch (error) {
-                console.error('Error syncing employees with Firebase:', error);
-                updateSyncStatus('employees', 'error');
-                setSyncError('employees', describeSyncError(error));
-            }
+            const { getDocs, collection } = window.firestoreFunctions;
+            if (!getDocs || !collection) return;
+
+            const snapshot = await getDocs(collection(window.firebaseDb, "employees"));
+            employees = [];
+            snapshot.forEach(docSnap => {
+                employees.push(normalizeEmployeeRecord(docSnap.data()));
+            });
+            renderEmployeeTable();
         }
 
-        async function pushEmployeesToFirebase() {
+        async function syncEmployeesWithFirebase() {
+            await loadEmployeesFromFirebase();
+        }
+
+        async function pushEmployeesToFirebase(options = {}) {
             if (!ensureFirebaseReady('employees')) return;
+
+            const { replaceRemote = false } = options;
 
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                
-                // Clear existing employees in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'employees'));
+                const employeesCollection = collection(window.firebaseDb, 'employees');
+                const existingEmployeeIds = new Set();
+
+                // Track existing employees in Firebase
+                const snapshot = await getDocs(employeesCollection);
+                snapshot.forEach(docSnap => existingEmployeeIds.add(docSnap.id));
+
+                // Upsert local employees
+                const upsertPromises = employees.map(employee => {
+                    const normalized = normalizeEmployeeRecord(employee);
+                    const docRef = doc(employeesCollection, normalized.employeeId);
+                    existingEmployeeIds.delete(normalized.employeeId);
+                    return setDoc(docRef, normalized);
+                });
+
+                // Optionally remove stale Firebase documents when explicitly requested
                 const deletePromises = [];
-                snapshot.forEach(doc => {
-                    deletePromises.push(deleteDoc(doc.ref));
-                });
-                await Promise.all(deletePromises);
-                
-                // Add all local employees to Firebase
-                const addPromises = employees.map(employee => {
-                    const docRef = doc(collection(window.firebaseDb, 'employees'), employee.id);
-                    return setDoc(docRef, employee);
-                });
-                
-                await Promise.all(addPromises);
+                if (replaceRemote || employees.length > 0) {
+                    existingEmployeeIds.forEach(id => {
+                        deletePromises.push(deleteDoc(doc(employeesCollection, id)));
+                    });
+                }
+
+                await Promise.all([...upsertPromises, ...deletePromises]);
                 updateSyncStatus('employees', 'synced');
             } catch (error) {
                 console.error('Error pushing employees to Firebase:', error);
@@ -3421,27 +3407,36 @@
             }
         }
 
-        async function pushAttendanceToFirebase() {
+        async function pushAttendanceToFirebase(options = {}) {
             if (!ensureFirebaseReady('attendance')) return;
+
+            const { replaceRemote = false } = options;
 
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                
-                // Clear existing attendance in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'attendance'));
-                const deletePromises = [];
-                snapshot.forEach(doc => {
-                    deletePromises.push(deleteDoc(doc.ref));
-                });
-                await Promise.all(deletePromises);
-                
-                // Add all local attendance records to Firebase
-                const addPromises = Object.keys(attendanceRecords).map(date => {
-                    const docRef = doc(collection(window.firebaseDb, 'attendance'), date);
+                const attendanceCollection = collection(window.firebaseDb, 'attendance');
+                const existingAttendanceIds = new Set();
+
+                // Track existing attendance documents
+                const snapshot = await getDocs(attendanceCollection);
+                snapshot.forEach(docSnap => existingAttendanceIds.add(docSnap.id));
+
+                // Upsert local attendance records
+                const upsertPromises = Object.keys(attendanceRecords).map(date => {
+                    const docRef = doc(attendanceCollection, date);
+                    existingAttendanceIds.delete(date);
                     return setDoc(docRef, attendanceRecords[date]);
                 });
-                
-                await Promise.all(addPromises);
+
+                // Optionally remove stale Firebase documents when explicitly requested
+                const deletePromises = [];
+                if (replaceRemote || Object.keys(attendanceRecords).length > 0) {
+                    existingAttendanceIds.forEach(id => {
+                        deletePromises.push(deleteDoc(doc(attendanceCollection, id)));
+                    });
+                }
+
+                await Promise.all([...upsertPromises, ...deletePromises]);
                 updateSyncStatus('attendance', 'synced');
             } catch (error) {
                 console.error('Error pushing attendance to Firebase:', error);
@@ -3480,27 +3475,37 @@
             }
         }
 
-        async function pushPayrollToFirebase() {
+        async function pushPayrollToFirebase(options = {}) {
             if (!ensureFirebaseReady('payroll')) return;
+
+            const { replaceRemote = false } = options;
 
             try {
                 const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                
-                // Clear existing payroll in Firebase
-                const snapshot = await getDocs(collection(window.firebaseDb, 'payroll'));
+                const payrollCollection = collection(window.firebaseDb, 'payroll');
+                const existingPayrollIds = new Set();
+
+                // Track existing payroll documents
+                const snapshot = await getDocs(payrollCollection);
+                snapshot.forEach(docSnap => existingPayrollIds.add(docSnap.id));
+
+                // Upsert local payroll records
+                const upsertPromises = payrollRecords.map(record => {
+                    const recordId = record.id || generateId();
+                    const docRef = doc(payrollCollection, recordId);
+                    existingPayrollIds.delete(recordId);
+                    return setDoc(docRef, { ...record, id: recordId });
+                });
+
+                // Optionally remove stale Firebase documents when explicitly requested
                 const deletePromises = [];
-                snapshot.forEach(doc => {
-                    deletePromises.push(deleteDoc(doc.ref));
-                });
-                await Promise.all(deletePromises);
-                
-                // Add all local payroll records to Firebase
-                const addPromises = payrollRecords.map(record => {
-                    const docRef = doc(collection(window.firebaseDb, 'payroll'), record.id || generateId());
-                    return setDoc(docRef, record);
-                });
-                
-                await Promise.all(addPromises);
+                if (replaceRemote || payrollRecords.length > 0) {
+                    existingPayrollIds.forEach(id => {
+                        deletePromises.push(deleteDoc(doc(payrollCollection, id)));
+                    });
+                }
+
+                await Promise.all([...upsertPromises, ...deletePromises]);
             } catch (error) {
                 console.error('Error pushing payroll to Firebase:', error);
                 updateSyncStatus('payroll', 'error');
@@ -3646,37 +3651,26 @@
 
         // Enhanced Employee Management Functions
         function setupEmployeeEventListeners() {
-            // Add employee button
             employeeElements.buttons.add.addEventListener('click', showEmployeeForm);
-            
-            // Cancel button
             employeeElements.buttons.cancel.addEventListener('click', hideEmployeeForm);
-            
-            // Save button - using form submission
-            document.getElementById('employeeDataForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveEmployee();
-            });
-            
-            // Search functionality
-            employeeElements.table.search.addEventListener('input', filterEmployees);
-            
-            // Sync button
-            document.getElementById('sync-employees-btn').addEventListener('click', function() {
-                syncEmployeesWithFirebase();
-            });
 
-            // Export button
-            document.getElementById('exportEmployeesBtn').addEventListener('click', exportEmployeeData);
-            
-            // Import button
-            document.getElementById('importEmployeesBtn').addEventListener('click', importEmployeeData);
+            document.getElementById('employeeDataForm')
+                .addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveEmployee();
+                });
+
+            employeeElements.table.search.addEventListener('input', filterEmployees);
 
         }
 
         // Enhanced Payroll Functions
         function setupPayrollEventListeners() {
             // Employee Details Edit/Save functionality
+            const employeeActionContainer = document.getElementById('employeeActionBtns');
+            const payrollSaveButton = employeeActionContainer?.querySelector('#saveEmployeeBtn');
+            const payrollCancelButton = employeeActionContainer?.querySelector('#cancelEmployeeBtn');
+
             document.getElementById('editEmployeeBtn').addEventListener('click', function() {
                 const inputs = document.querySelectorAll('#employeeDetailsSection .employee-input');
                 inputs.forEach(input => {
@@ -3685,8 +3679,8 @@
                 document.getElementById('employeeActionBtns').style.display = 'block';
                 this.style.display = 'none';
             });
-            
-            document.getElementById('saveEmployeeBtn').addEventListener('click', function() {
+
+            payrollSaveButton?.addEventListener('click', function() {
                 const inputs = document.querySelectorAll('#employeeDetailsSection .employee-input');
                 inputs.forEach(input => {
                     input.disabled = true;
@@ -3695,8 +3689,8 @@
                 document.getElementById('editEmployeeBtn').style.display = 'block';
                 alert('Employee details updated successfully!');
             });
-            
-            document.getElementById('cancelEmployeeBtn').addEventListener('click', function() {
+
+            payrollCancelButton?.addEventListener('click', function() {
                 const inputs = document.querySelectorAll('#employeeDetailsSection .employee-input');
                 inputs.forEach(input => {
                     input.disabled = true;
@@ -3780,10 +3774,11 @@
             document.getElementById('employeeSelect').addEventListener('change', function() {
                 const selectedEmployeeId = this.value;
                 if (selectedEmployeeId) {
-                    const employee = employees.find(emp => emp.id === selectedEmployeeId);
+                    const employee = employees.find(emp => normalizeEmployeeRecord(emp).employeeId === selectedEmployeeId);
                     if (employee) {
-                        updatePayrollEmployeeDetails(employee);
-                        updateAttendanceDeductions(employee.id);
+                        const normalized = normalizeEmployeeRecord(employee);
+                        updatePayrollEmployeeDetails(normalized);
+                        updateAttendanceDeductions(normalized.employeeId);
                     }
                 }
                 // Recalculate salary
@@ -3858,45 +3853,53 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(`${tabName}-tab`).classList.add('active');
-            
+
             // Update active tab
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Activate the clicked tab
             event.target.classList.add('active');
         }
 
-        // Show/hide employee form
+        function normalizeEmployeeRecord(emp) {
+            const employeeId = emp?.employeeId || emp?.id || '';
+            return { ...emp, employeeId, id: employeeId };
+        }
+
         function showEmployeeForm() {
-            employeeElements.form.style.display = 'block';
-            employeeElements.formFields.id.value = '';
-            employeeElements.formFields.empId.value = generateEmployeeId();
-            employeeElements.formFields.name.focus();
-            
-            // Switch to personal tab
-            switchEmployeeTab('personal');
+            employeeElements.form.style.display = "block";
         }
 
         function hideEmployeeForm() {
-            employeeElements.form.style.display = 'none';
-            document.getElementById('employeeDataForm').reset();
+            employeeElements.form.style.display = "none";
+            document.getElementById("employeeDataForm").reset();
         }
 
-        // Enhanced Save employee function
-        function saveEmployee() {
-            // Validate form
+        function validateEmployeeForm() {
+            if (employeeElements.formFields.empId.value.trim() === "") return false;
+            if (employeeElements.formFields.name.value.trim() === "") return false;
+            if (employeeElements.formFields.email.value.trim() === "") return false;
+            if (employeeElements.formFields.phone.value.trim() === "") return false;
+            if (employeeElements.formFields.department.value.trim() === "") return false;
+            if (employeeElements.formFields.position.value.trim() === "") return false;
+            if (employeeElements.formFields.salary.value.trim() === "") return false;
+            return true;
+        }
+
+        async function saveEmployee() {
+
             if (!validateEmployeeForm()) {
-                return false;
+                alert("Fill all required fields.");
+                return;
             }
-            
-            // Prepare employee data
-            const employeeData = {
-                id: employeeElements.formFields.empId.value,
+
+            const emp = {
+                employeeId: employeeElements.formFields.empId.value.trim(),
                 name: employeeElements.formFields.name.value.trim(),
                 gender: employeeElements.formFields.gender.value,
                 dob: employeeElements.formFields.dob.value,
@@ -3914,15 +3917,15 @@
                 location: employeeElements.formFields.location.value.trim(),
                 salary: parseFloat(employeeElements.formFields.salary.value),
                 salaryType: employeeElements.formFields.salaryType.value,
+                allowances: parseFloat(employeeElements.formFields.allowances.value) || 0,
+                deductions: parseFloat(employeeElements.formFields.deductions.value) || 0,
+                taxIdentification: employeeElements.formFields.taxIdentification.value.trim(),
                 bankName: employeeElements.formFields.bankName.value.trim(),
                 accountNo: employeeElements.formFields.accountNo.value.trim(),
                 IFSCCode: employeeElements.formFields.IFSCCode.value.trim(),
                 branch: employeeElements.formFields.branch.value.trim(),
                 PFID: employeeElements.formFields.PFID.value.trim(),
                 PFUAN: employeeElements.formFields.PFUAN.value.trim(),
-                allowances: parseFloat(employeeElements.formFields.allowances.value) || 0,
-                deductions: parseFloat(employeeElements.formFields.deductions.value) || 0,
-                taxIdentification: employeeElements.formFields.taxIdentification.value.trim(),
                 status: employeeElements.formFields.status.value,
                 joinDate: employeeElements.formFields.joinDate.value,
                 education: employeeElements.formFields.education.value,
@@ -3931,190 +3934,72 @@
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
-            
-            // Check if editing existing employee
-            const existingIndex = employees.findIndex(emp => emp.id === employeeData.id);
-            
-            if (existingIndex >= 0) {
-                // Update existing employee
-                employees[existingIndex] = { ...employees[existingIndex], ...employeeData, updatedAt: new Date().toISOString() };
-                alert('Employee updated successfully!');
-            } else {
-                // Add new employee
-                employees.push(employeeData);
-                alert('Employee added successfully!');
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('employees', JSON.stringify(employees));
-            
-            // Sync with Firebase
-            pushEmployeesToFirebase();
-            
-            // Refresh UI
+
+            const normalizedEmp = normalizeEmployeeRecord(emp);
+
+            employees = employees.filter(e => normalizeEmployeeRecord(e).employeeId !== normalizedEmp.employeeId);
+            employees.push(normalizedEmp);
             renderEmployeeTable();
-            hideEmployeeForm();
-            populatePayrollEmployeeDropdown();
-            populateReportEmployeeDropdown();
-            loadDashboardData();
-            return true;
-        }
 
-        // Enhanced Form validation
-        function validateEmployeeForm() {
-            let isValid = true;
-            const requiredFields = [
-                employeeElements.formFields.empId,
-                employeeElements.formFields.name,
-                employeeElements.formFields.department,
-                employeeElements.formFields.position,
-                employeeElements.formFields.email,
-                employeeElements.formFields.phone,
-                employeeElements.formFields.location,
-                employeeElements.formFields.salary,
-                employeeElements.formFields.bankName,
-                employeeElements.formFields.accountNo,
-                employeeElements.formFields.IFSCCode,
-                employeeElements.formFields.joinDate
-            ];
-            
-            // Reset error states
-            requiredFields.forEach(field => {
-                field.style.borderColor = '';
-            });
-            
-            // Check required fields
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.style.borderColor = 'red';
-                    isValid = false;
+            try {
+                const { doc, setDoc } = window.firestoreFunctions || {};
+                if (!doc || !setDoc || !window.firebaseDb) {
+                    throw new Error('Firestore not ready');
                 }
-            });
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(employeeElements.formFields.email.value)) {
-                employeeElements.formFields.email.style.borderColor = 'red';
-                alert('Please enter a valid email address');
-                isValid = false;
+
+                const ref = doc(window.firebaseDb, "employees", normalizedEmp.employeeId);
+                await setDoc(ref, normalizedEmp);
+                alert("Employee saved successfully.");
+            } catch (err) {
+                console.error("Firestore Save Error:", err);
+                alert("Failed to save employee.");
             }
-            
-            // Validate salary
-            if (isNaN(employeeElements.formFields.salary.value)) {
-                employeeElements.formFields.salary.style.borderColor = 'red';
-                alert('Please enter a valid salary amount');
-                isValid = false;
-            }
-            
-            if (!isValid) {
-                alert('Please fill all required fields correctly');
-            }
-            
-            return isValid;
+
+            hideEmployeeForm();
         }
 
-        // Generate unique employee ID
-        function generateEmployeeId() {
-            return 'EMP-' + Date.now().toString().slice(-6);
-        }
+        function renderEmployeeTable(list = employees) {
+            employeeElements.table.body.innerHTML = "";
 
-        // Generate unique ID for records
-        function generateId() {
-            return 'REC-' + Date.now().toString();
-        }
-
-        // Enhanced Render employee table
-        function renderEmployeeTable(data = employees) {
-            employeeElements.table.body.innerHTML = '';
-            
-            if (data.length === 0) {
-                employeeElements.table.body.innerHTML = `
-                    <tr>
-                        <td colspan="11" style="text-align: center; padding: 20px;">
-                            No employees found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            data.forEach(emp => {
-                const row = document.createElement('tr');
+            list.forEach(emp => {
+                const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${emp.id}</td>
-                    <td>${emp.name}</td>
-                    <td>${emp.department}</td>
-                    <td>${emp.position}</td>
-                    <td>${emp.email || 'N/A'}</td>
-                    <td>${emp.phone || 'N/A'}</td>
-                    <td>${emp.location || 'N/A'}</td>
-                    <td>₹${emp.salary.toLocaleString('en-IN')}</td>
-                    <td><span class="status ${emp.status}">${emp.status.charAt(0).toUpperCase() + emp.status.slice(1)}</span></td>
-                    <td>${emp.joinDate || 'N/A'}</td>
-                    <td>
-                        <div class="table-actions">
-                            <button class="table-action-btn view" onclick="viewEmployeeDetails('${emp.id}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="table-action-btn edit" onclick="editEmployee('${emp.id}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="table-action-btn delete" onclick="deleteEmployee('${emp.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
+            <td>${emp.employeeId}</td>
+            <td>${emp.name}</td>
+            <td>${emp.department}</td>
+            <td>${emp.position}</td>
+            <td>${emp.phone}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="editEmployee('${emp.employeeId}')">Edit</button>
+            </td>
+        `;
                 employeeElements.table.body.appendChild(row);
             });
         }
 
-        // Enhanced Edit employee
-        function editEmployee(id) {
-            const employee = employees.find(emp => emp.id === id);
-            if (employee) {
-                // Fill form with employee data
-                Object.keys(employeeElements.formFields).forEach(key => {
-                    if (employeeElements.formFields[key] && employee[key] !== undefined) {
-                        employeeElements.formFields[key].value = employee[key];
-                    }
-                });
-                
-                employeeElements.formFields.id.value = employee.id;
-                showEmployeeForm();
-            }
-        }
-
-        // Enhanced Delete employee
-        function deleteEmployee(id) {
-            if (confirm('Are you sure you want to delete this employee?')) {
-                employees = employees.filter(emp => emp.id !== id);
-                localStorage.setItem('employees', JSON.stringify(employees));
-                
-                // Sync with Firebase
-                pushEmployeesToFirebase();
-                
-                renderEmployeeTable();
-                populatePayrollEmployeeDropdown();
-                populateReportEmployeeDropdown();
-                loadDashboardData();
-                alert('Employee deleted successfully!');
-            }
-        }
-
-        // Enhanced Filter employees
         function filterEmployees() {
-            const searchTerm = employeeElements.table.search.value.toLowerCase();
-            const filtered = employees.filter(emp => 
-                emp.id.toLowerCase().includes(searchTerm) ||
-                emp.name.toLowerCase().includes(searchTerm) ||
-                (emp.department && emp.department.toLowerCase().includes(searchTerm)) ||
-                (emp.position && emp.position.toLowerCase().includes(searchTerm)) ||
-                (emp.email && emp.email.toLowerCase().includes(searchTerm)) ||
-                (emp.phone && emp.phone.toLowerCase().includes(searchTerm)) ||
-                (emp.location && emp.location.toLowerCase().includes(searchTerm))
+            const term = employeeElements.table.search.value.toLowerCase();
+            const filtered = employees.filter(emp =>
+                emp.name.toLowerCase().includes(term) ||
+                emp.employeeId.toLowerCase().includes(term) ||
+                emp.department.toLowerCase().includes(term)
             );
-            renderEmployeeTable(filtered);
+
+            employeeElements.table.body.innerHTML = "";
+            filtered.forEach(emp => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+            <td>${emp.employeeId}</td>
+            <td>${emp.name}</td>
+            <td>${emp.department}</td>
+            <td>${emp.position}</td>
+            <td>${emp.phone}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="editEmployee('${emp.employeeId}')">Edit</button>
+            </td>
+        `;
+                employeeElements.table.body.appendChild(row);
+            });
         }
 
         function filterEmployeesByStatus(status) {
@@ -4123,6 +4008,44 @@
                 filtered = employees.filter(emp => emp.status === status);
             }
             renderEmployeeTable(filtered);
+        }
+
+        function editEmployee(id) {
+            const employee = employees.find(emp => normalizeEmployeeRecord(emp).employeeId === id);
+            if (!employee) return;
+
+            const normalized = normalizeEmployeeRecord(employee);
+            Object.keys(employeeElements.formFields).forEach(key => {
+                if (employeeElements.formFields[key] && normalized[key] !== undefined) {
+                    employeeElements.formFields[key].value = normalized[key];
+                }
+            });
+
+            showEmployeeForm();
+        }
+
+        async function deleteEmployee(id) {
+            if (!confirm('Are you sure you want to delete this employee?')) return;
+
+            employees = employees.filter(emp => normalizeEmployeeRecord(emp).employeeId !== id);
+            renderEmployeeTable();
+
+            try {
+                const { doc, deleteDoc } = window.firestoreFunctions || {};
+                if (doc && deleteDoc && window.firebaseDb) {
+                    await deleteDoc(doc(window.firebaseDb, 'employees', id));
+                }
+            } catch (error) {
+                console.error('Error deleting employee from Firestore:', error);
+            }
+        }
+
+        function generateEmployeeId() {
+            return 'EMP-' + Date.now().toString().slice(-6);
+        }
+
+        function generateId() {
+            return 'REC-' + Date.now().toString();
         }
 
         
@@ -4495,12 +4418,13 @@
         function populatePayrollEmployeeDropdown() {
             const select = document.getElementById('employeeSelect');
             select.innerHTML = '<option value="">-- Select Employee --</option>';
-            
+
             employees.forEach(employee => {
-                if (employee.status === 'active') {
+                const normalized = normalizeEmployeeRecord(employee);
+                if (normalized.status === 'active') {
                     const option = document.createElement('option');
-                    option.value = employee.id;
-                    option.textContent = `${employee.name} (${employee.id})`;
+                    option.value = normalized.employeeId;
+                    option.textContent = `${normalized.name} (${normalized.employeeId})`;
                     select.appendChild(option);
                 }
             });
@@ -4509,59 +4433,61 @@
         function populateReportEmployeeDropdown() {
             const select = document.getElementById('reportEmployeeSelect');
             select.innerHTML = '<option value="">-- All Employees --</option>';
-            
+
             employees.forEach(employee => {
+                const normalized = normalizeEmployeeRecord(employee);
                 const option = document.createElement('option');
-                option.value = employee.id;
-                option.textContent = `${employee.name} (${employee.id})`;
+                option.value = normalized.employeeId;
+                option.textContent = `${normalized.name} (${normalized.employeeId})`;
                 select.appendChild(option);
             });
         }
 
         // Enhanced Update payroll employee details when selected
         function updatePayrollEmployeeDetails(employee) {
-            document.getElementById('payrollEmployeeId').value = employee.id;
-            document.getElementById('payrollEmployeeName').value = employee.name;
-            document.getElementById('payrollEmployeeEmail').value = employee.email || '';
-            document.getElementById('payrollEmployeePhone').value = employee.phone || '';
-            document.getElementById('payrollEmployeeDept').value = employee.department || '';
-            document.getElementById('payrollEmployeePosition').value = employee.position || '';
-            document.getElementById('payrollEmployeeLocation').value = employee.location || '';
-            document.getElementById('payrollEmployeeBankName').value = employee.bankName || '';
-            document.getElementById('payrollEmployeeBankAccount').value = employee.accountNo || '';
-            document.getElementById('payrollEmployeeIFSC').value = employee.IFSCCode || '';
-            document.getElementById('payrollEmployeePFID').value = employee.PFID || '';
-            document.getElementById('payrollEmployeePFUAN').value = employee.PFUAN || '';
-            
+            const normalized = normalizeEmployeeRecord(employee);
+            document.getElementById('payrollEmployeeId').value = normalized.employeeId;
+            document.getElementById('payrollEmployeeName').value = normalized.name;
+            document.getElementById('payrollEmployeeEmail').value = normalized.email || '';
+            document.getElementById('payrollEmployeePhone').value = normalized.phone || '';
+            document.getElementById('payrollEmployeeDept').value = normalized.department || '';
+            document.getElementById('payrollEmployeePosition').value = normalized.position || '';
+            document.getElementById('payrollEmployeeLocation').value = normalized.location || '';
+            document.getElementById('payrollEmployeeBankName').value = normalized.bankName || '';
+            document.getElementById('payrollEmployeeBankAccount').value = normalized.accountNo || '';
+            document.getElementById('payrollEmployeeIFSC').value = normalized.IFSCCode || '';
+            document.getElementById('payrollEmployeePFID').value = normalized.PFID || '';
+            document.getElementById('payrollEmployeePFUAN').value = normalized.PFUAN || '';
+
             // Format joining date
-            const joinDate = employee.joinDate ? new Date(employee.joinDate) : new Date();
+            const joinDate = normalized.joinDate ? new Date(normalized.joinDate) : new Date();
             document.getElementById('payrollEmployeeJoiningDate').value = joinDate.toLocaleDateString('en-GB');
-            
+
             // Update salary fields
-            document.getElementById('basicSalary').value = employee.salary || 0;
-            document.getElementById('hra').value = Math.round((employee.salary || 0) * 0.4); // 40% of basic as HRA
-            document.getElementById('specialAllowance').value = employee.allowances || 0;
+            document.getElementById('basicSalary').value = normalized.salary || 0;
+            document.getElementById('hra').value = Math.round((normalized.salary || 0) * 0.4); // 40% of basic as HRA
+            document.getElementById('specialAllowance').value = normalized.allowances || 0;
             document.getElementById('otherAllowances').value = 0;
-            document.getElementById('gross').value = (employee.salary || 0) + (employee.allowances || 0) + Math.round((employee.salary || 0) * 0.4);
-            document.getElementById('actualGross').value = (employee.salary || 0) + (employee.allowances || 0) + Math.round((employee.salary || 0) * 0.4);
-            
+            document.getElementById('gross').value = (normalized.salary || 0) + (normalized.allowances || 0) + Math.round((normalized.salary || 0) * 0.4);
+            document.getElementById('actualGross').value = (normalized.salary || 0) + (normalized.allowances || 0) + Math.round((normalized.salary || 0) * 0.4);
+
             // Set total days based on current month
             const now = new Date();
             const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             document.getElementById('totalDays').value = daysInMonth;
             document.getElementById('workingDays').value = daysInMonth;
-            
+
             // Update deductions with default values from settings
-            document.getElementById('tds').value = Math.round((employee.salary || 0) * (companySettings.defaultTDS / 100));
-            document.getElementById('pf').value = Math.round((employee.salary || 0) * (companySettings.defaultPF / 100));
-            document.getElementById('esi').value = Math.round((employee.salary || 0) * (companySettings.defaultESI / 100));
+            document.getElementById('tds').value = Math.round((normalized.salary || 0) * (companySettings.defaultTDS / 100));
+            document.getElementById('pf').value = Math.round((normalized.salary || 0) * (companySettings.defaultPF / 100));
+            document.getElementById('esi').value = Math.round((normalized.salary || 0) * (companySettings.defaultESI / 100));
             document.getElementById('pt').value = companySettings.defaultPT;
             document.getElementById('advanceDeduction').value = 0;
             document.getElementById('otherDeductions').value = 0;
-            
+
             // Update bank account display in summary
-            document.getElementById('bankAccountDisplay').value = 
-                `${employee.accountNo || 'XXXX-XXXX-XXXX'} (${employee.bankName || 'Bank'})`;
+            document.getElementById('bankAccountDisplay').value =
+                `${normalized.accountNo || 'XXXX-XXXX-XXXX'} (${normalized.bankName || 'Bank'})`;
         }
         
         function loadEmployeePayrollData() {
@@ -4572,11 +4498,12 @@
                 alert('Please select an employee');
                 return;
             }
-            
-            const employee = employees.find(emp => emp.id === employeeId);
+
+            const employee = employees.find(emp => normalizeEmployeeRecord(emp).employeeId === employeeId);
             if (employee) {
-                updatePayrollEmployeeDetails(employee);
-                updateAttendanceDeductions(employee.id, payPeriod);
+                const normalized = normalizeEmployeeRecord(employee);
+                updatePayrollEmployeeDetails(normalized);
+                updateAttendanceDeductions(normalized.employeeId, payPeriod);
                 calculateSalary();
             }
         }
@@ -6031,9 +5958,9 @@ Payment Method: ${record.paymentMethod}`);
                             localStorage.setItem('companySettings', JSON.stringify(companySettings));
                             
                             // Sync with Firebase
-                            pushEmployeesToFirebase();
-                            pushAttendanceToFirebase();
-                            pushPayrollToFirebase();
+                            pushEmployeesToFirebase({ replaceRemote: true });
+                            pushAttendanceToFirebase({ replaceRemote: true });
+                            pushPayrollToFirebase({ replaceRemote: true });
                             pushCompanySettingsToFirebase();
                             
                             // Refresh UI
@@ -6067,9 +5994,9 @@ Payment Method: ${record.paymentMethod}`);
                     localStorage.setItem('payrollRecords', JSON.stringify(payrollRecords));
                     
                     // Sync with Firebase
-                    pushEmployeesToFirebase();
-                    pushAttendanceToFirebase();
-                    pushPayrollToFirebase();
+                    pushEmployeesToFirebase({ replaceRemote: true });
+                    pushAttendanceToFirebase({ replaceRemote: true });
+                    pushPayrollToFirebase({ replaceRemote: true });
                     
                     // Refresh UI
                     initializeApplication();
@@ -6146,8 +6073,8 @@ Payment Method: ${record.paymentMethod}`);
                         // Remove header row
                         jsonData.shift();
                         
-                        const importedEmployees = jsonData.map(row => ({
-                            id: row[0] || generateEmployeeId(),
+                        const importedEmployees = jsonData.map(row => normalizeEmployeeRecord({
+                            employeeId: row[0] || generateEmployeeId(),
                             name: row[1],
                             gender: row[2],
                             dob: row[3],
