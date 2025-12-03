@@ -1844,7 +1844,7 @@
                     </div>
                     
                     <form id="employeeDataForm">
-                        <input type="hidden" id="employeeId">
+                        <input type="hidden" id="employeeId" name="employeeId">
                         
                         <!-- Personal Information Tab -->
                         <div id="personal-tab" class="tab-content active">
@@ -1855,17 +1855,17 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empId">Employee ID *</label>
-                                        <input type="text" id="empId" class="form-control" required>
+                                        <input type="text" id="empId" name="empId" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empName">Full Name *</label>
-                                        <input type="text" id="empName" class="form-control" required>
+                                        <input type="text" id="empName" name="empName" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empGender">Gender</label>
-                                        <select id="empGender" class="form-control">
+                                        <select id="empGender" name="empGender" class="form-control">
                                             <option value="">Select Gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
@@ -1874,7 +1874,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="empDOB">Date of Birth</label>
-                                        <input type="date" id="empDOB" class="form-control">
+                                        <input type="date" id="empDOB" name="empDOB" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -1886,31 +1886,31 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empEmail">Email *</label>
-                                        <input type="email" id="empEmail" class="form-control" required>
+                                        <input type="email" id="empEmail" name="empEmail" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empPhone">Phone *</label>
-                                        <input type="tel" id="empPhone" class="form-control" required>
+                                        <input type="tel" id="empPhone" name="empPhone" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empAddress">Address</label>
-                                        <textarea id="empAddress" class="form-control" rows="3"></textarea>
+                                        <textarea id="empAddress" name="empAddress" class="form-control" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empCity">City</label>
-                                        <input type="text" id="empCity" class="form-control">
+                                        <input type="text" id="empCity" name="empCity" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="empState">State</label>
-                                        <input type="text" id="empState" class="form-control">
+                                        <input type="text" id="empState" name="empState" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="empPincode">Pincode</label>
-                                        <input type="text" id="empPincode" class="form-control">
+                                        <input type="text" id="empPincode" name="empPincode" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -1922,11 +1922,11 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empAadhar">Aadhar Number</label>
-                                        <input type="text" id="empAadhar" class="form-control">
+                                        <input type="text" id="empAadhar" name="empAadhar" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="empPAN">PAN Number</label>
-                                        <input type="text" id="empPAN" class="form-control">
+                                        <input type="text" id="empPAN" name="empPAN" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -1941,7 +1941,7 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empDepartment">Department *</label>
-                                        <select id="empDepartment" class="form-control" required>
+                                        <select id="empDepartment" name="empDepartment" class="form-control" required>
                                             <option value="">Select Department</option>
                                             <option value="HR">HR</option>
                                             <option value="Finance">Finance</option>
@@ -1954,27 +1954,27 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="empPosition">Position *</label>
-                                        <input type="text" id="empPosition" class="form-control" required>
+                                        <input type="text" id="empPosition" name="empPosition" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empLocation">Location *</label>
-                                        <input type="text" id="empLocation" class="form-control" required>
+                                        <input type="text" id="empLocation" name="empLocation" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empManager">Reporting Manager</label>
-                                        <input type="text" id="empManager" class="form-control">
+                                        <input type="text" id="empManager" name="empManager" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empJoinDate">Join Date *</label>
-                                        <input type="date" id="empJoinDate" class="form-control" required>
+                                        <input type="date" id="empJoinDate" name="empJoinDate" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empStatus">Employment Status *</label>
-                                        <select id="empStatus" class="form-control" required>
+                                        <select id="empStatus" name="empStatus" class="form-control" required>
                                             <option value="active">Active</option>
                                             <option value="inactive">Inactive</option>
                                             <option value="probation">Probation</option>
@@ -1991,7 +1991,7 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empEducation">Highest Education</label>
-                                        <select id="empEducation" class="form-control">
+                                        <select id="empEducation" name="empEducation" class="form-control">
                                             <option value="">Select Education</option>
                                             <option value="highschool">High School</option>
                                             <option value="diploma">Diploma</option>
@@ -2002,13 +2002,13 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="empSkills">Skills</label>
-                                        <input type="text" id="empSkills" class="form-control" placeholder="Separate skills with commas">
+                                        <input type="text" id="empSkills" name="empSkills" class="form-control" placeholder="Separate skills with commas">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empExperience">Total Experience (Years)</label>
-                                        <input type="number" id="empExperience" class="form-control" min="0" step="0.5">
+                                        <input type="number" id="empExperience" name="empExperience" class="form-control" min="0" step="0.5">
                                     </div>
                                 </div>
                             </div>
@@ -2023,11 +2023,11 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empSalary">Base Salary (₹) *</label>
-                                        <input type="number" id="empSalary" class="form-control" required>
+                                        <input type="number" id="empSalary" name="empSalary" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empSalaryType">Salary Type</label>
-                                        <select id="empSalaryType" class="form-control">
+                                        <select id="empSalaryType" name="empSalaryType" class="form-control">
                                             <option value="monthly">Monthly</option>
                                             <option value="hourly">Hourly</option>
                                             <option value="daily">Daily</option>
@@ -2037,17 +2037,17 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empAllowances">Allowances (₹)</label>
-                                        <input type="number" id="empAllowances" class="form-control" value="0">
+                                        <input type="number" id="empAllowances" name="empAllowances" class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
                                         <label for="empDeductions">Deductions (₹)</label>
-                                        <input type="number" id="empDeductions" class="form-control" value="0">
+                                        <input type="number" id="empDeductions" name="empDeductions" class="form-control" value="0">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empTaxIdentification">Tax Identification Number</label>
-                                        <input type="text" id="empTaxIdentification" class="form-control">
+                                        <input type="text" id="empTaxIdentification" name="empTaxIdentification" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -2059,21 +2059,21 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empBankName">Bank Name *</label>
-                                        <input type="text" id="empBankName" class="form-control" required>
+                                        <input type="text" id="empBankName" name="empBankName" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empAccountNo">Account No. *</label>
-                                        <input type="text" id="empAccountNo" class="form-control" required>
+                                        <input type="text" id="empAccountNo" name="empAccountNo" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empIFSCCode">IFSC Code *</label>
-                                        <input type="text" id="empIFSCCode" class="form-control" required>
+                                        <input type="text" id="empIFSCCode" name="empIFSCCode" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="empBranch">Branch Name</label>
-                                        <input type="text" id="empBranch" class="form-control">
+                                        <input type="text" id="empBranch" name="empBranch" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -2085,11 +2085,11 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empPFID">PF ID</label>
-                                        <input type="text" id="empPFID" class="form-control">
+                                        <input type="text" id="empPFID" name="empPFID" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="empPFUAN">PF UAN</label>
-                                        <input type="text" id="empPFUAN" class="form-control">
+                                        <input type="text" id="empPFUAN" name="empPFUAN" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -2104,21 +2104,21 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empResume">Resume</label>
-                                        <input type="file" id="empResume" class="form-control" accept=".pdf,.doc,.docx">
+                                        <input type="file" id="empResume" name="empResume" class="form-control" accept=".pdf,.doc,.docx">
                                     </div>
                                     <div class="form-group">
                                         <label for="empAadharDoc">Aadhar Card</label>
-                                        <input type="file" id="empAadharDoc" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                        <input type="file" id="empAadharDoc" name="empAadharDoc" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empPANDoc">PAN Card</label>
-                                        <input type="file" id="empPANDoc" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                        <input type="file" id="empPANDoc" name="empPANDoc" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
                                     </div>
                                     <div class="form-group">
                                         <label for="empPhoto">Photograph</label>
-                                        <input type="file" id="empPhoto" class="form-control" accept=".jpg,.jpeg,.png">
+                                        <input type="file" id="empPhoto" name="empPhoto" class="form-control" accept=".jpg,.jpeg,.png">
                                     </div>
                                 </div>
                             </div>
@@ -2130,21 +2130,21 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empOfferLetter">Offer Letter</label>
-                                        <input type="file" id="empOfferLetter" class="form-control" accept=".pdf,.doc,.docx">
+                                        <input type="file" id="empOfferLetter" name="empOfferLetter" class="form-control" accept=".pdf,.doc,.docx">
                                     </div>
                                     <div class="form-group">
                                         <label for="empAppointmentLetter">Appointment Letter</label>
-                                        <input type="file" id="empAppointmentLetter" class="form-control" accept=".pdf,.doc,.docx">
+                                        <input type="file" id="empAppointmentLetter" name="empAppointmentLetter" class="form-control" accept=".pdf,.doc,.docx">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="empExperienceLetter">Experience Letter</label>
-                                        <input type="file" id="empExperienceLetter" class="form-control" accept=".pdf,.doc,.docx">
+                                        <input type="file" id="empExperienceLetter" name="empExperienceLetter" class="form-control" accept=".pdf,.doc,.docx">
                                     </div>
                                     <div class="form-group">
                                         <label for="empOtherDocs">Other Documents</label>
-                                        <input type="file" id="empOtherDocs" class="form-control" multiple>
+                                        <input type="file" id="empOtherDocs" name="empOtherDocs" class="form-control" multiple>
                                     </div>
                                 </div>
                             </div>
@@ -3213,7 +3213,27 @@
     </div>
 
     <script>
+        const EMPLOYEE_STORAGE_KEY = 'employees';
         let employees = [];
+
+        function loadEmployeesFromStorage() {
+            try {
+                const stored = localStorage.getItem(EMPLOYEE_STORAGE_KEY);
+                employees = stored ? JSON.parse(stored) : [];
+            } catch (error) {
+                console.error('Failed to read employees from storage:', error);
+                employees = [];
+            }
+            employees = employees.map(normalizeEmployeeRecord);
+        }
+
+        function persistEmployees() {
+            try {
+                localStorage.setItem(EMPLOYEE_STORAGE_KEY, JSON.stringify(employees));
+            } catch (error) {
+                console.error('Failed to persist employees:', error);
+            }
+        }
 
         const employeeElements = {
             form: document.getElementById('employeeForm'),
@@ -3278,7 +3298,7 @@
 
         // Initialize the application
         async function initializeApplication() {
-            await loadEmployeesFromFirebase();
+            loadEmployeesFromStorage();
             setupEmployeeEventListeners();
             renderEmployeeTable();
 
@@ -3310,7 +3330,10 @@
             updateAttendanceSummary();
             updateAttendanceSaveButtonState();
 
-            // Sync with Firebase
+            // Sync with Firebase (non-blocking for other features)
+            syncEmployeesWithFirebase().catch(error => {
+                console.error('Employee sync failed during init:', error);
+            });
             syncAttendanceWithFirebase();
             syncPayrollWithFirebase();
             syncCompanySettingsWithFirebase();
@@ -3318,60 +3341,98 @@
 
         // Enhanced Firebase Sync Functions
         async function loadEmployeesFromFirebase() {
-            if (!window.firebaseDb || !window.firestoreFunctions) return;
-
-            const { getDocs, collection } = window.firestoreFunctions;
-            if (!getDocs || !collection) return;
-
-            const snapshot = await getDocs(collection(window.firebaseDb, "employees"));
-            employees = [];
-            snapshot.forEach(docSnap => {
-                employees.push(normalizeEmployeeRecord(docSnap.data()));
-            });
-            renderEmployeeTable();
-        }
-
-        async function syncEmployeesWithFirebase() {
-            await loadEmployeesFromFirebase();
-        }
-
-        async function pushEmployeesToFirebase(options = {}) {
-            if (!ensureFirebaseReady('employees')) return;
-
-            const { replaceRemote = false } = options;
+            if (!ensureFirebaseReady('employees')) return [];
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                const employeesCollection = collection(window.firebaseDb, 'employees');
-                const existingEmployeeIds = new Set();
+                const { getDocs, collection } = window.firestoreFunctions;
+                const snapshot = await getDocs(collection(window.firebaseDb, 'employees'));
+                const remoteEmployees = [];
 
-                // Track existing employees in Firebase
-                const snapshot = await getDocs(employeesCollection);
-                snapshot.forEach(docSnap => existingEmployeeIds.add(docSnap.id));
-
-                // Upsert local employees
-                const upsertPromises = employees.map(employee => {
-                    const normalized = normalizeEmployeeRecord(employee);
-                    const docRef = doc(employeesCollection, normalized.employeeId);
-                    existingEmployeeIds.delete(normalized.employeeId);
-                    return setDoc(docRef, normalized);
+                snapshot.forEach(docSnap => {
+                    remoteEmployees.push(normalizeEmployeeRecord({ ...docSnap.data(), employeeId: docSnap.id }));
                 });
 
-                // Optionally remove stale Firebase documents when explicitly requested
-                const deletePromises = [];
-                if (replaceRemote || employees.length > 0) {
-                    existingEmployeeIds.forEach(id => {
-                        deletePromises.push(deleteDoc(doc(employeesCollection, id)));
-                    });
-                }
+                return remoteEmployees;
+            } catch (error) {
+                console.error('Error loading employees from Firebase:', error);
+                setSyncError('employees', describeSyncError(error));
+                updateSyncStatus('employees', 'error');
+                return [];
+            }
+        }
 
-                await Promise.all([...upsertPromises, ...deletePromises]);
+        async function syncEmployeesWithFirebase({ preferLocal = true } = {}) {
+            if (!ensureFirebaseReady('employees')) return;
+
+            updateSyncStatus('employees', 'syncing');
+
+            try {
+                const remoteEmployees = await loadEmployeesFromFirebase();
+                const mergedEmployees = new Map();
+
+                employees.forEach(emp => {
+                    const normalized = normalizeEmployeeRecord(emp);
+                    mergedEmployees.set(normalized.employeeId, normalized);
+                });
+
+                remoteEmployees.forEach(emp => {
+                    const normalized = normalizeEmployeeRecord(emp);
+                    const existing = mergedEmployees.get(normalized.employeeId);
+                    if (!existing) {
+                        mergedEmployees.set(normalized.employeeId, normalized);
+                    } else {
+                        const localUpdated = new Date(existing.updatedAt || 0).getTime();
+                        const remoteUpdated = new Date(normalized.updatedAt || 0).getTime();
+                        if (!preferLocal && remoteUpdated > localUpdated) {
+                            mergedEmployees.set(normalized.employeeId, normalized);
+                        } else if (remoteUpdated > localUpdated) {
+                            mergedEmployees.set(normalized.employeeId, normalized);
+                        }
+                    }
+                });
+
+                employees = Array.from(mergedEmployees.values());
+                persistEmployees();
+                renderEmployeeTable();
+                populatePayrollEmployeeDropdown();
+                populateReportEmployeeDropdown();
+
+                await Promise.all(employees.map(emp => saveEmployeeToFirebase(emp.employeeId, emp)));
+
                 updateSyncStatus('employees', 'synced');
+                setSyncError('employees', '');
+            } catch (error) {
+                console.error('Error syncing employees:', error);
+                updateSyncStatus('employees', 'error');
+                setSyncError('employees', describeSyncError(error));
+            }
+        }
+
+        async function pushEmployeesToFirebase() {
+            if (!ensureFirebaseReady('employees')) return;
+            updateSyncStatus('employees', 'syncing');
+            try {
+                await Promise.all(employees.map(emp => saveEmployeeToFirebase(emp.employeeId, emp)));
+                updateSyncStatus('employees', 'synced');
+                setSyncError('employees', '');
             } catch (error) {
                 console.error('Error pushing employees to Firebase:', error);
                 updateSyncStatus('employees', 'error');
                 setSyncError('employees', describeSyncError(error));
             }
+        }
+
+        async function saveEmployeeToFirebase(id, data) {
+            if (!ensureFirebaseReady('employees')) return;
+            const { doc, setDoc } = window.firestoreFunctions;
+            const normalized = normalizeEmployeeRecord(data);
+            await setDoc(doc(window.firebaseDb, 'employees', id), normalized);
+        }
+
+        async function deleteEmployeeFromFirebase(id) {
+            if (!ensureFirebaseReady('employees')) return;
+            const { doc, deleteDoc } = window.firestoreFunctions;
+            await deleteDoc(doc(window.firebaseDb, 'employees', id));
         }
 
         async function syncAttendanceWithFirebase() {
@@ -3650,9 +3711,12 @@
         }
 
         // Enhanced Employee Management Functions
+        let employeeListenersInitialized = false;
         function setupEmployeeEventListeners() {
-            employeeElements.buttons.add.addEventListener('click', showEmployeeForm);
-            employeeElements.buttons.cancel.addEventListener('click', hideEmployeeForm);
+            if (employeeListenersInitialized) return;
+
+            employeeElements.buttons.add?.addEventListener('click', () => showEmployeeForm());
+            employeeElements.buttons.cancel?.addEventListener('click', hideEmployeeForm);
 
             document.getElementById('employeeDataForm')
                 .addEventListener('submit', function(e) {
@@ -3660,8 +3724,21 @@
                     saveEmployee();
                 });
 
-            employeeElements.table.search.addEventListener('input', filterEmployees);
+            employeeElements.table.search?.addEventListener('input', filterEmployees);
 
+            employeeElements.table.body?.addEventListener('click', (event) => {
+                const editButton = event.target.closest('.edit-employee');
+                const deleteButton = event.target.closest('.delete-employee');
+                if (editButton) {
+                    editEmployee(editButton.dataset.id);
+                } else if (deleteButton) {
+                    deleteEmployee(deleteButton.dataset.id);
+                }
+            });
+
+            document.getElementById('sync-employees-btn')?.addEventListener('click', () => syncEmployeesWithFirebase());
+
+            employeeListenersInitialized = true;
         }
 
         // Enhanced Payroll Functions
@@ -3871,35 +3948,49 @@
             return { ...emp, employeeId, id: employeeId };
         }
 
-        function showEmployeeForm() {
+        function showEmployeeForm(editingId = '') {
+            const form = document.getElementById('employeeDataForm');
+            if (!editingId) {
+                form.reset();
+                employeeElements.formFields.empId.value = generateEmployeeId();
+                if (!employeeElements.formFields.joinDate.value) {
+                    employeeElements.formFields.joinDate.value = new Date().toISOString().split('T')[0];
+                }
+                form.dataset.editing = '';
+            }
             employeeElements.form.style.display = "block";
+            employeeElements.formFields.empId.focus();
         }
 
         function hideEmployeeForm() {
+            const form = document.getElementById('employeeDataForm');
+            form.reset();
+            form.dataset.editing = '';
+            employeeElements.formFields.empId.value = generateEmployeeId();
             employeeElements.form.style.display = "none";
-            document.getElementById("employeeDataForm").reset();
         }
 
         function validateEmployeeForm() {
-            if (employeeElements.formFields.empId.value.trim() === "") return false;
-            if (employeeElements.formFields.name.value.trim() === "") return false;
-            if (employeeElements.formFields.email.value.trim() === "") return false;
-            if (employeeElements.formFields.phone.value.trim() === "") return false;
-            if (employeeElements.formFields.department.value.trim() === "") return false;
-            if (employeeElements.formFields.position.value.trim() === "") return false;
-            if (employeeElements.formFields.salary.value.trim() === "") return false;
+            const form = document.getElementById('employeeDataForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
             return true;
         }
 
         async function saveEmployee() {
+            if (!validateEmployeeForm()) return;
 
-            if (!validateEmployeeForm()) {
-                alert("Fill all required fields.");
-                return;
-            }
+            const form = document.getElementById('employeeDataForm');
+            const isEditing = Boolean(form.dataset.editing);
+            const employeeId = (employeeElements.formFields.empId.value || generateEmployeeId()).trim();
+            const existing = employees.find(e => normalizeEmployeeRecord(e).employeeId === employeeId);
+            const timestamp = new Date().toISOString();
 
             const emp = {
-                employeeId: employeeElements.formFields.empId.value.trim(),
+                employeeId,
+                id: employeeId,
                 name: employeeElements.formFields.name.value.trim(),
                 gender: employeeElements.formFields.gender.value,
                 dob: employeeElements.formFields.dob.value,
@@ -3915,7 +4006,7 @@
                 pan: employeeElements.formFields.pan.value.trim(),
                 manager: employeeElements.formFields.manager.value.trim(),
                 location: employeeElements.formFields.location.value.trim(),
-                salary: parseFloat(employeeElements.formFields.salary.value),
+                salary: parseFloat(employeeElements.formFields.salary.value) || 0,
                 salaryType: employeeElements.formFields.salaryType.value,
                 allowances: parseFloat(employeeElements.formFields.allowances.value) || 0,
                 deductions: parseFloat(employeeElements.formFields.deductions.value) || 0,
@@ -3931,75 +4022,73 @@
                 education: employeeElements.formFields.education.value,
                 skills: employeeElements.formFields.skills.value,
                 experience: parseFloat(employeeElements.formFields.experience.value) || 0,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                createdAt: existing?.createdAt || timestamp,
+                updatedAt: timestamp
             };
 
             const normalizedEmp = normalizeEmployeeRecord(emp);
+            const existingIndex = employees.findIndex(e => normalizeEmployeeRecord(e).employeeId === normalizedEmp.employeeId);
+            if (existingIndex >= 0) {
+                employees[existingIndex] = normalizedEmp;
+            } else {
+                employees.push(normalizedEmp);
+            }
 
-            employees = employees.filter(e => normalizeEmployeeRecord(e).employeeId !== normalizedEmp.employeeId);
-            employees.push(normalizedEmp);
+            persistEmployees();
             renderEmployeeTable();
+            populatePayrollEmployeeDropdown();
+            populateReportEmployeeDropdown();
 
             try {
-                const { doc, setDoc } = window.firestoreFunctions || {};
-                if (!doc || !setDoc || !window.firebaseDb) {
-                    throw new Error('Firestore not ready');
-                }
-
-                const ref = doc(window.firebaseDb, "employees", normalizedEmp.employeeId);
-                await setDoc(ref, normalizedEmp);
-                alert("Employee saved successfully.");
+                await saveEmployeeToFirebase(normalizedEmp.employeeId, normalizedEmp);
             } catch (err) {
                 console.error("Firestore Save Error:", err);
-                alert("Failed to save employee.");
+                setSyncError('employees', describeSyncError(err));
             }
 
             hideEmployeeForm();
         }
 
         function renderEmployeeTable(list = employees) {
-            employeeElements.table.body.innerHTML = "";
+            const tbody = employeeElements.table.body;
+            if (!tbody) return;
+            tbody.innerHTML = "";
 
-            list.forEach(emp => {
+            list.map(normalizeEmployeeRecord).forEach(emp => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
             <td>${emp.employeeId}</td>
             <td>${emp.name}</td>
-            <td>${emp.department}</td>
-            <td>${emp.position}</td>
-            <td>${emp.phone}</td>
+            <td>${emp.department || ''}</td>
+            <td>${emp.position || ''}</td>
+            <td>${emp.email || ''}</td>
+            <td>${emp.phone || ''}</td>
+            <td>${emp.location || ''}</td>
+            <td>${emp.salary ? formatCurrency(emp.salary) : '₹0.00'}</td>
+            <td>${emp.status || ''}</td>
+            <td>${emp.joinDate || ''}</td>
             <td>
-                <button class="btn btn-sm btn-primary" onclick="editEmployee('${emp.employeeId}')">Edit</button>
+                <button type="button" class="btn btn-sm btn-primary edit-employee" data-id="${emp.employeeId}">Edit</button>
+                <button type="button" class="btn btn-sm btn-danger delete-employee" data-id="${emp.employeeId}">Delete</button>
             </td>
         `;
-                employeeElements.table.body.appendChild(row);
+                tbody.appendChild(row);
             });
         }
 
         function filterEmployees() {
-            const term = employeeElements.table.search.value.toLowerCase();
-            const filtered = employees.filter(emp =>
-                emp.name.toLowerCase().includes(term) ||
-                emp.employeeId.toLowerCase().includes(term) ||
-                emp.department.toLowerCase().includes(term)
-            );
-
-            employeeElements.table.body.innerHTML = "";
-            filtered.forEach(emp => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-            <td>${emp.employeeId}</td>
-            <td>${emp.name}</td>
-            <td>${emp.department}</td>
-            <td>${emp.position}</td>
-            <td>${emp.phone}</td>
-            <td>
-                <button class="btn btn-sm btn-primary" onclick="editEmployee('${emp.employeeId}')">Edit</button>
-            </td>
-        `;
-                employeeElements.table.body.appendChild(row);
+            const term = (employeeElements.table.search?.value || '').toLowerCase();
+            const filtered = employees.filter(emp => {
+                const normalized = normalizeEmployeeRecord(emp);
+                return (
+                    (normalized.name || '').toLowerCase().includes(term) ||
+                    (normalized.employeeId || '').toLowerCase().includes(term) ||
+                    (normalized.department || '').toLowerCase().includes(term) ||
+                    (normalized.location || '').toLowerCase().includes(term)
+                );
             });
+
+            renderEmployeeTable(filtered);
         }
 
         function filterEmployeesByStatus(status) {
@@ -4015,33 +4104,35 @@
             if (!employee) return;
 
             const normalized = normalizeEmployeeRecord(employee);
+            const form = document.getElementById('employeeDataForm');
             Object.keys(employeeElements.formFields).forEach(key => {
                 if (employeeElements.formFields[key] && normalized[key] !== undefined) {
                     employeeElements.formFields[key].value = normalized[key];
                 }
             });
-
-            showEmployeeForm();
+            form.dataset.editing = normalized.employeeId;
+            showEmployeeForm(normalized.employeeId);
         }
 
         async function deleteEmployee(id) {
             if (!confirm('Are you sure you want to delete this employee?')) return;
 
             employees = employees.filter(emp => normalizeEmployeeRecord(emp).employeeId !== id);
+            persistEmployees();
             renderEmployeeTable();
+            populatePayrollEmployeeDropdown();
+            populateReportEmployeeDropdown();
 
             try {
-                const { doc, deleteDoc } = window.firestoreFunctions || {};
-                if (doc && deleteDoc && window.firebaseDb) {
-                    await deleteDoc(doc(window.firebaseDb, 'employees', id));
-                }
+                await deleteEmployeeFromFirebase(id);
             } catch (error) {
                 console.error('Error deleting employee from Firestore:', error);
+                setSyncError('employees', describeSyncError(error));
             }
         }
 
         function generateEmployeeId() {
-            return 'EMP-' + Date.now().toString().slice(-6);
+            return 'EMP-' + Math.floor(Math.random() * 900000 + 100000);
         }
 
         function generateId() {
@@ -5958,7 +6049,7 @@ Payment Method: ${record.paymentMethod}`);
                             localStorage.setItem('companySettings', JSON.stringify(companySettings));
                             
                             // Sync with Firebase
-                            pushEmployeesToFirebase({ replaceRemote: true });
+                            pushEmployeesToFirebase();
                             pushAttendanceToFirebase({ replaceRemote: true });
                             pushPayrollToFirebase({ replaceRemote: true });
                             pushCompanySettingsToFirebase();
@@ -5994,7 +6085,7 @@ Payment Method: ${record.paymentMethod}`);
                     localStorage.setItem('payrollRecords', JSON.stringify(payrollRecords));
                     
                     // Sync with Firebase
-                    pushEmployeesToFirebase({ replaceRemote: true });
+                    pushEmployeesToFirebase();
                     pushAttendanceToFirebase({ replaceRemote: true });
                     pushPayrollToFirebase({ replaceRemote: true });
                     
