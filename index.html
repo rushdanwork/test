@@ -1595,12 +1595,12 @@
                 <h2>Login</h2>
                 <div class="form-group">
                     <label for="login-email">Email</label>
-                    <input type="email" id="login-email" placeholder="Enter your email">
+                    <input type="email" id="login-email" name="loginEmail" placeholder="Enter your email">
                     <div class="error-message" id="login-email-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
+                    <input type="password" id="login-password" name="loginPassword" placeholder="Enter your password">
                     <div class="error-message" id="login-password-error"></div>
                 </div>
                 <div class="form-group">
@@ -1617,17 +1617,17 @@
                 <h2>Sign Up</h2>
                 <div class="form-group">
                     <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" placeholder="Enter your email">
+                    <input type="email" id="signup-email" name="signupEmail" placeholder="Enter your email">
                     <div class="error-message" id="signup-email-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Create a password">
+                    <input type="password" id="signup-password" name="signupPassword" placeholder="Create a password">
                     <div class="error-message" id="signup-password-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" placeholder="Confirm your password">
+                    <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm your password">
                     <div class="error-message" id="confirm-password-error"></div>
                 </div>
                 <div class="form-group">
@@ -1815,7 +1815,7 @@
                 <div class="action-bar">
                     <div class="search-container">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="employeeSearch" class="search-input" placeholder="Search employees...">
+                        <input type="text" id="employeeSearch" name="employeeSearch" class="search-input" placeholder="Search employees...">
                     </div>
                     <div class="btn-group">
                         <button id="addEmployeeBtn" class="btn btn-primary">
@@ -2274,7 +2274,7 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Payment Date</label>
-                                <input type="date" class="form-control" id="paymentDate" value="">
+                                <input type="date" class="form-control" id="paymentDate" name="paymentDate" value="">
                             </div>
                             
                             <div class="form-group">
@@ -2298,65 +2298,65 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Employee ID</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeId" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeId" name="payrollEmployeeId" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Full Name</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeName" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeName" name="payrollEmployeeName" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control employee-input" id="payrollEmployeeEmail" value="" disabled>
+                                        <input type="email" class="form-control employee-input" id="payrollEmployeeEmail" name="payrollEmployeeEmail" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Phone</label>
-                                        <input type="tel" class="form-control employee-input" id="payrollEmployeePhone" value="" disabled>
+                                        <input type="tel" class="form-control employee-input" id="payrollEmployeePhone" name="payrollEmployeePhone" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Joining Date</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeJoiningDate" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeJoiningDate" name="payrollEmployeeJoiningDate" value="" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Department</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeDept" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeDept" name="payrollEmployeeDept" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Position</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeePosition" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeePosition" name="payrollEmployeePosition" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Location</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeLocation" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeLocation" name="payrollEmployeeLocation" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Bank Name</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeBankName" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeBankName" name="payrollEmployeeBankName" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Account Number</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeBankAccount" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeBankAccount" name="payrollEmployeeBankAccount" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">IFSC Code</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeeIFSC" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeeIFSC" name="payrollEmployeeIFSC" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">PF ID</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeePFID" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeePFID" name="payrollEmployeePFID" value="" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">PF UAN</label>
-                                        <input type="text" class="form-control employee-input" id="payrollEmployeePFUAN" value="" disabled>
+                                        <input type="text" class="form-control employee-input" id="payrollEmployeePFUAN" name="payrollEmployeePFUAN" value="" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div id="employeeActionBtns" style="display: none;">
-                                <button id="saveEmployeeBtn" class="btn btn-success">
+                                <button id="payrollSaveEmployeeBtn" class="btn btn-success">
                                     <i class="fas fa-save"></i> Save Changes
                                 </button>
-                                <button id="cancelEmployeeBtn" class="btn btn-primary">
+                                <button id="payrollCancelEmployeeBtn" class="btn btn-primary">
                                     <i class="fas fa-times"></i> Cancel
                                 </button>
                             </div>
@@ -2376,42 +2376,42 @@
                             <div class="card-body" id="salarySection">
                                 <div class="form-group">
                                     <label class="form-label">Basic Salary</label>
-                                    <input type="number" class="form-control salary-input" id="basicSalary" value="" disabled>
+                                    <input type="number" class="form-control salary-input" id="basicSalary" name="basicSalary" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">HRA</label>
-                                    <input type="number" class="form-control salary-input" id="hra" value="0" disabled>
+                                    <input type="number" class="form-control salary-input" id="hra" name="hra" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Special Allowance</label>
-                                    <input type="number" class="form-control salary-input" id="specialAllowance" value="0" disabled>
+                                    <input type="number" class="form-control salary-input" id="specialAllowance" name="specialAllowance" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Other Allowances</label>
-                                    <input type="number" class="form-control salary-input" id="otherAllowances" value="0" disabled>
+                                    <input type="number" class="form-control salary-input" id="otherAllowances" name="otherAllowances" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Gross Salary</label>
-                                    <input type="number" class="form-control salary-input" id="gross" value="" disabled>
+                                    <input type="number" class="form-control salary-input" id="gross" name="gross" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Total Days</label>
-                                    <input type="number" class="form-control salary-input" id="totalDays" value="30" disabled>
+                                    <input type="number" class="form-control salary-input" id="totalDays" name="totalDays" value="30" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Actual Working Days</label>
-                                    <input type="number" class="form-control salary-input" id="workingDays" value="30" disabled>
+                                    <input type="number" class="form-control salary-input" id="workingDays" name="workingDays" value="30" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Actual Gross</label>
-                                    <input type="number" class="form-control salary-input" id="actualGross" value="" disabled>
+                                    <input type="number" class="form-control salary-input" id="actualGross" name="actualGross" value="" disabled>
                                 </div>
                                 
                                 <div id="salaryActionBtns" style="display: none;">
@@ -2437,47 +2437,47 @@
                             <div class="card-body" id="deductionsSection">
                                 <div class="form-group">
                                     <label class="form-label">Absent Days</label>
-                                    <input type="number" class="form-control deduction-input" id="absentDays" value="0" disabled>
+                                    <input type="number" class="form-control deduction-input" id="absentDays" name="absentDays" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Half Day</label>
-                                    <input type="number" class="form-control deduction-input" id="halfDay" value="0" disabled>
+                                    <input type="number" class="form-control deduction-input" id="halfDay" name="halfDay" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Late Arrivals</label>
-                                    <input type="number" class="form-control deduction-input" id="lateDays" value="0" disabled>
+                                    <input type="number" class="form-control deduction-input" id="lateDays" name="lateDays" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Advance Deduction</label>
-                                    <input type="number" class="form-control deduction-input" id="advanceDeduction" value="0" disabled>
+                                    <input type="number" class="form-control deduction-input" id="advanceDeduction" name="advanceDeduction" value="0" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">TDS</label>
-                                    <input type="number" class="form-control deduction-input" id="tds" value="" disabled>
+                                    <input type="number" class="form-control deduction-input" id="tds" name="tds" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">PF</label>
-                                    <input type="number" class="form-control deduction-input" id="pf" value="" disabled>
+                                    <input type="number" class="form-control deduction-input" id="pf" name="pf" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">ESI</label>
-                                    <input type="number" class="form-control deduction-input" id="esi" value="" disabled>
+                                    <input type="number" class="form-control deduction-input" id="esi" name="esi" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">PT</label>
-                                    <input type="number" class="form-control deduction-input" id="pt" value="" disabled>
+                                    <input type="number" class="form-control deduction-input" id="pt" name="pt" value="" disabled>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Other Deductions</label>
-                                    <input type="number" class="form-control deduction-input" id="otherDeductions" value="0" disabled>
+                                    <input type="number" class="form-control deduction-input" id="otherDeductions" name="otherDeductions" value="0" disabled>
                                 </div>
                                 
                                 <div id="deductionsActionBtns" style="display: none;">
@@ -2614,7 +2614,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">Bank Account</label>
-                                                    <input type="text" class="form-control" id="bankAccountDisplay" placeholder="Account details" value="" disabled>
+                                                    <input type="text" class="form-control" id="bankAccountDisplay" name="bankAccountDisplay" placeholder="Account details" value="" disabled>
                                                 </div>
                                                 <button class="btn btn-success" style="width: 100%;" id="generatePayslipBtn">
                                                     <i class="fas fa-check-circle"></i> Approve & Process Payslip
@@ -2697,7 +2697,7 @@
                     <div class="card-body">
                         <div class="date-selector">
                             <label class="form-label">Select Date:</label>
-                            <input type="date" class="form-control" id="attendance-date" style="max-width: 200px;">
+                            <input type="date" class="form-control" id="attendance-date" name="attendance-date" style="max-width: 200px;">
                             <button class="btn btn-outline" onclick="setTodayDate()">
                                 <i class="fas fa-calendar-day"></i> Today
                             </button>
@@ -2705,7 +2705,7 @@
                         
                         <div class="attendance-actions">
                             <div class="search-container">
-                                <input type="text" class="form-control" id="employee-search" placeholder="Search employees...">
+                                <input type="text" class="form-control" id="employee-search" name="employee-search" placeholder="Search employees...">
                             </div>
                             
                             <div class="attendance-bulk-actions">
@@ -2799,7 +2799,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Select Month</label>
-                                    <input type="month" class="form-control" id="reportMonthSelect">
+                                    <input type="month" class="form-control" id="reportMonthSelect" name="reportMonthSelect">
                                 </div>
                             </div>
                         </div>
@@ -2868,7 +2868,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Report Period</label>
-                                    <input type="month" class="form-control" id="payrollReportMonth">
+                                    <input type="month" class="form-control" id="payrollReportMonth" name="payrollReportMonth">
                                 </div>
                                 <button class="btn btn-primary" onclick="generatePayrollReport()">
                                     <i class="fas fa-chart-bar"></i> Generate Report
@@ -2914,7 +2914,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Company Name</label>
-                                    <input type="text" class="form-control" id="companyName" value="Samkitec Resources">
+                                    <input type="text" class="form-control" id="companyName" name="companyName" value="Samkitec Resources">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Company Address</label>
@@ -2922,7 +2922,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Default Working Days</label>
-                                    <input type="number" class="form-control" id="defaultWorkingDays" value="30" min="1" max="31">
+                                    <input type="number" class="form-control" id="defaultWorkingDays" name="defaultWorkingDays" value="30" min="1" max="31">
                                 </div>
                                 <button class="btn btn-primary" onclick="saveCompanySettings()">
                                     <i class="fas fa-save"></i> Save Settings
@@ -2938,19 +2938,19 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Default PF Percentage</label>
-                                    <input type="number" class="form-control" id="defaultPF" value="12" min="0" max="100" step="0.1">
+                                    <input type="number" class="form-control" id="defaultPF" name="defaultPF" value="12" min="0" max="100" step="0.1">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Default ESI Percentage</label>
-                                    <input type="number" class="form-control" id="defaultESI" value="1.75" min="0" max="100" step="0.01">
+                                    <input type="number" class="form-control" id="defaultESI" name="defaultESI" value="1.75" min="0" max="100" step="0.01">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Default TDS Percentage</label>
-                                    <input type="number" class="form-control" id="defaultTDS" value="10" min="0" max="100" step="0.1">
+                                    <input type="number" class="form-control" id="defaultTDS" name="defaultTDS" value="10" min="0" max="100" step="0.1">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Default PT Amount</label>
-                                    <input type="number" class="form-control" id="defaultPT" value="200" min="0">
+                                    <input type="number" class="form-control" id="defaultPT" name="defaultPT" value="200" min="0">
                                 </div>
                                 <button class="btn btn-primary" onclick="savePayrollSettings()">
                                     <i class="fas fa-save"></i> Save Settings
@@ -2999,7 +2999,7 @@
             
             <div style="margin-bottom: 20px;">
                 <label class="form-label">Select Month: </label>
-                <input type="month" class="form-control" id="month-select" onchange="loadMonthlyRecords()" style="max-width: 200px; display: inline-block;">
+                <input type="month" class="form-control" id="month-select" name="month-select" onchange="loadMonthlyRecords()" style="max-width: 200px; display: inline-block;">
                 <button class="btn btn-danger" onclick="clearCurrentMonthRecords()" style="margin-left: 20px;">
                     <i class="fas fa-trash"></i> Clear This Month's Records
                 </button>
@@ -3028,7 +3028,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <label class="form-label">Select Date</label>
-                    <input type="date" class="form-control" id="bulk-attendance-date">
+                    <input type="date" class="form-control" id="bulk-attendance-date" name="bulk-attendance-date">
                 </div>
                 
                 <div class="form-group">
@@ -3058,7 +3058,7 @@
                 
                 <div class="form-group">
                     <label class="form-label">Time (for Present/Late/Half Day)</label>
-                    <input type="time" class="form-control" id="bulk-time-input" value="09:00">
+                    <input type="time" class="form-control" id="bulk-time-input" name="bulk-time-input" value="09:00">
                 </div>
                 
                 <div class="form-group">
@@ -3071,7 +3071,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th><input type="checkbox" id="select-all-bulk"></th>
+                                <th><input type="checkbox" id="select-all-bulk" name="select-all-bulk"></th>
                                 <th>Employee ID</th>
                                 <th>Name</th>
                                 <th>Department</th>
@@ -3106,25 +3106,25 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="form-label">Employee ID</label>
-                        <input type="text" class="form-control" id="detail-employee-id" disabled>
+                        <input type="text" class="form-control" id="detail-employee-id" name="detail-employee-id" disabled>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Name</label>
-                        <input type="text" class="form-control" id="detail-employee-name" disabled>
+                        <input type="text" class="form-control" id="detail-employee-name" name="detail-employee-name" disabled>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Select Month</label>
-                        <input type="month" class="form-control" id="detail-month-select" onchange="filterEmployeeDetailsByMonth()">
+                        <input type="month" class="form-control" id="detail-month-select" name="detail-month-select" onchange="filterEmployeeDetailsByMonth()">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="form-label">Department</label>
-                        <input type="text" class="form-control" id="detail-employee-dept" disabled>
+                        <input type="text" class="form-control" id="detail-employee-dept" name="detail-employee-dept" disabled>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Position</label>
-                        <input type="text" class="form-control" id="detail-employee-position" disabled>
+                        <input type="text" class="form-control" id="detail-employee-position" name="detail-employee-position" disabled>
                     </div>
                     <div class="form-group" style="text-align: right; margin-top: 25px;">
                         <button class="btn btn-primary" onclick="editEmployeeAttendance()">
@@ -3214,7 +3214,12 @@
 
     <script>
         const EMPLOYEE_STORAGE_KEY = 'employees';
+        const ILLEGAL_ID_CHARS = /[\/\\\?#%\.\[\]]/g;
         let employees = [];
+
+        function sanitizeId(id) {
+            return String(id ?? '').trim().replace(ILLEGAL_ID_CHARS, '-');
+        }
 
         function loadEmployeesFromStorage() {
             try {
@@ -3228,6 +3233,7 @@
         }
 
         function persistEmployees() {
+            employees = employees.map(normalizeEmployeeRecord);
             try {
                 localStorage.setItem(EMPLOYEE_STORAGE_KEY, JSON.stringify(employees));
             } catch (error) {
@@ -3349,7 +3355,8 @@
                 const remoteEmployees = [];
 
                 snapshot.forEach(docSnap => {
-                    remoteEmployees.push(normalizeEmployeeRecord({ ...docSnap.data(), employeeId: docSnap.id }));
+                    const safeId = sanitizeId(docSnap.id);
+                    remoteEmployees.push(normalizeEmployeeRecord({ ...docSnap.data(), employeeId: safeId }));
                 });
 
                 return remoteEmployees;
@@ -3426,13 +3433,15 @@
             if (!ensureFirebaseReady('employees')) return;
             const { doc, setDoc } = window.firestoreFunctions;
             const normalized = normalizeEmployeeRecord(data);
-            await setDoc(doc(window.firebaseDb, 'employees', id), normalized);
+            const safeId = sanitizeId(id);
+            await setDoc(doc(window.firebaseDb, 'employees', safeId), { ...normalized, employeeId: safeId, id: safeId });
         }
 
         async function deleteEmployeeFromFirebase(id) {
             if (!ensureFirebaseReady('employees')) return;
             const { doc, deleteDoc } = window.firestoreFunctions;
-            await deleteDoc(doc(window.firebaseDb, 'employees', id));
+            const safeId = sanitizeId(id);
+            await deleteDoc(doc(window.firebaseDb, 'employees', safeId));
         }
 
         async function syncAttendanceWithFirebase() {
@@ -3474,30 +3483,15 @@
             const { replaceRemote = false } = options;
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                const attendanceCollection = collection(window.firebaseDb, 'attendance');
-                const existingAttendanceIds = new Set();
-
-                // Track existing attendance documents
-                const snapshot = await getDocs(attendanceCollection);
-                snapshot.forEach(docSnap => existingAttendanceIds.add(docSnap.id));
+                const { doc, setDoc } = window.firestoreFunctions;
 
                 // Upsert local attendance records
                 const upsertPromises = Object.keys(attendanceRecords).map(date => {
-                    const docRef = doc(attendanceCollection, date);
-                    existingAttendanceIds.delete(date);
+                    const docRef = doc(window.firebaseDb, 'attendance', date);
                     return setDoc(docRef, attendanceRecords[date]);
                 });
 
-                // Optionally remove stale Firebase documents when explicitly requested
-                const deletePromises = [];
-                if (replaceRemote || Object.keys(attendanceRecords).length > 0) {
-                    existingAttendanceIds.forEach(id => {
-                        deletePromises.push(deleteDoc(doc(attendanceCollection, id)));
-                    });
-                }
-
-                await Promise.all([...upsertPromises, ...deletePromises]);
+                await Promise.all(upsertPromises);
                 updateSyncStatus('attendance', 'synced');
             } catch (error) {
                 console.error('Error pushing attendance to Firebase:', error);
@@ -3542,31 +3536,16 @@
             const { replaceRemote = false } = options;
 
             try {
-                const { collection, doc, setDoc, getDocs, deleteDoc } = window.firestoreFunctions;
-                const payrollCollection = collection(window.firebaseDb, 'payroll');
-                const existingPayrollIds = new Set();
+                const { doc, setDoc } = window.firestoreFunctions;
 
-                // Track existing payroll documents
-                const snapshot = await getDocs(payrollCollection);
-                snapshot.forEach(docSnap => existingPayrollIds.add(docSnap.id));
-
-                // Upsert local payroll records
+                // Upsert local payroll records without deleting remote data
                 const upsertPromises = payrollRecords.map(record => {
                     const recordId = record.id || generateId();
-                    const docRef = doc(payrollCollection, recordId);
-                    existingPayrollIds.delete(recordId);
+                    const docRef = doc(window.firebaseDb, 'payroll', recordId);
                     return setDoc(docRef, { ...record, id: recordId });
                 });
 
-                // Optionally remove stale Firebase documents when explicitly requested
-                const deletePromises = [];
-                if (replaceRemote || payrollRecords.length > 0) {
-                    existingPayrollIds.forEach(id => {
-                        deletePromises.push(deleteDoc(doc(payrollCollection, id)));
-                    });
-                }
-
-                await Promise.all([...upsertPromises, ...deletePromises]);
+                await Promise.all(upsertPromises);
             } catch (error) {
                 console.error('Error pushing payroll to Firebase:', error);
                 updateSyncStatus('payroll', 'error');
@@ -3745,8 +3724,8 @@
         function setupPayrollEventListeners() {
             // Employee Details Edit/Save functionality
             const employeeActionContainer = document.getElementById('employeeActionBtns');
-            const payrollSaveButton = employeeActionContainer?.querySelector('#saveEmployeeBtn');
-            const payrollCancelButton = employeeActionContainer?.querySelector('#cancelEmployeeBtn');
+            const payrollSaveButton = employeeActionContainer?.querySelector('#payrollSaveEmployeeBtn');
+            const payrollCancelButton = employeeActionContainer?.querySelector('#payrollCancelEmployeeBtn');
 
             document.getElementById('editEmployeeBtn').addEventListener('click', function() {
                 const inputs = document.querySelectorAll('#employeeDetailsSection .employee-input');
@@ -3944,7 +3923,8 @@
         }
 
         function normalizeEmployeeRecord(emp) {
-            const employeeId = emp?.employeeId || emp?.id || '';
+            const rawId = emp?.employeeId || emp?.id || '';
+            const employeeId = sanitizeId(rawId);
             return { ...emp, employeeId, id: employeeId };
         }
 
@@ -3984,7 +3964,9 @@
 
             const form = document.getElementById('employeeDataForm');
             const isEditing = Boolean(form.dataset.editing);
-            const employeeId = (employeeElements.formFields.empId.value || generateEmployeeId()).trim();
+            const rawEmployeeId = (employeeElements.formFields.empId.value || generateEmployeeId()).trim();
+            const employeeId = sanitizeId(rawEmployeeId);
+            employeeElements.formFields.empId.value = employeeId;
             const existing = employees.find(e => normalizeEmployeeRecord(e).employeeId === employeeId);
             const timestamp = new Date().toISOString();
 
@@ -4100,7 +4082,8 @@
         }
 
         function editEmployee(id) {
-            const employee = employees.find(emp => normalizeEmployeeRecord(emp).employeeId === id);
+            const safeId = sanitizeId(id);
+            const employee = employees.find(emp => normalizeEmployeeRecord(emp).employeeId === safeId);
             if (!employee) return;
 
             const normalized = normalizeEmployeeRecord(employee);
@@ -4117,14 +4100,15 @@
         async function deleteEmployee(id) {
             if (!confirm('Are you sure you want to delete this employee?')) return;
 
-            employees = employees.filter(emp => normalizeEmployeeRecord(emp).employeeId !== id);
+            const safeId = sanitizeId(id);
+            employees = employees.filter(emp => normalizeEmployeeRecord(emp).employeeId !== safeId);
             persistEmployees();
             renderEmployeeTable();
             populatePayrollEmployeeDropdown();
             populateReportEmployeeDropdown();
 
             try {
-                await deleteEmployeeFromFirebase(id);
+                await deleteEmployeeFromFirebase(safeId);
             } catch (error) {
                 console.error('Error deleting employee from Firestore:', error);
                 setSyncError('employees', describeSyncError(error));
@@ -4715,8 +4699,8 @@
                     <td class="${statusClass}">${statusDisplay}</td>
                     <td>${record.time || '--:--'}</td>
                     <td>
-                        <input type="text" class="form-control" value="${record.remarks || ''}" 
-                               onchange="updateAttendanceRemarks('${emp.id}', this.value)" 
+                        <input type="text" class="form-control" name="attendance-remark-${emp.id}" value="${record.remarks || ''}"
+                               onchange="updateAttendanceRemarks('${emp.id}', this.value)"
                                placeholder="Add remarks" style="width: 150px;">
                     </td>
                     <td class="action-buttons">
@@ -4744,42 +4728,44 @@
         
         function updateAttendanceRemarks(employeeId, remarks) {
             const date = document.getElementById('attendance-date').value;
-            
+            const safeId = sanitizeId(employeeId);
+
             if (!attendanceRecords[date]) {
                 attendanceRecords[date] = {};
             }
-            
-            if (!attendanceRecords[date][employeeId]) {
-                attendanceRecords[date][employeeId] = {
+
+            if (!attendanceRecords[date][safeId]) {
+                attendanceRecords[date][safeId] = {
                     status: 'absent',
                     time: '',
                     remarks: ''
                 };
             }
-            
-            attendanceRecords[date][employeeId].remarks = remarks;
+
+            attendanceRecords[date][safeId].remarks = remarks;
             localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
         }
         
         // Enhanced Mark attendance with time input for present, late, and halfday statuses
         function markAttendanceWithTime(employeeId, status) {
             const date = document.getElementById('attendance-date').value;
-            
+            const safeId = sanitizeId(employeeId);
+
             // Initialize date if not exists
             if (!attendanceRecords[date]) {
                 attendanceRecords[date] = {};
             }
-            
+
             // Initialize employee record if not exists
-            if (!attendanceRecords[date][employeeId]) {
-                attendanceRecords[date][employeeId] = {
+            if (!attendanceRecords[date][safeId]) {
+                attendanceRecords[date][safeId] = {
                     status: 'absent',
                     time: '',
                     remarks: ''
                 };
             }
-            
-            const record = attendanceRecords[date][employeeId];
+
+            const record = attendanceRecords[date][safeId];
             
             // If already the same status, toggle to absent
             if (record.status === status) {
@@ -4794,7 +4780,7 @@
             
             // Save to localStorage
             localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
-            
+
             // Refresh the list
             renderEmployeeAttendanceList();
             updateAttendanceSummary();
@@ -4803,22 +4789,23 @@
         // Enhanced Toggle attendance status (for statuses without time)
         function toggleAttendance(employeeId, status) {
             const date = document.getElementById('attendance-date').value;
-            
+            const safeId = sanitizeId(employeeId);
+
             // Initialize date if not exists
             if (!attendanceRecords[date]) {
                 attendanceRecords[date] = {};
             }
-            
+
             // Initialize employee record if not exists
-            if (!attendanceRecords[date][employeeId]) {
-                attendanceRecords[date][employeeId] = {
+            if (!attendanceRecords[date][safeId]) {
+                attendanceRecords[date][safeId] = {
                     status: 'absent',
                     time: '',
                     remarks: ''
                 };
             }
-            
-            const record = attendanceRecords[date][employeeId];
+
+            const record = attendanceRecords[date][safeId];
             
             // Toggle status - if current status is same as clicked status, set to absent
             if (record.status === status) {
@@ -4969,7 +4956,7 @@
             filteredEmployees.forEach(emp => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><input type="checkbox" class="employee-checkbox" value="${emp.id}"></td>
+                    <td><input type="checkbox" class="employee-checkbox" name="bulkSelect" value="${emp.id}"></td>
                     <td>${emp.id}</td>
                     <td>${emp.name}</td>
                     <td>${emp.department}</td>
@@ -4989,8 +4976,9 @@
         
         function getCurrentAttendanceStatus(employeeId) {
             const date = document.getElementById('bulk-attendance-date').value;
-            if (attendanceRecords[date] && attendanceRecords[date][employeeId]) {
-                return attendanceRecords[date][employeeId].status.toUpperCase();
+            const safeId = sanitizeId(employeeId);
+            if (attendanceRecords[date] && attendanceRecords[date][safeId]) {
+                return attendanceRecords[date][safeId].status.toUpperCase();
             }
             return 'ABSENT';
         }
