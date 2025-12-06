@@ -492,10 +492,23 @@
             color: white;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
-        
+
         .btn-info:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.25);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-share:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            color: white;
         }
         
         .btn-edit {
@@ -547,6 +560,14 @@
         .table-container {
             overflow-x: auto;
             margin-top: 20px;
+        }
+
+        .attendance-share-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
         }
         
         .table-header {
@@ -632,9 +653,14 @@
             color: var(--leave-color);
             font-weight: bold;
         }
-        
+
         .status-halfday {
             color: var(--halfday-color);
+            font-weight: bold;
+        }
+
+        .status-holiday {
+            color: var(--info-color);
             font-weight: bold;
         }
         
@@ -1266,12 +1292,12 @@
             onAuthStateChanged, 
             signOut 
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            doc, 
-            setDoc, 
-            getDocs, 
+        import {
+            getFirestore,
+            collection,
+            doc,
+            setDoc,
+            getDocs,
             deleteDoc,
             updateDoc,
             query,
@@ -1279,6 +1305,12 @@
             getDoc,
             addDoc
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import {
+            getStorage,
+            ref as storageRef,
+            uploadBytes,
+            getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
         const firebaseConfig = {
              apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
@@ -1293,10 +1325,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         const firebaseState = {
             app,
             auth,
             db,
+            storage,
             user: null
         };
         window.firebaseState = firebaseState;
@@ -1311,6 +1345,7 @@
             window.firebaseUser = user;
             window.firebaseAuth = auth;
             window.firebaseDb = db;
+            window.firebaseStorage = storage;
             window.firestoreFunctions = {
                 collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
             };
@@ -2682,7 +2717,7 @@
                 </div>
                 
                 <!-- Attendance Management Card -->
-                <div class="card">
+                <div class="card" id="attendance-card">
                     <div class="card-header">
                         <h3 class="card-title">Daily Attendance</h3>
                         <div class="btn-group">
@@ -2718,18 +2753,24 @@
                             </div>
                         </div>
                         
-                        <div class="attendance-status-filter">
-                            <button class="status-filter-btn active" onclick="filterAttendanceByStatus('all')">All</button>
-                            <button class="status-filter-btn" onclick="filterAttendanceByStatus('present')">Present</button>
-                            <button class="status-filter-btn" onclick="filterAttendanceByStatus('absent')">Absent</button>
-                            <button class="status-filter-btn" onclick="filterAttendanceByStatus('late')">Late</button>
-                            <button class="status-filter-btn" onclick="filterAttendanceByStatus('leave')">Leave</button>
-                            <button class="status-filter-btn" onclick="filterAttendanceByStatus('halfday')">Half Day</button>
-                        </div>
+                            <div class="attendance-status-filter">
+                                <button class="status-filter-btn active" onclick="filterAttendanceByStatus('all')">All</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('present')">Present</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('absent')">Absent</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('late')">Late</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('leave')">Leave</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('halfday')">Half Day</button>
+                                <button class="status-filter-btn" onclick="filterAttendanceByStatus('holiday')">Holiday</button>
+                            </div>
                         
-                        <button id="save-attendance-btn" class="btn btn-success" style="margin-bottom: 20px;">
-                            <i class="fas fa-save"></i> Save Today's Attendance
-                        </button>
+                        <div class="attendance-share-actions">
+                            <button id="share-attendance-btn" class="btn btn-share" onclick="shareAttendanceImage()">
+                                <i class="fas fa-share-alt"></i> Share Attendance Image
+                            </button>
+                            <button id="save-attendance-btn" class="btn btn-success">
+                                <i class="fas fa-save"></i> Save Today's Attendance
+                            </button>
+                        </div>
                         
                         <div class="table-container">
                             <table id="attendance-table">
@@ -4638,6 +4679,141 @@
         }
 
         // Enhanced Attendance Functions
+        function formatTimeForInput(timeString) {
+            if (!timeString) return '';
+
+            if (/^\d{1,2}:\d{2}\s?(AM|PM)$/i.test(timeString)) {
+                const parsed = new Date(`1970-01-01 ${timeString}`);
+                if (!isNaN(parsed)) {
+                    const hours = String(parsed.getHours()).padStart(2, '0');
+                    const minutes = String(parsed.getMinutes()).padStart(2, '0');
+                    return `${hours}:${minutes}`;
+                }
+            }
+
+            if (/^\d{1,2}:\d{2}$/.test(timeString)) {
+                return timeString;
+            }
+
+            return '';
+        }
+
+        function formatDisplayTime(timeString) {
+            if (!timeString) return '';
+            if (/^\d{1,2}:\d{2}$/.test(timeString)) {
+                return timeString;
+            }
+            return timeString;
+        }
+
+        async function captureAttendanceCanvas() {
+            const attendanceElement = document.getElementById('attendance-card');
+            if (!attendanceElement) {
+                throw new Error('Attendance card not found');
+            }
+
+            return await html2canvas(attendanceElement, {
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                scale: 2
+            });
+        }
+
+        async function dataUrlToBlob(dataUrl) {
+            const response = await fetch(dataUrl);
+            return await response.blob();
+        }
+
+        async function uploadAttendanceImage(blob, fileName) {
+            try {
+                const storage = window.firebaseStorage || window.firebaseState?.storage;
+                if (!storage || !storageRef || !uploadBytes || !getDownloadURL) {
+                    return null;
+                }
+
+                const userId = window.firebaseState?.user?.uid || 'guest';
+                const storagePath = `attendance-shares/${userId}/${fileName}`;
+                const attendanceImageRef = storageRef(storage, storagePath);
+
+                await uploadBytes(attendanceImageRef, blob, { contentType: 'image/png' });
+                return await getDownloadURL(attendanceImageRef);
+            } catch (error) {
+                console.error('Failed to upload attendance image to Firebase Storage:', error);
+                return null;
+            }
+        }
+
+        async function shareAttendanceImage() {
+            const shareBtn = document.getElementById('share-attendance-btn');
+            if (shareBtn) {
+                shareBtn.disabled = true;
+                shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing Image...';
+            }
+
+            try {
+                const canvas = await captureAttendanceCanvas();
+                const dataUrl = canvas.toDataURL('image/png');
+                const blob = await dataUrlToBlob(dataUrl);
+                const selectedDate = document.getElementById('attendance-date').value || new Date().toISOString().split('T')[0];
+                const readableDate = new Date(selectedDate).toLocaleDateString();
+                const fileName = `attendance_${selectedDate}.png`;
+                const shareText = `Attendance snapshot for ${readableDate}`;
+                const uploadedUrl = await uploadAttendanceImage(blob, fileName);
+                const downloadLink = uploadedUrl || dataUrl;
+
+                const shareFile = new File([blob], fileName, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
+                    await navigator.share({
+                        files: [shareFile],
+                        title: 'Attendance Snapshot',
+                        text: `${shareText} - shared from WageWise`
+                    });
+                } else {
+                    const whatsappMessage = encodeURIComponent(`${shareText}\nDownload image: ${downloadLink}`);
+                    const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
+                    window.open(whatsappUrl, '_blank');
+
+                    const hiddenDownloadLink = document.createElement('a');
+                    hiddenDownloadLink.href = dataUrl;
+                    hiddenDownloadLink.download = fileName;
+                    hiddenDownloadLink.style.display = 'none';
+                    document.body.appendChild(hiddenDownloadLink);
+                    hiddenDownloadLink.click();
+                    hiddenDownloadLink.remove();
+                }
+            } catch (error) {
+                console.error('Error sharing attendance image:', error);
+                alert('Unable to share the attendance image. Please try again.');
+            } finally {
+                if (shareBtn) {
+                    shareBtn.disabled = false;
+                    shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Share Attendance Image';
+                }
+            }
+        }
+
+        function updateAttendanceTime(employeeId, timeValue) {
+            const date = document.getElementById('attendance-date').value;
+            const safeId = sanitizeId(employeeId);
+
+            if (!attendanceRecords[date]) {
+                attendanceRecords[date] = {};
+            }
+
+            if (!attendanceRecords[date][safeId]) {
+                attendanceRecords[date][safeId] = {
+                    status: 'absent',
+                    time: '',
+                    remarks: ''
+                };
+            }
+
+            attendanceRecords[date][safeId].time = timeValue;
+            localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+            renderEmployeeAttendanceList();
+        }
+
         function renderEmployeeAttendanceList() {
             const date = document.getElementById('attendance-date').value;
             const searchTerm = document.getElementById('employee-search').value.toLowerCase();
@@ -4670,6 +4846,7 @@
             
             // Add each employee to the table
             filteredEmployees.forEach(emp => {
+                const safeId = sanitizeId(emp.id);
                 const record = attendanceRecords[date][emp.id] || {
                     status: 'absent',
                     time: '',
@@ -4685,19 +4862,25 @@
                 else if (record.status === 'late') statusClass = 'status-late';
                 else if (record.status === 'leave') statusClass = 'status-leave';
                 else if (record.status === 'halfday') statusClass = 'status-halfday';
-                
+                else if (record.status === 'holiday') statusClass = 'status-holiday';
+
                 // Status display with time if applicable
-                const statusDisplay = record.time 
-                    ? `${record.status.toUpperCase()} <span class="late-time">(${record.time})</span>`
-                    : record.status.toUpperCase();
-                
+                const statusDisplay = record.status === 'holiday'
+                    ? `${record.status.toUpperCase()}${record.day ? ` (${record.day})` : ''}`
+                    : record.time
+                        ? `${record.status.toUpperCase()} <span class="late-time">(${formatDisplayTime(record.time)})</span>`
+                        : record.status.toUpperCase();
+
                 row.innerHTML = `
                     <td>${emp.id}</td>
                     <td>${emp.name}</td>
                     <td>${emp.department}</td>
                     <td>${emp.phone || 'N/A'}</td>
                     <td class="${statusClass}">${statusDisplay}</td>
-                    <td>${record.time || '--:--'}</td>
+                    <td>
+                        <input type="time" class="form-control" name="attendance-time-${safeId}" value="${formatTimeForInput(record.time)}"
+                               onchange="updateAttendanceTime('${emp.id}', this.value)" aria-label="Attendance time for ${emp.name}">
+                    </td>
                     <td>
                         <input type="text" class="form-control" name="attendance-remark-${emp.id}" value="${record.remarks || ''}"
                                onchange="updateAttendanceRemarks('${emp.id}', this.value)"
@@ -4718,6 +4901,9 @@
                         </button>
                         <button class="btn btn-halfday" onclick="markAttendanceWithTime('${emp.id}', 'halfday')">
                             <i class="fas fa-adjust"></i> Half Day
+                        </button>
+                        <button class="btn btn-outline" onclick="markSundayHoliday('${emp.id}')">
+                            <i class="fas fa-sun"></i> Sunday Holiday
                         </button>
                     </td>
                 `;
@@ -4771,11 +4957,23 @@
             if (record.status === status) {
                 record.status = 'absent';
                 record.time = '';
+                record.day = '';
+                const timeInput = document.querySelector(`input[name="attendance-time-${safeId}"]`);
+                if (timeInput) {
+                    timeInput.value = '';
+                }
             } else {
-                const currentTime = new Date();
-                const timeString = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                const timeInput = document.querySelector(`input[name="attendance-time-${safeId}"]`);
+                const manualTime = timeInput ? timeInput.value : '';
+
+                if (!manualTime) {
+                    alert('Please enter a time (HH:MM) before setting this status.');
+                    return;
+                }
+
                 record.status = status;
-                record.time = timeString;
+                record.time = manualTime;
+                record.day = '';
             }
             
             // Save to localStorage
@@ -4785,7 +4983,37 @@
             renderEmployeeAttendanceList();
             updateAttendanceSummary();
         }
-        
+
+        function markSundayHoliday(employeeId) {
+            const date = document.getElementById('attendance-date').value;
+            const safeId = sanitizeId(employeeId);
+
+            if (!attendanceRecords[date]) {
+                attendanceRecords[date] = {};
+            }
+
+            if (!attendanceRecords[date][safeId]) {
+                attendanceRecords[date][safeId] = {
+                    status: 'absent',
+                    time: '',
+                    remarks: ''
+                };
+            }
+
+            attendanceRecords[date][safeId].status = 'holiday';
+            attendanceRecords[date][safeId].time = '';
+            attendanceRecords[date][safeId].day = 'Sunday';
+
+            const timeInput = document.querySelector(`input[name="attendance-time-${safeId}"]`);
+            if (timeInput) {
+                timeInput.value = '';
+            }
+
+            localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+            renderEmployeeAttendanceList();
+            updateAttendanceSummary();
+        }
+
         // Enhanced Toggle attendance status (for statuses without time)
         function toggleAttendance(employeeId, status) {
             const date = document.getElementById('attendance-date').value;
@@ -4806,7 +5034,7 @@
             }
 
             const record = attendanceRecords[date][safeId];
-            
+
             // Toggle status - if current status is same as clicked status, set to absent
             if (record.status === status) {
                 record.status = 'absent';
@@ -4815,7 +5043,8 @@
             }
             // Clear time for statuses that don't need it
             record.time = '';
-            
+            record.day = status === 'holiday' ? 'Sunday' : '';
+
             // Save to localStorage
             localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
             
@@ -4891,17 +5120,15 @@
         
         function markAllPresent() {
             const date = document.getElementById('attendance-date').value;
-            const currentTime = new Date();
-            const timeString = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-            
+
             employees.forEach(emp => {
                 if (!attendanceRecords[date]) {
                     attendanceRecords[date] = {};
                 }
-                
+
                 attendanceRecords[date][emp.id] = {
                     status: 'present',
-                    time: timeString,
+                    time: '',
                     remarks: 'Bulk marked present'
                 };
             });
@@ -5192,10 +5419,13 @@
                     else if (record.status === 'late') statusClass = 'status-late';
                     else if (record.status === 'leave') statusClass = 'status-leave';
                     else if (record.status === 'halfday') statusClass = 'status-halfday';
-                    
-                    const statusDisplay = record.time 
-                        ? `${record.status.toUpperCase()} <span class="late-time">(${record.time})</span>`
-                        : record.status.toUpperCase();
+                    else if (record.status === 'holiday') statusClass = 'status-holiday';
+
+                    const statusDisplay = record.time
+                        ? `${record.status.toUpperCase()} <span class="late-time">(${formatDisplayTime(record.time)})</span>`
+                        : record.status === 'holiday'
+                            ? `${record.status.toUpperCase()}${record.day ? ` (${record.day})` : ''}`
+                            : record.status.toUpperCase();
                     
                     html += `
                         <tr>
@@ -5325,7 +5555,7 @@
                     else if (record.status === 'late') lateDays++;
                     else if (record.status === 'leave') leaveDays++;
                     else if (record.status === 'halfday') halfdayDays++;
-                    
+
                     // Add to records table
                     let statusClass = '';
                     if (record.status === 'present') statusClass = 'status-present';
@@ -5333,10 +5563,13 @@
                     else if (record.status === 'late') statusClass = 'status-late';
                     else if (record.status === 'leave') statusClass = 'status-leave';
                     else if (record.status === 'halfday') statusClass = 'status-halfday';
-                    
-                    const statusDisplay = record.time 
-                        ? `${record.status.toUpperCase()} (${record.time})`
-                        : record.status.toUpperCase();
+                    else if (record.status === 'holiday') statusClass = 'status-holiday';
+
+                    const statusDisplay = record.status === 'holiday'
+                        ? `${record.status.toUpperCase()}${record.day ? ` (${record.day})` : ''}`
+                        : record.time
+                            ? `${record.status.toUpperCase()} (${formatDisplayTime(record.time)})`
+                            : record.status.toUpperCase();
                     
                     recordsHtml += `
                         <tr>
@@ -6452,6 +6685,7 @@ Payment Method: ${record.paymentMethod}`);
         window.generateAttendanceReport = generateAttendanceReport;
         window.exportAttendanceReport = exportAttendanceReport;
         window.viewAttendanceAnalytics = viewAttendanceAnalytics;
+        window.shareAttendanceImage = shareAttendanceImage;
         window.filterEmployeesByStatus = filterEmployeesByStatus;
         window.refreshEmployeeData = function() {
             renderEmployeeTable();
