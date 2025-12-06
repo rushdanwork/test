@@ -492,10 +492,23 @@
             color: white;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
-        
+
         .btn-info:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.25);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-share:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            color: white;
         }
         
         .btn-edit {
@@ -547,6 +560,14 @@
         .table-container {
             overflow-x: auto;
             margin-top: 20px;
+        }
+
+        .attendance-share-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
         }
         
         .table-header {
@@ -1271,12 +1292,12 @@
             onAuthStateChanged, 
             signOut 
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            doc, 
-            setDoc, 
-            getDocs, 
+        import {
+            getFirestore,
+            collection,
+            doc,
+            setDoc,
+            getDocs,
             deleteDoc,
             updateDoc,
             query,
@@ -1284,6 +1305,12 @@
             getDoc,
             addDoc
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import {
+            getStorage,
+            ref as storageRef,
+            uploadBytes,
+            getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
         const firebaseConfig = {
              apiKey: "AIzaSyB2-yGvsn2Y9_0FBSIxnC50GTNo-3OeFew",
@@ -1298,10 +1325,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         const firebaseState = {
             app,
             auth,
             db,
+            storage,
             user: null
         };
         window.firebaseState = firebaseState;
@@ -1316,6 +1345,7 @@
             window.firebaseUser = user;
             window.firebaseAuth = auth;
             window.firebaseDb = db;
+            window.firebaseStorage = storage;
             window.firestoreFunctions = {
                 collection, doc, setDoc, getDocs, deleteDoc, updateDoc, query, where, getDoc, addDoc
             };
@@ -2687,7 +2717,7 @@
                 </div>
                 
                 <!-- Attendance Management Card -->
-                <div class="card">
+                <div class="card" id="attendance-card">
                     <div class="card-header">
                         <h3 class="card-title">Daily Attendance</h3>
                         <div class="btn-group">
@@ -2733,9 +2763,14 @@
                                 <button class="status-filter-btn" onclick="filterAttendanceByStatus('holiday')">Holiday</button>
                             </div>
                         
-                        <button id="save-attendance-btn" class="btn btn-success" style="margin-bottom: 20px;">
-                            <i class="fas fa-save"></i> Save Today's Attendance
-                        </button>
+                        <div class="attendance-share-actions">
+                            <button id="share-attendance-btn" class="btn btn-share" onclick="shareAttendanceImage()">
+                                <i class="fas fa-share-alt"></i> Share Attendance Image
+                            </button>
+                            <button id="save-attendance-btn" class="btn btn-success">
+                                <i class="fas fa-save"></i> Save Today's Attendance
+                            </button>
+                        </div>
                         
                         <div class="table-container">
                             <table id="attendance-table">
@@ -6563,6 +6598,7 @@ Payment Method: ${record.paymentMethod}`);
         window.generateAttendanceReport = generateAttendanceReport;
         window.exportAttendanceReport = exportAttendanceReport;
         window.viewAttendanceAnalytics = viewAttendanceAnalytics;
+        window.shareAttendanceImage = shareAttendanceImage;
         window.filterEmployeesByStatus = filterEmployeesByStatus;
         window.refreshEmployeeData = function() {
             renderEmployeeTable();
